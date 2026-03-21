@@ -3,80 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP - 1Day Edition v3.6</title>
+    <title>YourTvSat VIP - v3.7 Fixed</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         body { background: #050505; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; text-align: center; margin: 0; }
         .gold { color: #d4af37; text-shadow: 0 0 10px rgba(212,175,55,0.5); }
         .card { border: 1px solid #d4af37; border-radius: 20px; padding: 25px; max-width: 450px; margin: auto; background: #0a0a0a; border-top: 5px solid #d4af37; }
-        .console { background: #000; border: 1px solid #333; color: #00ff00; font-family: monospace; font-size: 0.75rem; padding: 15px; text-align: left; border-radius: 10px; margin: 20px 0; height: 180px; overflow-y: auto; }
-        .btn-main { background: linear-gradient(135deg, #d4af37, #f9f295); color: #000; border: none; padding: 20px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; font-size: 1rem; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 100; align-items: center; justify-content: center; }
-        .modal-content { background: #111; border: 2px solid #d4af37; padding: 30px; border-radius: 25px; width: 90%; max-width: 380px; }
+        .console { background: #000; border: 1px solid #333; color: #00ff00; font-family: monospace; font-size: 0.75rem; padding: 15px; text-align: left; border-radius: 10px; margin: 20px 0; height: 180px; overflow-y: auto; white-space: pre-wrap; }
+        .btn-main { background: linear-gradient(135deg, #d4af37, #f9f295); color: #000; border: none; padding: 20px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-    <h2 class="gold">YOURTVSAT - DINO "1 DAY" v3.6</h2>
+    <h2 class="gold">YOURTVSAT - DINO 1-DAY FIX</h2>
 
     <div class="card">
-        <button class="btn-main" onclick="generateOneDay()">⚡ GÉNÉRER TEST 1 DAY</button>
-        <div class="console" id="log">Prêt pour la création 1 Day...</div>
+        <button class="btn-main" id="btnGo" onclick="generateNow()">⚡ GÉNÉRER TEST (1 DAY)</button>
+        <div class="console" id="log">Initialisation v3.7...</div>
     </div>
 
-    <div id="m" class="modal"><div class="modal-content">
-        <h2 class="gold">✅ TEST 1 DAY PRÊT</h2>
-        <div id="res" style="background:#1a1a1a; padding:15px; border-radius:10px; text-align:left; font-family:monospace; color:#00ff00; font-size:0.8rem; word-break: break-all; margin-bottom:15px;"></div>
-        <div id="qrcode" style="background:#fff; padding:10px; display:inline-block; border-radius:8px;"></div>
-        <button onclick="copyA()" style="background:#d4af37; border:none; padding:15px; width:100%; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:20px;">📋 COPIER LE LIEN M3U</button>
-        <p onclick="document.getElementById('m').style.display='none'" style="color:#888; cursor:pointer; margin-top:15px;">Fermer</p>
-    </div></div>
+    <div id="m" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:100; align-items:center; justify-content:center;">
+        <div style="background:#111; border:2px solid #d4af37; padding:30px; border-radius:25px; width:90%; max-width:380px;">
+            <h2 class="gold">✅ TEST GÉNÉRÉ</h2>
+            <div id="res" style="background:#1a1a1a; padding:15px; border-radius:10px; color:#00ff00; font-size:0.75rem; word-break:break-all; margin-bottom:15px;"></div>
+            <div id="qrcode" style="background:#fff; padding:10px; display:inline-block; border-radius:8px;"></div>
+            <button onclick="location.reload()" style="background:#d4af37; border:none; padding:15px; width:100%; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:20px;">FERMER</button>
+        </div>
+    </div>
 
     <script>
         const API_KEY = "a541fa9acb43c9be2f2759ca4ac5a47c";
         const API_URL = "https://tvpluspanel.net/api/api.php";
         
-        const l = (msg) => { const e = document.getElementById('log'); e.innerHTML += `<br>> ${msg}`; e.scrollTop = e.scrollHeight; };
+        const l = (msg) => { 
+            const e = document.getElementById('log'); 
+            e.innerHTML += `\n> ${msg}`; 
+            e.scrollTop = e.scrollHeight; 
+            console.log(msg);
+        };
 
-        async function generateOneDay() {
-            l("🚀 Lancement de la création 1 Day...");
-            // sub=1d est la valeur probable pour l'option "1 Day" du panel
-            const target = `${API_URL}?action=new&type=m3u&sub=1d&pack=all&api_key=${API_KEY}`;
-            
+        async function generateNow() {
+            const btn = document.getElementById('btnGo');
+            btn.disabled = true;
+            l("🚀 Envoi de la commande '1d'...");
+
+            // Construction de l'URL propre
+            const params = `action=new&type=m3u&sub=1d&pack=all&api_key=${API_KEY}`;
+            const target = `${API_URL}?${params}`;
+
+            // Utilisation d'un proxy plus stable
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(target)}&timestamp=${Date.now()}`;
+
             try {
-                const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
-                const j = await r.json();
-                const d = typeof j.contents === 'string' ? JSON.parse(j.contents) : j.contents;
-                const res = Array.isArray(d) ? d[0] : d;
+                const response = await fetch(proxyUrl);
+                if (!response.ok) throw new Error("Erreur Réseau Proxy");
+                
+                const data = await response.json();
+                let contents = data.contents;
 
-                if (res.statut === "vrai" || res.status === "true") {
-                    l("✅ Succès : Ligne 1 Day créée !");
-                    document.getElementById('res').innerText = res.url;
+                // Nettoyage de la réponse si c'est du texte brut
+                if (typeof contents === "string") {
+                    try { contents = JSON.parse(contents); } catch(e) {}
+                }
+
+                // Normalisation du résultat (Dino renvoie souvent un tableau [{}])
+                const result = Array.isArray(contents) ? contents[0] : contents;
+
+                if (result && (result.statut === "vrai" || result.status === "true")) {
+                    l("✅ RÉUSSITE !");
+                    document.getElementById('res').innerText = result.url;
                     document.getElementById("qrcode").innerHTML = "";
-                    new QRCode(document.getElementById("qrcode"), { text: res.url, width: 160, height: 160 });
+                    new QRCode(document.getElementById("qrcode"), { text: result.url, width: 150, height: 150 });
                     document.getElementById('m').style.display = 'flex';
                 } else {
-                    l(`❌ Erreur : ${res.message || "Le panel refuse sub=1d"}`);
-                    l("Tentative avec sub=1 (Alternative)...");
-                    // Deuxième tentative si 1d échoue
-                    retryWithSub1();
+                    l(`❌ Refus Panel: ${result.message || "Identifiant '1d' non reconnu via API"}`);
                 }
-            } catch (e) { l("🚨 Erreur de communication API."); }
+            } catch (err) {
+                l("🚨 Erreur fatale: Le proxy ou l'API ne répond pas.");
+                l("Veuillez vérifier votre connexion ou réessayer.");
+            } finally {
+                btn.disabled = false;
+            }
         }
-
-        async function retryWithSub1() {
-            const target = `${API_URL}?action=new&type=m3u&sub=1&pack=all&api_key=${API_KEY}`;
-            const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
-            const j = await r.json();
-            const d = JSON.parse(j.contents);
-            const res = Array.isArray(d) ? d[0] : d;
-            if (res.statut === "vrai") {
-                l("✅ Succès avec sub=1 !");
-                // ... (même logique d'affichage que plus haut)
-            } else { l("❌ Échec définitif."); }
-        }
-
-        function copyA() { navigator.clipboard.writeText(document.getElementById('res').innerText); alert("Copié !"); }
     </script>
 </body>
 </html>
