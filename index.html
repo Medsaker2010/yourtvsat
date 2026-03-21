@@ -3,59 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP - Stable</title>
+    <title>YourTvSat VIP - Plateforme Elite</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body { background: #050505; color: #fff; font-family: sans-serif; text-align: center; padding: 20px; }
-        .gold { color: #d4af37; }
-        .card { border: 2px solid #d4af37; border-radius: 20px; padding: 20px; max-width: 400px; margin: auto; background: #0a0a0a; }
-        .btn { background: linear-gradient(135deg, #d4af37, #f9f295); color: #000; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        .log { background: #000; color: #00ff00; font-family: monospace; font-size: 0.7rem; padding: 10px; margin-top: 15px; text-align: left; border-radius: 8px; min-height: 50px; }
-        #res { display: none; margin-top: 20px; padding: 15px; border: 1px dashed #00ff00; word-break: break-all; font-size: 0.8rem; }
+        :root { --gold: #d4af37; --dark: #050505; --green: #00ff00; --silver: #c0c0c0; }
+        body { background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 50px; }
+        
+        /* HEADER & LOGO */
+        header { padding: 30px; text-align: center; background: linear-gradient(to bottom, #111, transparent); }
+        .logo { font-size: 2.5rem; font-weight: 900; color: var(--gold); text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); letter-spacing: 2px; }
+        .points-badge { background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold); padding: 5px 15px; border-radius: 20px; color: var(--gold); font-size: 0.9rem; margin-top: 10px; display: inline-block; }
+
+        /* CONTAINER PRINCIPAL */
+        .container { max-width: 600px; margin: auto; padding: 20px; text-align: center; }
+
+        /* SECTION SERVICES (TABLEAU DE BORD) */
+        .yts-pill-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; padding: 15px; background: #111; border-radius: 25px; border: 1px solid #222; }
+        .pill-btn { background: transparent; color: var(--silver); border: 1px solid #444; padding: 10px 18px; border-radius: 50px; cursor: pointer; transition: 0.3s; font-weight: bold; font-size: 0.8rem; }
+        .pill-btn.active { background: var(--gold); color: #000; border-color: var(--gold); box-shadow: 0 0 10px var(--gold); }
+
+        /* BOUTON ACTION MAÎTRE */
+        .main-btn { background: linear-gradient(135deg, var(--gold), #f9f295, var(--gold)); color: #000; border: none; padding: 22px; border-radius: 15px; font-size: 1.1rem; font-weight: 900; width: 100%; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.3s; margin: 20px 0; text-transform: uppercase; }
+        .main-btn:active { transform: scale(0.98); }
+
+        /* SECTION RÉCOMPENSES & ROUE */
+        .rewards-box { background: #0a0a0a; border: 1px solid #333; border-radius: 20px; padding: 20px; margin-top: 30px; position: relative; overflow: hidden; }
+        .wheel-container { width: 200px; height: 200px; border: 5px solid var(--gold); border-radius: 50%; margin: 20px auto; position: relative; transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1); background: conic-gradient(#111 0deg 60deg, #222 60deg 120deg, #111 120deg 180deg, #222 180deg 240deg, #111 240deg 300deg, #222 300deg 360deg); }
+        .wheel-pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid var(--gold); z-index: 10; }
+
+        /* MODAL */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(15px); }
+        .modal-content { background: #111; border: 2px solid var(--gold); padding: 25px; border-radius: 25px; width: 85%; max-width: 400px; text-align: center; }
+        .info-card { background: #000; border-left: 4px solid var(--green); padding: 15px; text-align: left; margin: 15px 0; font-family: monospace; font-size: 0.8rem; }
+        
+        .console { background: #000; color: var(--green); font-family: monospace; font-size: 0.7rem; padding: 10px; height: 60px; overflow-y: auto; border: 1px solid #222; border-radius: 10px; margin-top: 10px; text-align: left; }
     </style>
 </head>
 <body>
 
-    <h1 class="gold">YourTvSat VIP</h1>
-    <div class="card">
-        <p>Générateur de Test Strong 8K</p>
-        <button class="btn" onclick="lancer()">🚀 GÉNÉRER MON ACCÈS</button>
-        <div id="log" class="log">> Prêt.</div>
-        <div id="res"></div>
+    <header>
+        <div class="logo">YOURTVSAT</div>
+        <div class="points-badge">💎 <span id="userPoints">150</span> HisL</div>
+    </header>
+
+    <div class="container">
+        <h3 class="gold">SÉLECTIONNEZ VOTRE SERVEUR</h3>
+        
+        <div class="yts-pill-container">
+            <button class="pill-btn active" onclick="setSrv('STRONG8K', this)">STRONG 8K</button>
+            <button class="pill-btn" onclick="setSrv('NEO4K', this)">NEO 4K</button>
+            <button class="pill-btn" onclick="setSrv('DINO', this)">DINO VIP</button>
+            <button class="pill-btn" onclick="setSrv('NEXON', this)">NEXON 4K</button>
+        </div>
+
+        <button id="launchBtn" class="main-btn" onclick="generateAccess()">🚀 GÉNÉRER MON ACCÈS VIP</button>
+        
+        <div class="console" id="log">> Système de distribution prêt...</div>
+
+        <div class="rewards-box">
+            <h3 class="gold">ROUE DES RÉCOMPENSES</h3>
+            <p style="font-size: 0.8rem; color: #888;">Gagnez des mois gratuits ou des points HisL</p>
+            <div class="wheel-pointer"></div>
+            <div id="wheel" class="wheel-container"></div>
+            <button class="pill-btn" style="border-color: var(--gold); color: var(--gold);" onclick="spinWheel()">TENTER MA CHANCE (50 HisL)</button>
+        </div>
     </div>
 
+    <div id="modal" class="modal"><div class="modal-content">
+        <h2 class="gold">🏆 ACCÈS GÉNÉRÉ</h2>
+        <div id="qrcode" style="margin-bottom: 15px;"></div>
+        <div class="info-card">
+            <p>🌐 <b>HOST:</b> <span id="resHost" style="color:var(--green)"></span></p>
+            <p>👤 <b>USER:</b> <span id="resUser" style="color:var(--green)"></span></p>
+            <p>🔑 <b>PASS:</b> <span id="resPass" style="color:var(--green)"></span></p>
+        </div>
+        <button class="main-btn" style="padding: 15px; font-size: 0.9rem;" onclick="copyAll()">📋 COPIER LES ACCÈS</button>
+        <p onclick="closeModal()" style="color:#555; cursor:pointer; margin-top:15px;">[ FERMER ]</p>
+    </div></div>
+
     <script>
-        // CONFIGURATION DIRECTE
-        const API = "https://my8k.me/api/api.php";
-        const KEY = "fbe7199e1b0ea7d1f604bb1d930afa51";
-        const DNS_SECOURS = "my8k.me:80"; // Au cas où le lien sort en "http:///"
+        // --- BASE DE DONNÉES TECHNIQUE ---
+        const CONFIG = {
+            STRONG8K: { url: "https://my8k.me/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51", sub: "1", dns: "my8k.me:80" },
+            NEO4K:    { url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d", sub: "1", dns: "neo4kpro.me:80" },
+            DINO:     { url: "https://tvpluspanel.net/api/api.php", key: "a541fa9acb43c9be2f2759ca4ac5a47c", sub: "99", dns: "line.dndnscloud.ru:80" },
+            NEXON:    { url: "http://api-connect.icu/api/dev_api.php", key: "90E655F4EC3A04B518A98B189D2E62BE4E18BDBA2E2F7114", sub: "1", dns: "nexon.me:80" }
+        };
 
-        function msg(t) { document.getElementById('log').innerText = "> " + t; }
+        let selected = "STRONG8K";
+        let points = 150;
+        const l = (m) => { document.getElementById('log').innerText = "> " + m; };
 
-        async function lancer() {
-            msg("Connexion au serveur...");
-            const target = `${API}?action=new&api_key=${KEY}&type=m3u&sub=1&pack=all`;
-            
+        function setSrv(key, btn) {
+            selected = key;
+            document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            l("Serveur basculé sur " + key);
+        }
+
+        async function generateAccess() {
+            const btn = document.getElementById('launchBtn');
+            const conf = CONFIG[selected];
+            btn.disabled = true;
+            btn.innerHTML = "⌛ CONNEXION SÉCURISÉE...";
+            l("Requête envoyée au panel...");
+
             try {
-                // Utilisation d'un proxy pour éviter les erreurs CORS
-                const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
-                const j = await r.json();
-                const d = JSON.parse(j.contents)[0] || JSON.parse(j.contents);
+                const target = `${conf.url}?action=new&api_key=${conf.key}&type=m3u&sub=${conf.sub}&pack=all&t=${Date.now()}`;
+                const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
+                const json = await res.json();
+                const data = JSON.parse(json.contents)[0] || JSON.parse(json.contents);
 
-                if (d.statut === "vrai" || d.status === "true") {
-                    let final = d.url;
-                    if(final.includes("http:///")) {
-                        final = final.replace("http:///", `http://${DNS_SECOURS}/`);
-                    }
-                    document.getElementById('res').style.display = "block";
-                    document.getElementById('res').innerText = "LIEN : " + final;
-                    msg("✅ GÉNÉRATION RÉUSSIE");
+                if (data.statut === "vrai" || data.status === "true" || data.status === true) {
+                    let fullUrl = data.url;
+                    if(fullUrl.includes("http:///")) fullUrl = fullUrl.replace("http:///", `http://${conf.dns}/`);
+                    
+                    const u = new URL(fullUrl);
+                    document.getElementById('resHost').innerText = u.protocol + "//" + u.host;
+                    document.getElementById('resUser').innerText = u.searchParams.get('username') || data.username;
+                    document.getElementById('resPass').innerText = u.searchParams.get('password') || data.password;
+                    
+                    document.getElementById('qrcode').innerHTML = "";
+                    new QRCode(document.getElementById('qrcode'), { text: fullUrl, width: 150, height: 150 });
+                    
+                    document.getElementById('modal').style.display = 'flex';
+                    l("✅ ACCÈS GÉNÉRÉ AVEC SUCCÈS");
                 } else {
-                    msg("❌ ERREUR : " + (d.message || "Plus de tickets disponibles"));
+                    l("❌ PANEL : " + (data.message || "Crédits insuffisants."));
                 }
             } catch (e) {
-                msg("🚨 ERREUR RÉSEAU (Proxy)");
+                l("🚨 ERREUR : Connexion API impossible.");
             }
+            btn.disabled = false;
+            btn.innerHTML = "🚀 OBTENIR MON ACCÈS VIP";
         }
+
+        // --- SYSTÈME DE LA ROUE ---
+        function spinWheel() {
+            if(points < 50) { alert("Pas assez de HisL !"); return; }
+            points -= 50;
+            document.getElementById('userPoints').innerText = points;
+            
+            const wheel = document.getElementById('wheel');
+            const randomDegree = Math.floor(Math.random() * 360) + 3600; // 10 tours min
+            wheel.style.transform = `rotate(${randomDegree}deg)`;
+            
+            setTimeout(() => {
+                alert("Félicitations ! Vous avez gagné un Bonus de +100 HisL !");
+                points += 100;
+                document.getElementById('userPoints').innerText = points;
+            }, 4000);
+        }
+
+        function copyAll() {
+            const txt = `Host: ${document.getElementById('resHost').innerText}\nUser: ${document.getElementById('resUser').innerText}\nPass: ${document.getElementById('resPass').innerText}`;
+            navigator.clipboard.writeText(txt);
+            alert("Accès copiés dans le presse-papier !");
+        }
+
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
     </script>
 </body>
 </html>
