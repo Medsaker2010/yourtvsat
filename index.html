@@ -1,11 +1,13 @@
 async function generateDino() {
-    // 🛡️ ALERTE DE SÉCURITÉ : Empêche la création accidentelle
-    if(!confirm("ATTENTION : Dino risque de consommer 1 crédit réel si les tickets démo sont épuisés. Continuer ?")) return;
+    // 🔴 ALERTE CRITIQUE : Empêcher la consommation accidentelle
+    const confirmation = confirm("ATTENTION : Dino risque de consommer 1 CRÉDIT RÉEL si les tickets démo sont épuisés. Voulez-vous continuer ?");
+    if(!confirmation) return;
 
     const btn = document.getElementById('btnGo');
     btn.disabled = true;
     
-    // 🎫 Utilisation STRICTE du code démo 99 pour ne PAS toucher aux crédits
+    // 🎫 sub=99 est la seule valeur de test sécurisée selon votre doc
+    // pack=30745 cible le bouquet France/4K UHD identifié plus tôt
     const params = `action=new&type=m3u&sub=99&pack=30745&api_key=${API_KEY}`;
     const target = `${API_URL}?${params}`;
 
@@ -16,18 +18,20 @@ async function generateDino() {
         if (res.statut === "vrai" || res.status === "true") {
             let finalUrl = res.url;
             
-            // 🔧 RÉPARATION DE L'URL : Remplace 'http:///' par le host valide
+            // 🔧 RÉPARATION DE L'URL : Remplacement du host vide
+            // On utilise le host 'line.dndnscloud.ru' qui a fonctionné manuellement
             if(finalUrl.includes("http:///")) {
                 finalUrl = finalUrl.replace("http:///", "http://line.dndnscloud.ru/");
             }
 
             document.getElementById('res').innerText = finalUrl;
-            // ... génération du QR Code avec finalUrl ...
+            // ... (Code pour QR Code ici)
         } else {
-            alert("Erreur : " + (res.message || "Tickets démo épuisés."));
+            // Affiche l'erreur "Not enough Demo Tickets" au lieu de créer 1 mois
+            alert("Erreur du panel : " + (res.message || "Tickets démo épuisés."));
         }
     } catch (e) { 
-        alert("Erreur de communication avec le panel.");
+        alert("Erreur de communication API.");
     } finally {
         btn.disabled = false;
     }
