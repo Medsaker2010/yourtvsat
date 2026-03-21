@@ -5,35 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YourTvSat VIP</title>
     <style>
-        :root {
-            --gold: #d4af37;
-            --silver: #c0c0c0;
-            --black: #000;
-            --dark-gray: #111;
-            --white: #fff;
-            --success: #2ecc71;
-        }
-        body { 
-            background: var(--black); 
-            color: var(--white); 
-            text-align: center; 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
-            margin: 0; 
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .gold { color: var(--gold); }
-        
-        /* Satellite Animation */
-        .sat { font-size: 50px; display: inline-block; animation: move 4s infinite ease-in-out; margin: 20px; }
+        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        .gold { color: #d4af37; }
+        .sat { font-size: 50px; margin: 20px; animation: move 4s infinite ease-in-out; display: inline-block; }
         @keyframes move { 0%, 100% { transform: translateX(-20px); } 50% { transform: translateX(20px); } }
-
-        /* Sections Management */
-        .view { display: none; padding: 20px; width: 100%; max-width: 500px; box-sizing: border-box; }
+        .view { display: none; padding: 20px; width: 100%; max-width: 450px; box-sizing: border-box; }
+        .active { display: block !important; }
+        .btn { background: #d4af37; color: #000; padding: 15px 30px; border-radius: 50px; display: inline-block; text-decoration: none; font-weight: bold; margin: 10px; border: none; cursor: pointer; }
+        .card { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #333; margin: 10px 0; }
+        .pill { background: #222; color: #fff; border: 1px solid #444; padding: 8px 15px; border-radius: 20px; cursor: pointer; margin: 5px; font-size: 0.8rem; }
+        .pill.active { background: #d4af37; color: #000; }
+        #accessModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; }
+        .modal-content { background: #111; padding: 20px; border-radius: 15px; border: 2px solid #d4af37; width: 90%; max-width: 350px; }
+        .res { background: #222; padding: 10px; border-radius: 8px; margin: 10px 0; text-align: left; font-family: monospace; font-size: 0.9rem; word-break: break-all; }
+    </style>
+</head>
+<body>
+    <div class="sat">🛰️</div>
+    <h1 class="gold">YOURTVSAT VIP</h1>
+    <div id="L" class="view">
+        <h2 style="font-size:3rem; margin:10px 0;">5.55 €</h2>
+        <p>Accès Premium Annuel</p>
+        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn">💎 ACCÈS VIP</a>
+    </div>
+    <div id="V" class="view">
+        <div class="card">
+            <h2 class="gold">ESPACE CLIENT</h2>
+            <div style="display:flex; flex-wrap:wrap; justify-content:center; margin-bottom:15px;">
+                <button class="pill active" onclick="sel('STRONG8K',this)">STRONG8K</button>
+                <button class="pill" onclick="sel('NEO4K',this)">NEO4K</button>
+                <button class="pill" onclick="sel('NEXON4K',this)">NEXON4K</button>
+                <button class="pill" onclick="sel('DINO_VIP',this)">DINO VIP</button>
+            </div>
+            <button id="go" class="btn" style="width:100%;" onclick="start()">🚀 GÉNÉRER ACCÈS</button>
+        </div>
+    </div>
+    <div id="accessModal">
+        <div class="modal-content">
+            <h2 class="gold">VOS ACCÈS</h2>
+            <div class="res"><b>Host:</b> <span id="h"></span></div>
+            <div class="res"><b>User:</b> <span id="u"></span></div>
+            <div class="res"><b>Pass:</b> <span id="p"></span></div>
+            <button class="btn" onclick="copy()" style="width:100%;">📋 COPIER</button>
+            <button onclick="closeM()" style="background:none; border:none; color:#666; cursor:pointer; margin-top:10px;">FERMER</button>
+        </div>
+    </div>
+    <script>
+        const CFG = {
+            STRONG8K: { url: "https://strong8k.me/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51", type: "STD" },
+            NEO4K:    { url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d", type: "STD" },
+            NEXON4K:  { url: "http://api-connect.icu/api/dev_api.php", key: "90E655F4EC3A04B518A98B189D2E62BE4E18BDBA2E2F7114", type: "DEV" },
+            DINO_VIP: { url: "https://tvpluspanel.net/api/api.php", key: "a541fa9acb43c9be2f2759ca4ac5a47c", type: "DINO" }
+        };
+        let srv = "STRONG8K";
+        window.onload = () => {
+            const p = new URLSearchParams(window.location.search);
+            if (p.get('admin') === 'true') document.getElementById('V').classList.add('active');
+            else document.getElementById('L').classList.add('active');
+        };
+        function sel(k, b) {
+            srv = k;
+            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            b.classList.add('active');
+        }
+        async function start() {
+            const b = document.getElementById('go');
+            b.disabled = true; b.innerText = "⏳ EN COURS...";
+            try {
+                const c = CFG[srv];
+                const d = (srv === "DINO_VIP") ? "99" : "1";
+                let u = (c.type === "STD" || c.type === "DINO") ? `${c.url}?action=new&api_key=${c.key}&type=m3u&sub=${d}&pack=all` : `${c.url}?action=user&type=create&api_key=${c.key}&package_id=1`;
+                const r = await fetch(u);
+                const j = await r.json();
+                const data = j[0];
+                if (data?.status === "true" || data?.status === true) {
+                    document.getElementById('h').innerText = data.dns || data.url?.split('/get.php')[0] || "Portail Premium";
+                    document.getElementById('u').innerText = data.username || data.code || "N/A";
+                    document.getElementById('p').innerText = data.password || "N/A";
+                    document.getElementById('accessModal').style.display = 'flex';
+                    b.innerText = "✅ SUCCÈS !";
+                } else { alert("Erreur: " + (data?.message || "Serveur indisponible")); b.innerText = "🚀 RÉESSAYER"; b.disabled = false; }
+            } catch (e) { alert("Erreur réseau ou CORS."); b.innerText = "🚀 RÉESSAYER"; b.disabled = false; }
+        }
+        function closeM() { document.getElementById('accessModal').style.display = 'none'; }
+        function copy() {
+            const t = `Host: ${document.getElementById('h').innerText}\nUser: ${document.getElementById('u').innerText}\nPass: ${document.getElementById('p').innerText}`;
+            navigator.clipboard.writeText(t).then(() => alert("Copié !"));
+        }
+    </script>
+</body>
+</html>
         .active { display: block !important; animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
