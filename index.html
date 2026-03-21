@@ -1,11 +1,11 @@
 async function generateDino() {
-    // ALERTE DE SÉCURITÉ
-    if(!confirm("ATTENTION : Dino risque de consommer 1 crédit. Continuer ?")) return;
+    // 🛡️ ALERTE DE SÉCURITÉ : Empêche la création accidentelle
+    if(!confirm("ATTENTION : Dino risque de consommer 1 crédit réel si les tickets démo sont épuisés. Continuer ?")) return;
 
     const btn = document.getElementById('btnGo');
     btn.disabled = true;
     
-    // On repasse sur sub=99 (Demo) pour ne PAS toucher aux crédits
+    // 🎫 Utilisation STRICTE du code démo 99 pour ne PAS toucher aux crédits
     const params = `action=new&type=m3u&sub=99&pack=30745&api_key=${API_KEY}`;
     const target = `${API_URL}?${params}`;
 
@@ -14,15 +14,21 @@ async function generateDino() {
         const res = Array.isArray(contents) ? contents[0] : contents;
 
         if (res.statut === "vrai" || res.status === "true") {
-            // RÉPARATION DU HOST MANQUANT
             let finalUrl = res.url;
+            
+            // 🔧 RÉPARATION DE L'URL : Remplace 'http:///' par le host valide
             if(finalUrl.includes("http:///")) {
-                // On injecte le host manquant que vous avez utilisé manuellement
                 finalUrl = finalUrl.replace("http:///", "http://line.dndnscloud.ru/");
             }
 
             document.getElementById('res').innerText = finalUrl;
-            // ... reste du code QR ...
+            // ... génération du QR Code avec finalUrl ...
+        } else {
+            alert("Erreur : " + (res.message || "Tickets démo épuisés."));
         }
-    } catch (e) { /* ... */ }
+    } catch (e) { 
+        alert("Erreur de communication avec le panel.");
+    } finally {
+        btn.disabled = false;
+    }
 }
