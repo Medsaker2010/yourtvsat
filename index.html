@@ -3,80 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>YourTvSat VIP - L'Empire</title>
+    <title>YourTvSat VIP - Luxury Empire</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root { --gold: #d4af37; --gold-light: #f9f295; --black: #050505; --dark-grey: #111; --green: #00ff00; --crypto-blue: #00a3ff; }
-        
+        :root { --gold: #d4af37; --gold-light: #f9f295; --black: #050505; --dark-grey: #111; --green: #00ff00; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--black); color: #fff; font-family: 'Poppins', 'Segoe UI', sans-serif; overflow-x: hidden; width: 100%; }
+        body { background: var(--black); color: #fff; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
 
-        /* --- LANDING / LOGIN --- */
-        #page-login { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; background: radial-gradient(circle at center, #111 0%, #050505 100%); }
-        
-        /* 🛰️ LOGO SATELLITE DORÉ LUXUEUX & ANIMÉ */
-        .satellite-logo-box { position: relative; width: 120px; height: 120px; margin-bottom: 20px; animation: gentleRotate 8s linear infinite; }
-        .satellite-logo-box img { width: 100%; height: 100%; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
-        
-        @keyframes gentleRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* --- SATELLITE DORÉ ANIMÉ (SVG INTEGRÉ) --- */
+        .sat-container { width: 100px; height: 100px; margin: 0 auto 20px auto; animation: rotateSat 10s linear infinite; filter: drop-shadow(0 0 10px var(--gold)); }
+        @keyframes rotateSat { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        .logo-giant { font-size: clamp(2.2rem, 11vw, 3.2rem); font-weight: 900; color: var(--gold); text-shadow: 0 0 25px rgba(212, 175, 55, 0.5); letter-spacing: 5px; width: 100%; margin-bottom: 5px; }
-        .subtitle { font-size: 0.75rem; color: #888; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 40px; }
+        /* --- LANDING PAGE --- */
+        #page-login { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .logo-giant { font-size: 2.5rem; font-weight: 900; color: var(--gold); letter-spacing: 4px; text-shadow: 0 0 15px rgba(212,175,55,0.3); }
         
-        /* BOUTONS CONNEXION */
-        .auth-container { display: flex; flex-direction: column; gap: 15px; width: 300px; max-width: 90%; }
-        .auth-btn { background: #fff; color: #444; padding: 14px 22px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; font-size: 1rem; box-shadow: 0 5px 20px rgba(0,0,0,0.4); transition: 0.3s; }
-        .auth-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,255,255,0.1); }
-        .auth-btn.apple { background: #fff; color: #000; }
-        .auth-btn.google { background: #fff; color: #444; }
+        .auth-box { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 12px; margin-top: 30px; }
+        .btn-auth { background: #fff; color: #000; padding: 14px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.9rem; transition: 0.3s; }
+        .btn-auth img { width: 20px; }
 
         /* --- DASHBOARD --- */
-        #page-dashboard { display: none; padding: 15px; max-width: 500px; margin: auto; animation: fadeIn 0.6s ease; padding-bottom: 80px; }
+        #page-dashboard { display: none; padding: 15px; max-width: 500px; margin: auto; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #222; margin-bottom: 15px; }
-        .promo-banner { background: linear-gradient(135deg, #111, #000); border: 2px solid var(--gold); border-radius: 20px; padding: 15px; text-align: center; margin-bottom: 20px; box-shadow: 0 0 25px rgba(212, 175, 55, 0.2); }
-        
-        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0 25px; }
-        .card { background: var(--dark-grey); border: 1px solid #333; border-radius: 15px; padding: 15px; text-align: center; transition: 0.3s; cursor: pointer; }
-        .card.active { border-color: var(--gold); background: #1a1a1a; box-shadow: 0 0 15px rgba(212, 175, 55, 0.25); }
-        .card h4 { font-size: 0.85rem; color: var(--gold); margin-bottom: 5px; }
-        .card p { font-size: 0.75rem; color: #aaa; }
-        .card.disabled { opacity: 0.4; filter: grayscale(1); cursor: not-allowed; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #222; margin-bottom: 20px; }
+        .promo-card { background: linear-gradient(135deg, #111, #000); border: 2px solid var(--gold); border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 20px; position: relative; overflow: hidden; }
+        .price-text { font-size: 2.8rem; font-weight: 900; color: #fff; margin: 5px 0; }
 
-        /* BOUTON ACTION MAÎTRE */
-        .main-btn { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #000; border: none; padding: 18px; border-radius: 50px; font-weight: 900; font-size: 1.1rem; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 15px; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4); transition: 0.3s; }
-        .main-btn:active { transform: scale(0.98); }
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px; }
+        .card { background: var(--dark-grey); border: 1px solid #333; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; }
+        .card.active { border-color: var(--gold); box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+        .card h4 { font-size: 0.8rem; color: var(--gold); }
 
-        /* --- MODAL CRYPTO PAYMENT & RÉSULTAT --- */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); align-items: center; justify-content: center; z-index: 1000; padding: 20px; backdrop-filter: blur(15px); }
+        .main-btn { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #000; border: none; padding: 18px; border-radius: 50px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; box-shadow: 0 5px 15px rgba(212,175,55,0.3); }
+
+        /* --- PASSERELLE CRYPTO --- */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
         .modal-content { background: #111; border: 2px solid var(--gold); padding: 25px; border-radius: 25px; width: 100%; max-width: 380px; text-align: center; }
-        
-        .crypto-option { background: rgba(0, 163, 255, 0.05); border: 1px solid #333; padding: 15px; border-radius: 12px; text-align: left; margin: 15px 0; font-family: monospace; font-size: 0.8rem; overflow-wrap: break-word; color: #eee; cursor: pointer; transition: 0.2s; }
-        .crypto-option:hover { border-color: var(--crypto-blue); box-shadow: 0 0 10px rgba(0, 163, 255, 0.1); }
-        .crypto-label { color: var(--crypto-blue); font-weight: bold; margin-bottom: 5px; }
-        
-        .confirm-btn { background: var(--gold); border: none; padding: 14px; width: 100%; border-radius: 50px; font-weight: 900; color: #000; cursor: pointer; margin-top: 10px; }
-        .res-box { background: #000; padding: 12px; border-radius: 10px; text-align: left; border-left: 4px solid var(--green); margin: 15px 0; font-family: monospace; font-size: 0.75rem; overflow-wrap: break-word; color: var(--green); }
+        .crypto-item { background: #000; border: 1px solid #333; padding: 12px; border-radius: 10px; margin: 10px 0; text-align: left; font-family: monospace; font-size: 0.75rem; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <section id="page-login">
-        <div class="satellite-logo-box">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Gold_satellite.png" alt="YOURTVSAT LUXURY SATELLITE">
+        <div class="sat-container">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L14.5 9H21L15.5 13L17.5 20L12 16L6.5 20L8.5 13L3 9H9.5L12 2Z" fill="#d4af37" />
+                <circle cx="12" cy="12" r="3" fill="#000" />
+                <path d="M2 12H5M19 12H22M12 2V5M12 19V22" stroke="#d4af37" stroke-width="2" stroke-linecap="round"/>
+            </svg>
         </div>
         
         <div class="logo-giant">YOURTVSAT</div>
-        <p class="subtitle">PREMIUM STREAMING EXPERIENCE</p>
-        
-        <div class="auth-container">
-            <button class="auth-btn apple" onclick="login()">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" width="20" alt="Apple">
+        <p style="color: #666; letter-spacing: 2px; font-size: 0.7rem; margin-top: 5px;">L'EMPIRE DU STREAMING</p>
+
+        <div class="auth-box">
+            <button class="btn-auth" onclick="login()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple">
                 Continuer avec Apple
             </button>
-            <button class="auth-btn google" onclick="login()">
-                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="22" alt="Google">
+            <button class="btn-auth" onclick="login()">
+                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google">
                 Continuer avec Google
             </button>
         </div>
@@ -84,59 +71,38 @@
 
     <section id="page-dashboard">
         <header>
-            <span style="color: var(--gold); font-weight: bold; font-size: 0.95rem; letter-spacing: 1px;">YOURTVSAT VIP</span>
+            <span style="color: var(--gold); font-weight: bold;">YOURTVSAT VIP</span>
             <span style="color: var(--gold); font-size: 0.8rem;">💎 150 HisL</span>
         </header>
 
-        <div class="promo-banner">
-            <h2 style="color: var(--gold); font-size: 1rem;">TEST SERVEUR À VIE</h2>
-            <div style="font-size: 2.5rem; font-weight: 900; margin: 5px 0; color: #fff;">5.55<span style="font-size: 1rem; color: var(--gold);">€</span></div>
-            <p style="color: var(--green); font-weight: bold; font-size: 0.7rem; text-transform: uppercase;">⚡ ACTIVATION CRYPTO INSTANTANÉE ⚡</p>
+        <div class="promo-card">
+            <h2 style="color: var(--gold); font-size: 0.9rem;">TEST SERVEUR À VIE</h2>
+            <div class="price-text">5.55<span>€</span></div>
+            <p style="color: var(--green); font-weight: bold; font-size: 0.7rem;">⚡ ACTIVATION CRYPTO IMMÉDIATE ⚡</p>
         </div>
 
-        <h3 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--gold); letter-spacing: 1px;">📡 SERVEURS ÉLITE</h3>
         <div class="product-grid" id="srv-grid">
             <div class="card active" onclick="sel('STRONG 8K')"><h4>STRONG 8K</h4><p>65€/an</p></div>
             <div class="card" onclick="sel('NEO 4K')"><h4>NEO 4K</h4><p>55€/an</p></div>
-            <div class="card" onclick="sel('DINO VIP')"><h4>DINO VIP</h4><p>45€/an</p></div>
-            <div class="card" onclick="sel('NEXON 4K')"><h4>NEXON 4K</h4><p>50€/an</p></div>
         </div>
 
-        <h3 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--gold); letter-spacing: 1px;">📺 LECTEURS</h3>
-        <div class="product-grid">
-            <div class="card"><h4>SMARTERS</h4><p>Inclus</p></div>
-            <div class="card"><h4>IBO PLAYER</h4><p>9.99€</p></div>
-            <div class="card disabled"><h4>iPLAY</h4><p>Indispo.</p></div>
-            <div class="card disabled"><h4>T-REX</h4><p>Indispo.</p></div>
-        </div>
-
-        <button class="main-btn" onclick="openPaymentModal()">🚀 OBTENIR MON ACCÈS : <span id="curSrv">STRONG 8K</span></button>
+        <button class="main-btn" onclick="openCrypto()">💰 PAYER EN CRYPTO (GÉANT)</button>
     </section>
 
-    <div id="paymentModal" class="modal"><div class="modal-content">
-        <h3 style="color:var(--gold); margin-bottom: 15px;">PAIEMENT SÉCURISÉ CRYPTO</h3>
-        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 20px;">Utilisation de la passerelle Open Source pour les Géants</p>
+    <div id="cryptoModal" class="modal"><div class="modal-content">
+        <h3 style="color: var(--gold)">PAIEMENT CRYPTO</h3>
+        <p style="font-size: 0.7rem; color: #888; margin: 10px 0;">Sélectionnez votre monnaie (Gateway OpenSource)</p>
         
-        <div class="crypto-option" onclick="processPayment('BTC')">
-            <div class="crypto-label">BITCOIN (BTC)</div>
-            🌐 ADRESSE: 1BoatSLRsq... (Open Gateway)
+        <div class="crypto-item" onclick="confirmPay('BTC')">
+            <span style="color: #f7931a">BITCOIN (BTC)</span><br>
+            1BoatSLRsq... (Copier l'adresse)
         </div>
-        
-        <div class="crypto-option" onclick="processPayment('USDT')">
-            <div class="crypto-label">USDT (TRC20)</div>
-            🌐 ADRESSE: T9yD14Nj9y... (Open Gateway)
+        <div class="crypto-item" onclick="confirmPay('USDT')">
+            <span style="color: #26a17b">USDT (TRC20)</span><br>
+            T9yD14Nj9y... (Copier l'adresse)
         </div>
 
-        <button class="select-btn" style="background:transparent; border:1px solid #333; color:#555; width:100%" onclick="closePaymentModal()">[ FERMER ]</button>
-    </div></div>
-
-    <div id="resultModal" class="modal"><div class="modal-content">
-        <h3 style="color:var(--gold)">ACCÈS GÉNÉRÉ</h3>
-        <div id="qrcode" style="display:flex; justify-content:center; margin:20px 0;"></div>
-        <div class="res-box" id="resText">
-            </div>
-        <button class="main-btn" onclick="copyAccess()">📋 COPIER TOUT</button>
-        <p onclick="closeResultModal()" style="color:#666; cursor:pointer; margin-top:20px; font-size: 0.8rem;">[ FERMER ]</p>
+        <button class="main-btn" style="padding: 12px; font-size: 0.8rem;" onclick="closeCrypto()">ANNULER</button>
     </div></div>
 
     <script>
@@ -146,47 +112,17 @@
         }
 
         function sel(name) {
-            document.getElementById('curSrv').innerText = name;
-            document.querySelectorAll('#srv-grid .card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
             event.currentTarget.classList.add('active');
         }
 
-        /* --- PASSERELLE DE PAIEMENT CRYPTO --- */
-        function openPaymentModal() {
-            document.getElementById('paymentModal').style.display = 'flex';
-        }
-        function closePaymentModal() {
-            document.getElementById('paymentModal').style.display = 'none';
-        }
+        function openCrypto() { document.getElementById('cryptoModal').style.display = 'flex'; }
+        function closeCrypto() { document.getElementById('cryptoModal').style.display = 'none'; }
 
-        function processPayment(coin) {
-            alert(`Paiement ${coin} initié via la passerelle de paiement Open Source sécurisée pour YourTvSat.`);
-            closePaymentModal();
-            genAccess(); // Génération après paiement (simulation)
-        }
-
-        /* --- GÉNÉRATION ACCÈS --- */
-        function genAccess() {
-            const host = "http://flux-premium.me:80";
-            const user = "vip_" + Math.floor(Math.random()*9999);
-            const pass = "lux_pass";
-            
-            document.getElementById('resText').innerHTML = `🌐 <b>HOST:</b> ${host}<br>👤 <b>USER:</b> ${user}<br>🔑 <b>PASS:</b> ${pass}`;
-            document.getElementById('qrcode').innerHTML = "";
-            new QRCode(document.getElementById('qrcode'), { text: `${host}/get.php?username=${user}&password=${pass}`, width: 130, height: 130 });
-            
-            document.getElementById('resultModal').style.display = 'flex';
-        }
-
-        function closeResultModal() {
-            document.getElementById('resultModal').style.display = 'none';
-        }
-
-        function copyAccess() {
-            const h = document.getElementById('resText').innerText.replace(/🌐 HOST: |👤 USER: |🔑 PASS: /g, "").split("\n");
-            navigator.clipboard.writeText(`Host: ${h[0]}\nUser: ${h[1]}\nPass: ${h[2]}`);
-            alert("Accès copiés dans le presse-papier !");
+        function confirmPay(coin) {
+            alert("Attente de confirmation sur la Blockchain " + coin + "...");
+            closeCrypto();
         }
     </script>
 </body>
-                                            </html>
+</html>
