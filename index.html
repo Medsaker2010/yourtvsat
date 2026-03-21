@@ -36,7 +36,7 @@
         }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
         .modal-content { background: #111; border: 2px solid #d4af37; border-radius: 20px; padding: 30px; width: 85%; max-width: 400px; }
-        .result-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border-left: 5px solid #00ff00; text-align: left; margin: 20px 0; font-family: monospace; font-size: 0.9rem; }
+        .result-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border-left: 5px solid #00ff00; text-align: left; margin: 20px 0; font-family: monospace; font-size: 0.9rem; word-break: break-all; }
     </style>
 </head>
 <body>
@@ -52,7 +52,7 @@
     </div>
 
     <div id="p-vip" class="page">
-        <h3 class="gold">CHOISISSEZ VOTRE SERVEUR</h3>
+        <h3 class="gold">1. CHOISISSEZ VOTRE SERVEUR</h3>
         <div class="pill-container" id="pillContainer"></div>
         <button id="genBtn" class="btn-generate" onclick="startGeneration()">🚀 GÉNÉRER MON TEST 24H</button>
     </div>
@@ -72,28 +72,26 @@
 
     <script>
         const API_CONFIG = {
-            STRONG8K: { name: "STRONG 8K", url: "https://my8k.me/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51", type: "STD", pack: "all" },
+            STRONG8K: { 
+                name: "STRONG 8K", 
+                url: "http://pro.business-cdn-8kpro.ru/api/api.php", 
+                key: "fbe7199e1b0ea7d1f604bb1d930afa51", 
+                type: "STD", 
+                pack: "all" 
+            },
             NEO4K: { name: "NEO 4K", url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d", type: "STD", pack: "all" },
-            NEXON4K: { name: "NEXON 4K", url: "http://api-connect.icu/api/dev_api.php", key: "90E655F4EC3A04B518A98B189D2E62BE4E18BDBA2E2F7114", type: "DEV", pack: "1" },
-            EAGLE4K: { name: "EAGLE 4K", url: "http://api-elg-26.com/api/dev_api.php", key: "A0F121281A26DB634862390DC531DA6D204DD91E74516071", type: "DEV", pack: "1" },
-            FUEGO: { name: "FUEGO TV", url: "http://api-cdn-fug.com/api/dev_api.php", key: "27F6CD585F600B5E8F35C88F5D19016C9101CD354BD69BE8", type: "DEV", pack: "1" },
-            DINO_VIP: { name: "DINO VIP", url: "https://tvpluspanel.net/api/api.php", key: "a541fa9acb43c9be2f2759ca4ac5a47c", type: "DINO", pack: "all" }
+            DINO_VIP: { name: "DINO VIP", url: "https://tvpluspanel.net/api/api.php", key: "a541fa9acb43c9be2f2759ca4ac5a47c", type: "DINO", pack: "all" },
+            EAGLE4K: { name: "EAGLE 4K", url: "http://api-elg-26.com/api/dev_api.php", key: "A0F121281A26DB634862390DC531DA6D204DD91E74516071", type: "DEV", pack: "1" }
         };
 
         let currentServer = "STRONG8K";
 
-        // GESTION DU FILTRAGE DES PAGES PAR URL
         (function init() {
             const url = new URLSearchParams(window.location.search);
-            // Si l'URL contient admin=true, on cache la vente et on montre le panel
             if (url.get('admin') === 'true' || url.get('success') === 'true') {
                 document.getElementById('p-vente').classList.remove('active');
                 document.getElementById('p-vip').classList.add('active');
                 setupPills();
-            } else {
-                // Sinon on force l'affichage de la page de vente
-                document.getElementById('p-vente').classList.add('active');
-                document.getElementById('p-vip').classList.remove('active');
             }
         })();
 
@@ -116,32 +114,40 @@
         async function startGeneration() {
             const btn = document.getElementById('genBtn');
             btn.disabled = true;
-            btn.innerText = "⌛ GÉNÉRATION...";
+            btn.innerText = "⌛ GÉNÉRATION EN COURS...";
+
             try {
                 const conf = API_CONFIG[currentServer];
                 const sub = (currentServer === "DINO_VIP") ? "99" : "1";
+                
                 let apiUrl = (conf.type === "STD" || conf.type === "DINO") 
                     ? `${conf.url}?action=new&api_key=${conf.key}&type=m3u&sub=${sub}&pack=${conf.pack}`
                     : `${conf.url}?action=user&type=create&api_key=${conf.key}&package_id=${conf.pack}`;
 
                 const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
+
                 const response = await fetch(proxyUrl);
                 const result = await response.json();
-                const data = JSON.parse(result.contents)[0];
+                
+                // On essaie de lire les données renvoyées par le serveur
+                const rawData = JSON.parse(result.contents);
+                const data = rawData[0];
 
-                if (data?.status == "true" || data?.status == true) {
-                    document.getElementById('outHost').innerText = data.dns || data.url?.split('/get.php')[0] || "Portail Premium";
+                if (data && (data.status === "true" || data.status === true)) {
+                    document.getElementById('outHost').innerText = data.dns || "http://pro.business-cdn-8kpro.ru";
                     document.getElementById('outUser').innerText = data.username || data.code || "N/A";
                     document.getElementById('outPass').innerText = data.password || "N/A";
                     document.getElementById('resultModal').style.display = 'flex';
                     btn.innerText = "✅ GÉNÉRÉ !";
                 } else {
-                    alert("Serveur saturé. Essayez un autre serveur (Dino ou Eagle).");
+                    // On affiche le message d'erreur réel du panel pour comprendre
+                    const msg = data?.message || "Erreur de configuration API.";
+                    alert("Réponse Panel : " + msg);
                     btn.innerText = "❌ RÉESSAYER";
                     btn.disabled = false;
                 }
             } catch (e) {
-                alert("Erreur de connexion. Réessayez.");
+                alert("Erreur technique de connexion au panel.");
                 btn.disabled = false;
                 btn.innerText = "❌ RÉESSAYER";
             }
@@ -151,7 +157,7 @@
         function copyResult() {
             const text = `Host: ${document.getElementById('outHost').innerText}\nUser: ${document.getElementById('outUser').innerText}\nPass: ${document.getElementById('outPass').innerText}`;
             navigator.clipboard.writeText(text);
-            alert("Accès copiés !");
+            alert("Identifiants copiés !");
         }
     </script>
 </body>
