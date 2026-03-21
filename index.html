@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP - Test Mode v2.8</title>
+    <title>YourTvSat VIP - Deep Config v3.0</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         body { background: #050505; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; text-align: center; margin: 0; }
@@ -12,16 +12,14 @@
         .pill-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
         .pill { background: transparent; color: #d4af37; border: 1px solid #d4af37; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.75rem; transition: 0.3s; }
         .pill.active { background: #d4af37; color: #000; font-weight: bold; }
-        .console { background: #000; border: 1px solid #333; color: #00ff00; font-family: monospace; font-size: 0.7rem; padding: 12px; text-align: left; border-radius: 10px; margin: 15px 0; height: 160px; overflow-y: auto; border-left: 3px solid #d4af37; }
-        .btn-main { background: linear-gradient(135deg, #d4af37, #f9f295); color: #000; border: none; padding: 18px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; }
-        .modal-content { background: #111; border: 2px solid #d4af37; padding: 30px; border-radius: 20px; width: 85%; max-width: 350px; }
-        #qrcode { background: #fff; padding: 10px; border-radius: 10px; display: inline-block; margin: 15px 0; }
+        .console { background: #000; border: 1px solid #333; color: #00ff00; font-family: monospace; font-size: 0.7rem; padding: 12px; text-align: left; border-radius: 10px; margin: 15px 0; height: 180px; overflow-y: auto; border-left: 3px solid #d4af37; }
+        .btn-main { background: linear-gradient(135deg, #d4af37, #f9f295); color: #000; border: none; padding: 15px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; margin-bottom: 10px; }
+        .btn-util { background: #1a1a1a; color: #fff; border: 1px solid #444; padding: 8px; border-radius: 8px; font-size: 0.65rem; width: 48%; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <h2 class="gold">YOURTVSAT - FORCE TEST v2.8</h2>
+    <h2 class="gold">YOURTVSAT - API ANALYZER v3.0</h2>
 
     <div class="card">
         <div class="pill-container">
@@ -31,24 +29,22 @@
             <button class="pill" onclick="sel('FUEGO', this)">FUEGO TV</button>
         </div>
 
-        <button class="btn-main" id="go" onclick="startScan()">⚡ GÉNÉRER TEST (24H)</button>
-        <div class="console" id="log">Initialisation v2.8...</div>
+        <button class="btn-main" onclick="startTest()">⚡ GÉNÉRER TEST (24H)</button>
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <button class="btn-util" onclick="checkCredits()">💰 CRÉDITS</button>
+            <button class="btn-util" onclick="scanBouquets()" style="border-color: #d4af37; color: #d4af37;">🔍 SCAN BOUQUETS</button>
+        </div>
+        
+        <div class="console" id="log">Prêt pour l'identification...</div>
     </div>
-
-    <div id="m" class="modal"><div class="modal-content">
-        <h2 class="gold">🎁 TEST GÉNÉRÉ !</h2>
-        <div id="res" style="background:#1a1a1a; padding:15px; border-radius:10px; text-align:left; font-family:monospace; color:#00ff00; font-size:0.8rem;"></div>
-        <div id="qrcode"></div>
-        <button onclick="copyA()" style="background:#d4af37; border:none; padding:12px; width:100%; border-radius:8px; font-weight:bold; cursor:pointer;">📋 COPIER ACCÈS</button>
-        <p onclick="document.getElementById('m').style.display='none'" style="color:#666; cursor:pointer; margin-top:15px;">Fermer</p>
-    </div></div>
 
     <script>
         const CONFIG = {
-            DINO_VIP: { url: "https://tvpluspanel.net/api/api.php", key: "a541fa9acb43c9be2f2759ca4ac5a47c", type: "DINO", p: "all", host: "http://tvpluspanel.net" },
-            NEO4K:    { url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d", type: "STD", p: "all", host: "http://neo4kpro.me" },
-            STRONG8K: { url: "https://my8k.me/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51", type: "STD", p: "all", host: "http://pro.business-cdn-8kpro.ru" },
-            FUEGO:    { url: "http://api-cdn-fug.com/api/dev_api.php", key: "27F6CD585F600B5E8F35C88F5D19016C9101CD354BD69BE8", type: "DEV", p: "1", host: "http://fuego-tv.xyz" }
+            DINO_VIP: { url: "https://tvpluspanel.net/api/api.php", key: "a541fa9acb43c9be2f2759ca4ac5a47c", type: "DINO" },
+            NEO4K:    { url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d", type: "STD" },
+            STRONG8K: { url: "https://my8k.me/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51", type: "STD" },
+            FUEGO:    { url: "http://api-cdn-fug.com/api/dev_api.php", key: "27F6CD585F600B5E8F35C88F5D19016C9101CD354BD69BE8", type: "DEV" }
         };
 
         let selected = "DINO_VIP";
@@ -67,63 +63,46 @@
             }
         }
 
-        async function attemptGeneration(srvKey) {
-            const c = CONFIG[srvKey];
-            l(`Tentative forcée sur ${srvKey}...`);
-            
-            // Stratégie 1: Trial classique
-            let p1 = (c.type === "STD" || c.type === "DINO") 
-                ? `action=trial&type=m3u&pack=${c.p}&api_key=${c.key}` 
-                : `action=user&type=create&package_id=test&api_key=${c.key}`;
+        async function checkCredits() {
+            l(`Vérification crédits...`);
+            const c = CONFIG[selected];
+            const res = await apiCall(`${c.url}?action=me&api_key=${c.key}`);
+            l(`Résultat: ${res.credits || res.message || JSON.stringify(res)}`);
+        }
 
-            let res = await apiCall(c.url + "?" + p1);
-            if (Array.isArray(res)) res = res[0];
+        async function scanBouquets() {
+            l(`🔍 Récupération des bouquets pour ${selected}...`);
+            const c = CONFIG[selected];
+            try {
+                // On teste les deux actions possibles selon le type de panel
+                const action = (c.type === "DEV") ? "action=package" : "action=packages";
+                const res = await apiCall(`${c.url}?${action}&api_key=${c.key}`);
+                
+                if (Array.isArray(res)) {
+                    l(`Trouvé ${res.length} bouquets :`);
+                    res.slice(0, 10).forEach(p => {
+                        l(`- [ID: ${p.id || p.package_id}] ${p.name || p.package_name}`);
+                    });
+                    l("...");
+                } else if (res.packages) {
+                    l(`Bouquets: ${JSON.stringify(res.packages).substring(0,100)}`);
+                } else {
+                    l(`Réponse brute: ${JSON.stringify(res).substring(0,80)}`);
+                }
+            } catch(e) { l("🚨 Erreur lors du scan."); }
+        }
 
-            if (res.username || res.status === "true" || res.status === true) return showS(res, c);
-
-            // Stratégie 2: Force New 24h (si Trial échoue)
-            l(`Relance stratégie Force...`);
-            let p2 = (c.type === "STD" || c.type === "DINO")
-                ? `action=new&type=m3u&sub=0&pack=${c.p}&api_key=${c.key}`
+        async function startTest() {
+            l(`Tentative Test sur ${selected}...`);
+            const c = CONFIG[selected];
+            // Si on ne connaît pas l'ID, on tente par défaut
+            const p = (c.type === "STD" || c.type === "DINO") 
+                ? `action=trial&type=m3u&api_key=${c.key}` 
                 : `action=user&type=create&package_id=1&api_key=${c.key}`;
             
-            let res2 = await apiCall(c.url + "?" + p2);
-            if (Array.isArray(res2)) res2 = res2[0];
-            
-            if (res2.username || res2.status === "true" || res2.status === true) return showS(res2, c);
-
-            l(`❌ Échec: ${res2.message || "Serveur bloqué"}`);
-            return false;
+            const res = await apiCall(c.url + "?" + p);
+            l(`Réponse: ${JSON.stringify(res).substring(0,60)}`);
         }
-
-        async function startScan() {
-            const b = document.getElementById('go'); b.disabled = true;
-            const success = await attemptGeneration(selected);
-            if (!success) {
-                l("Scan automatique des secours...");
-                for (let key in CONFIG) {
-                    if (key !== selected) {
-                        if (await attemptGeneration(key)) break;
-                    }
-                }
-            }
-            b.disabled = false;
-        }
-
-        function showS(res, c) {
-            const u = res.username || res.code;
-            const p = res.password || 'N/A';
-            const h = res.dns || c.host;
-            document.getElementById('res').innerText = `H: ${h}\nU: ${u}\nP: ${p}`;
-            const link = `${h}/get.php?username=${u}&password=${p}&type=m3u`;
-            document.getElementById("qrcode").innerHTML = "";
-            new QRCode(document.getElementById("qrcode"), { text: link, width: 120, height: 120 });
-            document.getElementById('m').style.display = 'flex';
-            l("✅ TEST GÉNÉRÉ !");
-            return true;
-        }
-
-        function copyA() { navigator.clipboard.writeText(document.getElementById('res').innerText); alert("Copié !"); }
     </script>
 </body>
 </html>
