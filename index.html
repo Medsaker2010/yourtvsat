@@ -19,26 +19,19 @@
             100% { transform: translateX(-120px) scale(1.1); z-index: 15; }
         }
 
-        /* GESTION DES PAGES */
-        .view { display: none; padding: 20px; }
-        .active-view { display: block !important; }
-
-        /* PAGE VENTE */
-        .big-price { font-size: 5rem; font-weight: 900; margin: 10px 0; color: #d4af37; text-shadow: 0 0 20px rgba(212,175,55,0.4); }
+        /* BOUTON LUXE */
         .btn-stripe { 
             background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37); 
             color: #000; padding: 20px 40px; border-radius: 50px; font-weight: 900; font-size: 1.2rem; 
-            text-decoration: none; display: inline-block; position: relative; overflow: hidden;
-            box-shadow: 0 10px 30px rgba(212,175,55,0.3); border: none;
+            text-decoration: none; display: inline-block; box-shadow: 0 10px 30px rgba(212,175,55,0.3); border: none;
         }
 
-        /* PAGE VIP (PANEL) */
+        /* PANEL VIP CARDS */
         .vip-card { 
             background: #111; border: 1px solid #222; border-left: 5px solid #d4af37; 
             padding: 20px; border-radius: 12px; margin: 15px auto; max-width: 400px; text-align: left; 
         }
-        .status-dot { height: 10px; width: 10px; background-color: #00ff00; border-radius: 50%; display: inline-block; margin-right: 10px; box-shadow: 0 0 8px #00ff00; }
-        .btn-gen { background: #222; color: #d4af37; border: 1px solid #d4af37; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        .btn-gen { background: #222; color: #d4af37; border: 1px solid #d4af37; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -48,40 +41,33 @@
         <h1 class="brand gold">YOURTVSAT<br><span style="font-size:0.9rem; letter-spacing:3px; color:#fff;">VIP ELITE</span></h1>
     </div>
 
-    <div id="view-vente" class="view active-view">
+    <div id="view-vente" style="display: block; padding: 20px;">
         <p style="color: red; font-weight: bold;">OFFRE EXCLUSIVE</p>
-        <div class="big-price">5.55 €</div>
+        <div style="font-size: 5rem; font-weight: 900; color: #d4af37;">5.55 €</div>
         <p style="color:#888; margin-bottom:30px;">PASS ANNUEL ILLIMITÉ</p>
         <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-stripe">💎 DEVENIR MEMBRE VIP</a>
     </div>
 
-    <div id="view-vip" class="view">
+    <div id="view-vip" style="display: none; padding: 20px;">
         <h2 class="gold">ACCÈS CLIENT PRIVÉ</h2>
+        <div class="vip-card">🚀 <b>IBO PLAYER</b> : Activation active</div>
+        <div class="vip-card">🚀 <b>SMARTONE IPTV</b> : Activation active</div>
         
-        <div class="vip-card">
-            <span class="status-dot"></span><b>IBO PLAYER</b>
-            <p style="font-size: 0.8rem; color: #888; margin: 5px 0 0 20px;">Statut: Activation disponible</p>
-        </div>
-
-        <div class="vip-card">
-            <span class="status-dot"></span><b>SMARTONE IPTV</b>
-            <p style="font-size: 0.8rem; color: #888; margin: 5px 0 0 20px;">Statut: Activation disponible</p>
-        </div>
-
-        <h3 style="margin-top:40px;">GÉNÉRATEUR DE TESTS 24H</h3>
-        <div style="max-width:400px; margin:auto;">
-            <button class="btn-gen" onclick="alert('Génération STRONG 8K...')">OBTENIR TEST STRONG 8K</button>
-            <button class="btn-gen" onclick="alert('Génération NEO 4K...')">OBTENIR TEST NEO 4K</button>
-        </div>
+        <h3 style="margin-top:40px;">GÉNÉRATEUR DE TESTS</h3>
+        <button class="btn-gen">OBTENIR TEST STRONG 8K</button>
+        <button class="btn-gen">OBTENIR TEST NEO 4K</button>
     </div>
 
     <script>
-        // NAVIGATION : Si l'URL contient ?admin=true, on bascule
+        // NAVIGATION STRICTE
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
+            const vente = document.getElementById('view-vente');
+            const vip = document.getElementById('view-vip');
+
             if (urlParams.get('admin') === 'true' || urlParams.get('success') === 'true') {
-                document.getElementById('view-vente').classList.remove('active-view');
-                document.getElementById('view-vip').classList.add('active-view');
+                vente.style.display = 'none';
+                vip.style.display = 'block';
             }
         })();
     </script>
