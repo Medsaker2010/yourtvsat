@@ -3,130 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat - Panel VIP Champion</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>YourTvSat VIP - Stable</title>
     <style>
-        /* --- TON DESIGN LUXUEUX --- */
-        body { background-color: #050505; color: #ffffff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        h1 { color: #d4af37; text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
-        .yts-pill-container { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 20px; background: rgba(26, 26, 26, 0.8); border-radius: 30px; border: 1px solid #333; max-width: 600px; }
-        .pill-btn { background: transparent; color: #d4af37; border: 2px solid #d4af37; padding: 10px 20px; border-radius: 50px; cursor: pointer; transition: 0.3s; font-weight: 700; }
-        .pill-btn.active { background: #008000; color: #fff; border-color: #00ff00; box-shadow: 0 0 15px rgba(0, 128, 0, 0.6); transform: scale(1.05); }
-        .yts-rect-btn { background: linear-gradient(135deg, #d4af37 0%, #f9f295 50%, #d4af37 100%); color: #000; border: none; padding: 20px 40px; border-radius: 12px; font-size: 1.2rem; font-weight: 900; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: 0.3s; margin-top: 40px; width: 100%; max-width: 450px; }
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .modal-content { background: #111; border: 2px solid #d4af37; width: 90%; max-width: 400px; border-radius: 20px; padding: 25px; text-align: center; }
-        .access-box { background: #000; padding: 15px; border-radius: 10px; border-left: 5px solid #00ff00; text-align: left; margin: 20px 0; font-family: monospace; font-size: 0.85rem; }
-        #qrcode { background: #fff; padding: 10px; display: inline-block; border-radius: 10px; margin-bottom: 15px; }
+        body { background: #050505; color: #fff; font-family: sans-serif; text-align: center; padding: 20px; }
+        .gold { color: #d4af37; }
+        .card { border: 2px solid #d4af37; border-radius: 20px; padding: 20px; max-width: 400px; margin: auto; background: #0a0a0a; }
+        .btn { background: linear-gradient(135deg, #d4af37, #f9f295); color: #000; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .log { background: #000; color: #00ff00; font-family: monospace; font-size: 0.7rem; padding: 10px; margin-top: 15px; text-align: left; border-radius: 8px; min-height: 50px; }
+        #res { display: none; margin-top: 20px; padding: 15px; border: 1px dashed #00ff00; word-break: break-all; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <h1>YourTvSat VIP Panel</h1>
-
-    <div class="yts-pill-container">
-        <button class="pill-btn active" onclick="selectServer('STRONG8K', this)">STRONG 8K</button>
-        <button class="pill-btn" onclick="selectServer('NEO4K', this)">NEO 4K</button>
-        <button class="pill-btn" onclick="selectServer('NEXON4K', this)">NEXON 4K</button>
-        <button class="pill-btn" onclick="selectServer('DINO_VIP', this)">DINO VIP</button>
-    </div>
-
-    <button id="mainLaunchBtn" class="yts-rect-btn" onclick="startProcess()">
-        🚀 OBTENIR MON ACCÈS GRATUIT
-    </button>
-
-    <div id="accessModal" class="modal-overlay">
-        <div class="modal-content">
-            <h2 style="color:#d4af37">🏆 ACCÈS GÉNÉRÉ</h2>
-            <div id="qrcode"></div>
-            <div class="access-box">
-                <p>🌐 <b>Host:</b> <span id="resHost" style="color:#00ff00"></span></p>
-                <p>👤 <b>User:</b> <span id="resUser" style="color:#00ff00"></span></p>
-                <p>🔑 <b>Pass:</b> <span id="resPass" style="color:#00ff00"></span></p>
-            </div>
-            <button onclick="copyAccess()" style="background:#d4af37; border:none; padding:15px; border-radius:10px; cursor:pointer; width:100%; font-weight:bold; color:#000;">📋 COPIER LES ACCÈS</button>
-            <p onclick="closeModal()" style="color:#666; cursor:pointer; margin-top:20px;">[ FERMER ]</p>
-        </div>
+    <h1 class="gold">YourTvSat VIP</h1>
+    <div class="card">
+        <p>Générateur de Test Strong 8K</p>
+        <button class="btn" onclick="lancer()">🚀 GÉNÉRER MON ACCÈS</button>
+        <div id="log" class="log">> Prêt.</div>
+        <div id="res"></div>
     </div>
 
     <script>
-        const PROXY = "https://api.allorigins.win/get?url=";
-        
-        // --- CONFIGURATION SÉCURISÉE ---
-        const CONFIG_GLOBAL = {
-            STRONG8K: { url: "https://my8k.me/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51", sub: "99", dns: "strong-dns.com:80" },
-            NEO4K:    { url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d", sub: "99", dns: "neo-dns.com:80" },
-            NEXON4K:  { url: "http://api-connect.icu/api/dev_api.php", key: "90E655F4EC3A04B518A98B189D2E62BE4E18BDBA2E2F7114", sub: "1", dns: "nexon.me:80" },
-            DINO_VIP: { url: "https://tvpluspanel.net/api/api.php", key: "a541fa9acb43c9be2f2759ca4ac5a47c", sub: "99", dns: "line.dndnscloud.ru:80" }
-        };
+        // CONFIGURATION DIRECTE
+        const API = "https://my8k.me/api/api.php";
+        const KEY = "fbe7199e1b0ea7d1f604bb1d930afa51";
+        const DNS_SECOURS = "my8k.me:80"; // Au cas où le lien sort en "http:///"
 
-        let currentServer = "STRONG8K";
+        function msg(t) { document.getElementById('log').innerText = "> " + t; }
 
-        function selectServer(key, btn) {
-            currentServer = key;
-            document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        async function startProcess() {
-            const btn = document.getElementById('mainLaunchBtn');
-            const conf = CONFIG_GLOBAL[currentServer];
+        async function lancer() {
+            msg("Connexion au serveur...");
+            const target = `${API}?action=new&api_key=${KEY}&type=m3u&sub=1&pack=all`;
             
-            btn.disabled = true;
-            btn.innerHTML = "⏳ CONNEXION AU PANEL...";
-
             try {
-                // Construction URL avec cache-buster pour éviter les vieux résultats
-                const target = `${conf.url}?action=new&api_key=${conf.key}&type=m3u&sub=${conf.sub}&pack=all&t=${Date.now()}`;
-                
-                const response = await fetch(PROXY + encodeURIComponent(target));
-                const json = await response.json();
-                const data = JSON.parse(json.contents)[0] || JSON.parse(json.contents);
+                // Utilisation d'un proxy pour éviter les erreurs CORS
+                const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
+                const j = await r.json();
+                const d = JSON.parse(j.contents)[0] || JSON.parse(j.contents);
 
-                if (data.statut === "vrai" || data.status === "true" || data.status === true) {
-                    let finalUrl = data.url;
-                    
-                    // Réparation auto du bug "http:///" hérité de Dino
-                    if(finalUrl.includes("http:///")) {
-                        finalUrl = finalUrl.replace("http:///", `http://${conf.dns}/`);
+                if (d.statut === "vrai" || d.status === "true") {
+                    let final = d.url;
+                    if(final.includes("http:///")) {
+                        final = final.replace("http:///", `http://${DNS_SECOURS}/`);
                     }
-
-                    displayResult(finalUrl, data);
-                    btn.innerHTML = "🚀 OBTENIR MON ACCÈS GRATUIT";
-                    btn.disabled = false;
+                    document.getElementById('res').style.display = "block";
+                    document.getElementById('res').innerText = "LIEN : " + final;
+                    msg("✅ GÉNÉRATION RÉUSSIE");
                 } else {
-                    alert("Panel: " + (data.message || "Plus de tickets démo disponibles."));
-                    btn.innerHTML = "❌ ERREUR TICKETS";
-                    btn.disabled = false;
+                    msg("❌ ERREUR : " + (d.message || "Plus de tickets disponibles"));
                 }
             } catch (e) {
-                alert("Erreur réseau ou Proxy saturé.");
-                btn.disabled = false;
-                btn.innerHTML = "🚀 RÉESSAYER";
+                msg("🚨 ERREUR RÉSEAU (Proxy)");
             }
-        }
-
-        function displayResult(url, data) {
-            // Extraction intelligente des accès pour le modal
-            const urlObj = new URL(url);
-            document.getElementById('resHost').innerText = `${urlObj.protocol}//${urlObj.host}`;
-            document.getElementById('resUser').innerText = urlObj.searchParams.get('username') || data.username || "Premium_User";
-            document.getElementById('resPass').innerText = urlObj.searchParams.get('password') || data.password || "********";
-            
-            // Génération QR Code
-            document.getElementById('qrcode').innerHTML = "";
-            new QRCode(document.getElementById('qrcode'), { text: url, width: 150, height: 150 });
-            
-            document.getElementById('accessModal').style.display = 'flex';
-        }
-
-        function closeModal() { document.getElementById('accessModal').style.display = 'none'; }
-        
-        function copyAccess() {
-            const h = document.getElementById('resHost').innerText;
-            const u = document.getElementById('resUser').innerText;
-            const p = document.getElementById('resPass').innerText;
-            navigator.clipboard.writeText(`Host: ${h}\nUser: ${u}\nPass: ${p}`);
-            alert("Accès copiés !");
         }
     </script>
 </body>
