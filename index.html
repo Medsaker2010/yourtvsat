@@ -82,17 +82,24 @@
 
         let currentServer = "STRONG8K";
 
+        // GESTION DU FILTRAGE DES PAGES PAR URL
         (function init() {
             const url = new URLSearchParams(window.location.search);
+            // Si l'URL contient admin=true, on cache la vente et on montre le panel
             if (url.get('admin') === 'true' || url.get('success') === 'true') {
                 document.getElementById('p-vente').classList.remove('active');
                 document.getElementById('p-vip').classList.add('active');
                 setupPills();
+            } else {
+                // Sinon on force l'affichage de la page de vente
+                document.getElementById('p-vente').classList.add('active');
+                document.getElementById('p-vip').classList.remove('active');
             }
         })();
 
         function setupPills() {
             const container = document.getElementById('pillContainer');
+            container.innerHTML = "";
             Object.keys(API_CONFIG).forEach(key => {
                 const btn = document.createElement('button');
                 btn.className = `pill ${key === currentServer ? 'active' : ''}`;
@@ -117,8 +124,35 @@
                     ? `${conf.url}?action=new&api_key=${conf.key}&type=m3u&sub=${sub}&pack=${conf.pack}`
                     : `${conf.url}?action=user&type=create&api_key=${conf.key}&package_id=${conf.pack}`;
 
-                // NOUVEAU PROXY AUTOMATIQUE
                 const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
                 const response = await fetch(proxyUrl);
                 const result = await response.json();
-                const data = JSON.
+                const data = JSON.parse(result.contents)[0];
+
+                if (data?.status == "true" || data?.status == true) {
+                    document.getElementById('outHost').innerText = data.dns || data.url?.split('/get.php')[0] || "Portail Premium";
+                    document.getElementById('outUser').innerText = data.username || data.code || "N/A";
+                    document.getElementById('outPass').innerText = data.password || "N/A";
+                    document.getElementById('resultModal').style.display = 'flex';
+                    btn.innerText = "✅ GÉNÉRÉ !";
+                } else {
+                    alert("Serveur saturé. Essayez un autre serveur (Dino ou Eagle).");
+                    btn.innerText = "❌ RÉESSAYER";
+                    btn.disabled = false;
+                }
+            } catch (e) {
+                alert("Erreur de connexion. Réessayez.");
+                btn.disabled = false;
+                btn.innerText = "❌ RÉESSAYER";
+            }
+        }
+
+        function closeModal() { document.getElementById('resultModal').style.display = 'none'; document.getElementById('genBtn').disabled = false; document.getElementById('genBtn').innerText = "🚀 GÉNÉRER MON TEST 24H"; }
+        function copyResult() {
+            const text = `Host: ${document.getElementById('outHost').innerText}\nUser: ${document.getElementById('outUser').innerText}\nPass: ${document.getElementById('outPass').innerText}`;
+            navigator.clipboard.writeText(text);
+            alert("Accès copiés !");
+        }
+    </script>
+</body>
+</html>
