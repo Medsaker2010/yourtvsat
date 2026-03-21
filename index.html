@@ -7,31 +7,76 @@
     <style>
         body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; overflow-x: hidden; }
         .gold { color: #d4af37; }
+
+        /* HEADER & SATELLITE */
         .header { padding: 40px 0; position: relative; display: flex; justify-content: center; align-items: center; }
         .sat { font-size: 45px; position: absolute; animation: orbit 5s infinite ease-in-out; z-index: 5; }
-        .brand { font-size: 2rem; font-weight: 900; z-index: 10; text-transform: uppercase; line-height: 1; }
+        .brand { font-size: 2rem; font-weight: 900; z-index: 10; text-transform: uppercase; line-height: 1.1; }
+
         @keyframes orbit {
             0% { transform: translateX(-120px) scale(1.1); z-index: 15; }
             50% { transform: translateX(120px) scale(0.6); opacity: 0.4; z-index: 1; }
             100% { transform: translateX(-120px) scale(1.1); z-index: 15; }
         }
-        .btn-stripe { 
-            background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37); 
-            color: #000; padding: 20px 40px; border-radius: 50px; font-weight: 900; font-size: 1.2rem; 
-            text-decoration: none; display: inline-block; box-shadow: 0 10px 30px rgba(212,175,55,0.3); border: none;
+
+        /* SECTION PRIX */
+        .price-box { padding: 20px; margin-top: 10px; }
+        .big-price { font-size: 5rem; font-weight: 900; color: #d4af37; margin: 10px 0; text-shadow: 0 0 20px rgba(212,175,55,0.4); }
+
+        /* BOUTON STRIPE LUXUEUX */
+        .btn-container { margin-top: 30px; }
+        .btn-luxe {
+            background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37);
+            color: #000;
+            padding: 22px 45px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 1.2rem;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(212,175,55,0.4);
+            border: none;
+            transition: transform 0.2s;
+        }
+
+        /* Effet de reflet brillant */
+        .btn-luxe::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -100%;
+            width: 50%;
+            height: 200%;
+            background: rgba(255,255,255,0.5);
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 150%; }
+            100% { left: 150%; }
         }
     </style>
 </head>
 <body>
+
     <div class="header">
         <div class="sat">🛰️</div>
         <h1 class="brand gold">YOURTVSAT<br><span style="font-size:0.9rem; letter-spacing:3px; color:#fff;">VIP ELITE</span></h1>
     </div>
-    <div style="padding: 20px;">
-        <p style="color: red; font-weight: bold;">OFFRE EXCLUSIVE</p>
-        <div style="font-size: 5rem; font-weight: 900; color: #d4af37;">5.55 €</div>
-        <p style="color:#888; margin-bottom:30px;">PASS ANNUEL ILLIMITÉ</p>
-        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-stripe">💎 DEVENIR MEMBRE VIP</a>
+
+    <div class="price-box">
+        <p style="color: red; font-weight: bold; letter-spacing: 2px;">OFFRE LIMITÉE</p>
+        <div class="big-price">5.55 €</div>
+        <p style="color:#888;">PASS ANNUEL SATELLITE</p>
     </div>
+
+    <div class="btn-container">
+        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-luxe">💎 DEVENIR MEMBRE VIP</a>
+    </div>
+
 </body>
 </html>
