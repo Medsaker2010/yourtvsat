@@ -3,106 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP - Multi-Relais</title>
+    <title>YourTvSat - Diagnostic Expert</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 20px; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; margin: 0; }
         .gold { color: #d4af37; }
-        .panel { border: 1px solid #d4af37; border-radius: 15px; padding: 20px; max-width: 400px; margin: auto; background: #0a0a0a; }
-        .status-box { background: #151515; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: left; font-size: 0.9rem; }
-        .dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 10px; }
-        .green { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; }
-        .red { background: #e74c3c; box-shadow: 0 0 8px #e74c3c; }
-        .btn { background: linear-gradient(180deg, #f9f295, #d4af37); color: #000; padding: 15px; border-radius: 8px; font-weight: bold; border: none; width: 100%; cursor: pointer; margin-top: 10px; }
-        .btn:disabled { background: #444; color: #888; }
-        .selector { display: flex; gap: 10px; margin-bottom: 20px; }
-        .opt { flex: 1; padding: 10px; border: 1px solid #444; border-radius: 5px; cursor: pointer; font-size: 0.8rem; }
-        .opt.active { border-color: #d4af37; color: #d4af37; background: rgba(212,175,55,0.1); }
-        #log { margin-top: 20px; font-size: 0.7rem; color: #888; display: none; text-align: left; }
+        .card { border: 1px solid #d4af37; border-radius: 15px; padding: 25px; max-width: 400px; margin: auto; background: #0a0a0a; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .info-box { background: #111; border: 1px solid #333; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: left; font-size: 0.9rem; }
+        .info-box p { margin: 10px 0; display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding-bottom: 5px; }
+        .status-val { color: #d4af37; font-weight: bold; }
+        .btn { background: #d4af37; color: #000; padding: 15px; border-radius: 8px; font-weight: 900; border: none; width: 100%; cursor: pointer; margin-bottom: 12px; text-transform: uppercase; }
+        .btn-check { background: #222; color: #d4af37; border: 1px solid #d4af37; }
+        #log { font-size: 0.7rem; color: #666; margin-top: 15px; text-align: left; max-height: 100px; overflow: auto; }
     </style>
 </head>
 <body>
-    <h2 class="gold">YOURTVSAT PANEL</h2>
-    <div class="panel">
-        <div class="status-box">
-            <div id="s1_stat"><span class="dot red"></span> STRONG 8K : Analyse...</div>
-            <div id="s2_stat" style="margin-top:8px;"><span class="dot red"></span> NEO 4K : Analyse...</div>
+
+    <h2 class="gold">YOURTVSAT DIAGNOSTIC</h2>
+
+    <div class="card">
+        <div class="info-box">
+            <div style="color:#888; font-size: 0.7rem; margin-bottom: 10px; font-weight: bold; text-transform: uppercase;">Réponse du Panel NEO 4K</div>
+            <p>Connexion API: <span id="api_status" class="status-val">---</span></p>
+            <p>Crédits : <span id="api_credits" class="status-val" style="color:#2ecc71;">--</span></p>
+            <p>Type de compte : <span id="api_group" class="status-val">--</span></p>
         </div>
 
-        <div class="selector">
-            <div id="m1" class="opt active" onclick="sel('STRONG8K','m1')">STRONG 8K</div>
-            <div id="m2" class="opt" onclick="sel('NEO4K','m2')">NEO 4K</div>
-        </div>
-
-        <button id="mainBtn" class="btn" onclick="execute()">LANCER LA GÉNÉRATION</button>
+        <button class="btn btn-check" onclick="getAccountInfo()">🔍 VOIR MES CRÉDITS</button>
+        <button class="btn" onclick="generateTest()">🚀 TESTER LA GÉNÉRATION</button>
+        
         <div id="log"></div>
     </div>
 
     <script>
-        const CONFIG = {
-            STRONG8K: { url: "http://pro.business-cdn-8kpro.ru/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51" },
-            NEO4K: { url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d" }
-        };
-        let activeServer = "STRONG8K";
+        const NEO_URL = "https://neo4kpro.me/api/api.php";
+        const NEO_KEY = "990f58084a19da19da13831da85aaa3d";
+        const PROXY = "https://api.allorigins.win/get?url=";
 
-        function sel(id, el) {
-            activeServer = id;
-            document.querySelectorAll('.opt').forEach(o => o.classList.remove('active'));
-            document.getElementById(el).classList.add('active');
+        function addLog(msg) {
+            const l = document.getElementById('log');
+            l.innerHTML += "> " + msg + "<br>";
         }
 
-        async function fetchWithRetry(targetUrl) {
-            const proxies = [
-                (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-                (url) => `https://thingproxy.freeboard.io/fetch/${url}`,
-                (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`
-            ];
-
-            for (let proxy of proxies) {
-                try {
-                    const response = await fetch(proxy(targetUrl));
-                    const data = await response.json();
-                    const content = data.contents || data; // Gère les différents formats de proxy
-                    return typeof content === 'string' ? JSON.parse(content) : content;
-                } catch (e) { continue; }
-            }
-            throw new Error("Tous les relais ont échoué");
-        }
-
-        async function updateStatus() {
-            for (let key in CONFIG) {
-                const testUrl = `${CONFIG[key].url}?api_key=${CONFIG[key].key}&action=new&type=m3u`;
-                const display = document.getElementById(key === "STRONG8K" ? "s1_stat" : "s2_stat");
-                try {
-                    const res = await fetchWithRetry(testUrl);
-                    const isOk = res.username || res.status === "true" || (res.message && !res.message.toLowerCase().includes("credit"));
-                    display.innerHTML = `<span class="dot ${isOk ? 'green' : 'red'}"></span> ${key} : ${isOk ? 'Prêt' : 'Crédits 0'}`;
-                } catch (e) {
-                    display.innerHTML = `<span class="dot red"></span> ${key} : Erreur Relais`;
-                }
-            }
-        }
-
-        async function execute() {
-            const btn = document.getElementById('mainBtn');
-            btn.disabled = true; btn.innerText = "Tentative de connexion...";
-            const s = CONFIG[activeServer];
-            const finalUrl = `${s.url}?api_key=${s.key}&action=new&type=m3u&sub=1&pack=all`;
-
+        async function getAccountInfo() {
+            document.getElementById('api_status').innerText = "Analyse...";
+            addLog("Tentative de lecture 'user_info'...");
+            
+            const target = `${NEO_URL}?api_key=${NEO_KEY}&action=user_info`;
+            
             try {
-                const res = await fetchWithRetry(finalUrl);
-                if (res.username) {
-                    alert(`SUCCÈS !\nUtilisateur: ${res.username}\nMot de passe: ${res.password}`);
-                } else {
-                    alert("PANEL : " + (res.message || "Erreur de crédits"));
+                const response = await fetch(PROXY + encodeURIComponent(target));
+                const json = await response.json();
+                const data = JSON.parse(json.contents);
+
+                if (data) {
+                    document.getElementById('api_status').innerText = "Connecté ✅";
+                    document.getElementById('api_credits').innerText = (data.credits !== undefined) ? data.credits : "N/A";
+                    document.getElementById('api_group').innerText = data.group_name || "Revendeur";
+                    addLog("Données reçues avec succès.");
                 }
             } catch (e) {
-                alert("ERREUR : Les serveurs de relais sont saturés. Réessayez dans 1 minute.");
-            }
-            btn.disabled = false; btn.innerText = "LANCER LA GÉNÉRATION";
-            updateStatus();
-        }
-
-        updateStatus();
-    </script>
-</body>
-</html>
+                document.getElementById('api_status').innerText = "Erreur ❌";
+                addLog("Erreur de communication avec le proxy
