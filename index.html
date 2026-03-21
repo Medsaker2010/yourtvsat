@@ -11,29 +11,199 @@
             --black: #000;
             --dark-gray: #111;
             --white: #fff;
+            --success: #2ecc71;
         }
         body { 
             background: var(--black); 
             color: var(--white); 
             text-align: center; 
-            font-family: 'Segoe UI', sans-serif; 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
             margin: 0; 
             padding: 0;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .gold { color: var(--gold); }
         
         /* Satellite Animation */
         .sat { font-size: 50px; display: inline-block; animation: move 4s infinite ease-in-out; margin: 20px; }
-        @keyframes move { 0%, 100% { transform: translateX(-30px); } 50% { transform: translateX(30px); } }
+        @keyframes move { 0%, 100% { transform: translateX(-20px); } 50% { transform: translateX(20px); } }
 
-        /* Sections */
-        .view { display: none; padding: 20px; }
-        .active { display: block !important; }
+        /* Sections Management */
+        .view { display: none; padding: 20px; width: 100%; max-width: 500px; box-sizing: border-box; }
+        .active { display: block !important; animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Landing Page Styles */
-        .buzz-tag { background: var(--gold); color: black; padding: 5px 15px; border-radius: 20px; font-weight: bold; display: inline-block; margin-bottom: 20px; }
+        .buzz-tag { background: var(--gold); color: black; padding: 5px 15px; border-radius: 20px; font-weight: bold; display: inline-block; margin-bottom: 20px; font-size: 0.8rem; }
         .logo { max-width: 150px; margin-bottom: 20px; }
+        .price-title { font-size: 4rem; font-weight: 900; margin: 10px 0; }
+        .price-sub { color: var(--silver); letter-spacing: 2px; margin-bottom: 30px; font-size: 0.9rem; }
+        
+        .btn-stripe { 
+            background: var(--gold); color: black; padding: 18px; border-radius: 50px; 
+            display: block; text-decoration: none; font-weight: bold; margin: 10px auto; width: 100%; max-width: 300px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none; cursor: pointer; font-size: 1rem;
+        }
+        .btn-stripe:hover { transform: scale(1.03); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+        .btn-crypto { background: #f7931a; color: white; margin-top: 10px; }
+
+        /* VIP Content Styles */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin: 20px 0; }
+        .card { background: var(--dark-gray); padding: 15px; border-radius: 10px; border: 1px solid #333; }
+        .card img { width: 50px; margin-bottom: 10px; }
+        
+        .pill-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 20px 0; }
+        .pill-btn { background: #222; color: white; border: 1px solid #444; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+        .pill-btn.active { background: var(--gold); color: black; border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
+        
+        .main-action { background: var(--gold); color: black; border: none; padding: 20px; width: 100%; border-radius: 10px; font-weight: 900; font-size: 1.1rem; margin-top: 20px; cursor: pointer; transition: background 0.3s; }
+        .main-action:disabled { background: #555; cursor: not-allowed; }
+
+        /* Modal Styles */
+        #accessModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: #111; padding: 25px; border-radius: 20px; border: 2px solid var(--gold); max-width: 350px; width: 90%; }
+        .res-box { background: #222; padding: 12px; border-radius: 10px; margin: 10px 0; text-align: left; font-family: monospace; font-size: 0.9rem; word-break: break-all; border: 1px solid #333; }
+    </style>
+</head>
+<body>
+
+    <div class="sat" aria-hidden="true">🛰️</div>
+
+    <!-- LANDING PAGE (OFFRE) -->
+    <div id="landing" class="view">
+        <div class="buzz-tag">🔥 OFFRE DE LANCEMENT EXCLUSIVE</div><br>
+        <img src="https://raw.githubusercontent.com/base44dev/encourgeant-le-d-bit-du-cours-d-eau-principal/main/logo.png" class="logo" alt="Logo">
+        <h1 class="gold" style="margin:0;">ACCÈS VIP ILLIMITÉ</h1>
+        <div class="price-title">5.55 €</div>
+        <div class="price-sub">PAR AN / TEST GRATUIT À VIE</div>
+        
+        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-stripe">💎 COMMENCER L'EXPÉRIENCE</a>
+        <button class="btn-stripe btn-crypto" onclick="alert('Contactez le support pour le paiement Crypto')">₿ PAYER EN CRYPTO</button>
+        
+        <div style="margin-top:30px; color:#444; font-size:0.8rem;">Paiement sécurisé par <b>Stripe</b></div>
+    </div>
+
+    <!-- VIP CONTENT (ESPACE CLIENT) -->
+    <div id="vip-content" class="view">
+        <h1 class="gold" style="font-size: 1.5rem;">BIENVENUE DANS L'ÉLITE</h1>
+        <p style="color:var(--silver); font-size: 0.9rem;">Votre abonnement est actif. Sélectionnez un serveur.</p>
+        
+        <div class="product-grid">
+            <div class="card"><img src="https://yourtvsat.com/wp-content/uploads/2023/IBO.png"><br><small>IBO PLAYER</small></div>
+            <div class="card"><img src="https://yourtvsat.com/wp-content/uploads/2023/BOB.png"><br><small>BOB PLAYER</small></div>
+        </div>
+
+        <div class="pill-container">
+            <button class="pill-btn active" onclick="selectServer('STRONG8K', this)">STRONG8K</button>
+            <button class="pill-btn" onclick="selectServer('NEO4K', this)">NEO4K</button>
+            <button class="pill-btn" onclick="selectServer('NEXON4K', this)">NEXON4K</button>
+            <button class="pill-btn" onclick="selectServer('EAGLE4K', this)">EAGLE4K</button>
+            <button class="pill-btn" onclick="selectServer('DINO_VIP', this)">DINO VIP</button>
+        </div>
+
+        <button id="mainLaunchBtn" class="main-action" onclick="startProcess()">🚀 GÉNÉRER MES ACCÈS</button>
+    </div>
+
+    <!-- MODAL RESULTAT -->
+    <div id="accessModal">
+        <div class="modal-content">
+            <h2 class="gold" style="margin-top:0;">VOS ACCÈS</h2>
+            <div class="res-box"><b>Host:</b> <span id="resHost"></span></div>
+            <div class="res-box"><b>User:</b> <span id="resUser"></span></div>
+            <div class="res-box"><b>Pass:</b> <span id="resPass"></span></div>
+            <div id="pointsEarned" style="color:var(--success); font-weight:bold; margin:15px 0;"></div>
+            <button class="btn-stripe" onclick="copyAccess()" style="margin:10px 0; width:100%;">📋 COPIER TOUT</button>
+            <button onclick="closeModal()" style="background:none; border:none; color:#666; cursor:pointer; margin-top:10px; font-size:0.8rem;">FERMER</button>
+        </div>
+    </div>
+
+    <script>
+        const CONFIG_GLOBAL = {
+            STRONG8K: { url: "https://strong8k.me/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51", type: "STD", pack: "all" },
+            NEO4K:    { url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d", type: "STD", pack: "all" },
+            NEXON4K:  { url: "http://api-connect.icu/api/dev_api.php", key: "90E655F4EC3A04B518A98B189D2E62BE4E18BDBA2E2F7114", type: "DEV", pack: "1" },
+            EAGLE4K:  { url: "http://api-elg-26.com/api/dev_api.php", key: "A0F121281A26DB634862390DC531DA6D204DD91E74516071", type: "DEV", pack: "1" },
+            DINO_VIP: { url: "https://tvpluspanel.net/api/api.php", key: "a541fa9acb43c9be2f2759ca4ac5a47c", type: "DINO", pack: "all" }
+        };
+
+        let selectedServer = "STRONG8K";
+
+        // Initialisation propre
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const isVIP = params.get('admin') === 'true';
+            
+            if (isVIP) {
+                document.getElementById('vip-content').classList.add('active');
+            } else {
+                document.getElementById('landing').classList.add('active');
+            }
+        };
+
+        function selectServer(serverKey, btn) {
+            selectedServer = serverKey;
+            document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        async function startProcess() {
+            const btn = document.getElementById('mainLaunchBtn');
+            btn.disabled = true;
+            btn.innerHTML = "⏳ CRÉATION EN COURS...";
+            try {
+                const conf = CONFIG_GLOBAL[selectedServer];
+                const duration = (selectedServer === "DINO_VIP") ? "99" : "1";
+                let url = "";
+                if (conf.type === "STD" || conf.type === "DINO") {
+                    url = `${conf.url}?action=new&api_key=${conf.key}&type=m3u&sub=${duration}&pack=${conf.pack}`;
+                } else {
+                    url = `${conf.url}?action=user&type=create&api_key=${conf.key}&package_id=${conf.pack}`;
+                }
+                
+                const res = await fetch(url);
+                const result = await res.json();
+                const data = result[0];
+                
+                if (data?.status === "true" || data?.status === true) {
+                    showModal(data, 50);
+                    btn.innerHTML = "✅ SUCCÈS !";
+                } else {
+                    alert("Erreur: " + (data?.message || "Serveur indisponible"));
+                    btn.innerHTML = "🚀 GÉNÉRER MES ACCÈS";
+                    btn.disabled = false;
+                }
+            } catch (e) {
+                alert("Erreur réseau ou CORS. Vérifiez la console.");
+                btn.innerHTML = "🚀 GÉNÉRER MES ACCÈS";
+                btn.disabled = false;
+            }
+        }
+
+        function showModal(data, points) {
+            document.getElementById('resHost').innerText = data.dns || data.url?.split('/get.php')[0] || "Portail Premium";
+            document.getElementById('resUser').innerText = data.username || data.code || "N/A";
+            document.getElementById('resPass').innerText = data.password || "N/A";
+            document.getElementById('pointsEarned').innerText = "💰 +" + points + " HisL GAGNÉS !";
+            document.getElementById('accessModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('accessModal').style.display = 'none'; }
+
+        function copyAccess() {
+            const h = document.getElementById('resHost').innerText;
+            const u = document.getElementById('resUser').innerText;
+            const p = document.getElementById('resPass').innerText;
+            const text = `Host: ${h}\nUser: ${u}\nPass: ${p}`;
+            navigator.clipboard.writeText(text).then(() => alert("Copié !"));
+        }
+    </script>
+</body>
+</html>
         .price-title { font-size: 4rem; font-weight: 900; margin: 10px 0; }
         .price-sub { color: var(--silver); letter-spacing: 2px; margin-bottom: 30px; }
         
