@@ -1,18 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YourTvSat VIP</title>
     <style>
-        body { background: black; color: gold; text-align: center; padding-top: 50px; font-family: sans-serif; }
-        .sat { font-size: 50px; display: block; margin-bottom: 20px; }
+        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; overflow-x: hidden; }
+        .gold { color: #d4af37; }
+
+        /* HEADER & SATELLITE */
+        .header { padding: 40px 0; position: relative; display: flex; justify-content: center; align-items: center; }
+        .sat { font-size: 45px; position: absolute; animation: orbit 5s infinite ease-in-out; z-index: 5; }
+        .brand { font-size: 2rem; font-weight: 900; z-index: 10; text-transform: uppercase; line-height: 1; }
+
+        @keyframes orbit {
+            0% { transform: translateX(-120px) scale(1.1); z-index: 15; }
+            50% { transform: translateX(120px) scale(0.6); opacity: 0.4; z-index: 1; }
+            100% { transform: translateX(-120px) scale(1.1); z-index: 15; }
+        }
+
+        /* PAGE VENTE */
+        .price-box { padding: 20px; margin-top: 20px; }
+        .big-price { font-size: 5rem; font-weight: 900; margin: 10px 0; color: #d4af37; text-shadow: 0 0 20px rgba(212,175,55,0.4); }
+        .offer { color: red; font-weight: bold; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
-    <div class="sat">🛰️</div>
-    <h1>YOURTVSAT VIP</h1>
-    <p>SI VOUS VOYEZ CECI, LE SITE FONCTIONNE.</p>
+    <div class="header">
+        <div class="sat">🛰️</div>
+        <h1 class="brand gold">YOURTVSAT<br><span style="font-size:0.9rem; letter-spacing:3px; color:#fff;">VIP ELITE</span></h1>
+    </div>
+
+    <div class="price-box">
+        <p class="offer">OFFRE EXCLUSIVE</p>
+        <div class="big-price">5.55 €</div>
+        <p style="color:#888;">PASS ANNUEL ILLIMITÉ</p>
+    </div>
 
 </body>
 </html>
