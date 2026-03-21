@@ -1,43 +1,81 @@
-async function safeGenerate() {
-    if(!confirm("⚠️ SÉCURITÉ : As-tu des 'Demo Tickets' ?")) return;
-    if(!confirm("⚠️ RAPPEL : Sinon, risque de consommer 1 CRÉDIT RÉEL. Continuer ?")) return;
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YourTvSat VIP v5.2 - Fix Final</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root { --gold: #d4af37; --dark: #050505; --green: #00ff00; }
+        body { background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; text-align: center; margin: 0; }
+        .gold { color: var(--gold); text-shadow: 0 0 10px rgba(212,175,55,0.3); }
+        .card { border: 1px solid var(--gold); border-radius: 25px; padding: 30px; max-width: 450px; margin: auto; background: #0a0a0a; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
+        .console { background: #000; border: 1px solid #222; color: var(--green); font-family: monospace; font-size: 0.75rem; padding: 15px; text-align: left; border-radius: 12px; margin: 20px 0; height: 120px; overflow-y: auto; border-left: 3px solid var(--gold); white-space: pre-wrap; }
+        .btn-main { background: linear-gradient(135deg, var(--gold), #f9f295); color: #000; border: none; padding: 18px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .modal-content { background: #111; border: 2px solid var(--gold); padding: 25px; border-radius: 25px; width: 85%; max-width: 380px; }
+        #qrcode { background: #fff; padding: 10px; display: inline-block; border-radius: 10px; margin: 15px 0; }
+    </style>
+</head>
+<body>
 
-    l("Lancement sécurisé...");
-    const target = `${API_URL}?action=new&type=m3u&sub=99&pack=30745&api_key=${API_KEY}`;
-    
-    // Liste de proxys pour éviter la saturation
-    const proxies = [
-        `https://api.allorigins.win/get?url=${encodeURIComponent(target)}`,
-        `https://corsproxy.io/?${encodeURIComponent(target)}`
-    ];
+    <h1 class="gold">YOURTVSAT <span style="font-size: 0.4em;">v5.2</span></h1>
 
-    for (let proxy of proxies) {
-        try {
-            l("Tentative de connexion...");
-            const r = await fetch(proxy);
-            const rawData = await r.json();
-            // AllOrigins emballe la réponse dans .contents
-            const d = rawData.contents ? JSON.parse(rawData.contents) : rawData;
-            const res = Array.isArray(d) ? d[0] : d;
+    <div class="card">
+        <button class="btn-main" onclick="startGeneration()">⚡ GÉNÉRER TEST (24H)</button>
+        <div class="console" id="log">SYSTÈME PRÊT...
+> API: tvpluspanel.net (HTTPS)
+> Flux: line.dndnscloud.ru:80 (HTTP)</div>
+    </div>
 
-            if (res.statut === "vrai" || res.status === "true") {
-                let finalUrl = res.url;
-                if(finalUrl.includes("http:///")) {
-                    finalUrl = finalUrl.replace("http:///", FIXED_HOST);
+    <div id="m" class="modal"><div class="modal-content">
+        <h2 class="gold">TEST PRÊT</h2>
+        <div id="res" style="background:#000; padding:12px; border-radius:10px; color:var(--green); font-size:0.7rem; word-break:break-all; border: 1px solid #333; margin-bottom:10px;"></div>
+        <div id="qrcode"></div>
+        <button onclick="copy()" style="background:var(--gold); border:none; padding:12px; width:100%; border-radius:10px; font-weight:bold; cursor:pointer;">📋 COPIER LE LIEN</button>
+        <p onclick="document.getElementById('m').style.display='none'" style="color:#666; cursor:pointer; margin-top:15px;">[ FERMER ]</p>
+    </div></div>
+
+    <script>
+        const API_KEY = "a541fa9acb43c9be2f2759ca4ac5a47c";
+        const API_URL = "https://tvpluspanel.net/api/api.php";
+        const PROXY = "https://api.allorigins.win/get?url=";
+        const DNS_FIX = "http://line.dndnscloud.ru:80/"; // Application du port 80
+
+        const l = (m) => { document.getElementById('log').innerText += `\n> ${m}`; };
+
+        async function startGeneration() {
+            if(!confirm("⚠️ Vérifie tes 'Demo Tickets' avant de continuer pour éviter de perdre un crédit réel.")) return;
+
+            l("Tentative de création...");
+            const target = `${API_URL}?action=new&type=m3u&sub=99&pack=30745&api_key=${API_KEY}`;
+            
+            try {
+                const response = await fetch(PROXY + encodeURIComponent(target));
+                const data = await response.json();
+                const res = JSON.parse(data.contents)[0] || JSON.parse(data.contents);
+
+                if (res.statut === "vrai" || res.status === "true") {
+                    // Force le Host et le Port 80 sur l'URL reçue
+                    let finalUrl = res.url.replace(/http:\/\/.*?\//, DNS_FIX);
+                    
+                    document.getElementById('res').innerText = finalUrl;
+                    document.getElementById("qrcode").innerHTML = "";
+                    new QRCode(document.getElementById("qrcode"), { text: finalUrl, width: 150, height: 150 });
+                    document.getElementById('m').style.display = 'flex';
+                    l("✅ Succès ! Lien réparé avec Port 80.");
+                } else {
+                    l(`❌ Panel: ${res.message || "Erreur de tickets."}`);
                 }
-                document.getElementById('res').innerText = finalUrl;
-                document.getElementById("qrcode").innerHTML = "";
-                new QRCode(document.getElementById("qrcode"), { text: finalUrl, width: 160, height: 160 });
-                document.getElementById('m').style.display = 'flex';
-                l("✅ RÉUSSITE (Mode Démo)");
-                return; // Succès, on sort de la boucle
-            } else {
-                l(`❌ REFUS PANEL : ${res.message || "Tickets démo épuisés."}`);
-                return;
+            } catch (e) {
+                l("🚨 Erreur de connexion au proxy.");
             }
-        } catch (e) {
-            l("🔄 Canal saturé, basculement...");
         }
-    }
-    l("🚨 ÉCHEC : Tous les canaux sont saturés.");
-}
+
+        function copy() {
+            navigator.clipboard.writeText(document.getElementById('res').innerText);
+            alert("Lien copié !");
+        }
+    </script>
+</body>
+</html>
