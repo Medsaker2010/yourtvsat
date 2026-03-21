@@ -3,38 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat - Panel VIP</title>
+    <title>YourTvSat - Expérience Premium</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        /* --- DESIGN LUXUEUX YOURTVSAT --- */
-        body {
-            background-color: #050505;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        :root { --gold: #d4af37; --dark: #0a0a0a; --green: #008000; }
+        body { background: var(--dark); color: white; font-family: 'Poppins', sans-serif; margin: 0; text-align: center; }
+        
+        /* Landing Page Style */
+        .landing-hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); }
+        .logo-anim { width: 150px; filter: drop-shadow(0 0 15px var(--gold)); margin-bottom: 20px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        
+        .gold-text { color: var(--gold); font-weight: bold; font-size: 2.5rem; text-transform: uppercase; letter-spacing: 3px; }
+        .promo-banner { background: var(--green); color: white; padding: 10px 30px; border-radius: 50px; margin: 20px; font-weight: bold; }
+        
+        .btn-premium { background: linear-gradient(45deg, var(--gold), #f9f295); color: black; padding: 18px 40px; border-radius: 8px; font-weight: 900; border: none; cursor: pointer; font-size: 1.1rem; transition: 0.3s; margin: 10px; }
+        .btn-crypto { background: #333; color: white; border: 1px solid var(--gold); }
+        
+        /* Restriction */
+        #main-content { display: none; padding: 50px; } /* Caché par défaut */
+        .restricted-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    </style>
+</head>
+<body>
+
+    <div id="auth-overlay" class="restricted-overlay">
+        <img src="https://votre-lien-logo.png" class="logo-anim" alt="YourTvSat Logo">
+        <div class="gold-text">YourTvSat Premium</div>
+        <div class="promo-banner">🎁 TEST À VIE GRATUIT POUR LES MEMBRES</div>
+        
+        <p style="font-size: 1.2rem;">Accédez à l'élite des serveurs pour seulement <span style="color:var(--gold)">5.55€</span></p>
+
+        <div id="g_id_onload" data-client_id="VOTRE_GOOGLE_CLIENT_ID" data-callback="handleCredentialResponse"></div>
+        <div class="g_id_signin" data-type="standard"></div>
+
+        <button class="btn-premium" onclick="startStripePayment()">💎 JE M'ABONNE (5.55€)</button>
+        <button class="btn-premium btn-crypto" onclick="openCryptoWallet()">₿ PAYER EN CRYPTO</button>
+    </div>
+
+    <div id="main-content">
+        <h2 class="gold-text">Espace Membre YourTvSat</h2>
+        <div id="product-list">
+            <p>Chargement des produits Premium...</p>
+        </div>
+    </div>
+
+    <script>
+        const stripe = Stripe('VOTRE_STRIPE_PUBLIC_KEY');
+
+        function handleCredentialResponse(response) {
+            console.log("Connecté avec Google");
+            // Ici, vous pouvez vérifier si l'utilisateur a déjà payé dans votre base
         }
 
-        h1 { color: #d4af37; text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
-
-        /* Onglets Arrondis (Pill Style) */
-        .yts-pill-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-            padding: 20px;
-            background: rgba(26, 26, 26, 0.8);
-            border-radius: 30px;
-            border: 1px solid #333;
-            max-width: 600px;
+        async function startStripePayment() {
+            // Appel à votre backend ou Stripe Checkout direct
+            alert("Redirection vers Stripe... (Prêt pour votre API)");
+            // stripe.redirectToCheckout({ sessionId: '...' });
         }
 
-        .pill-btn {
-            background: transparent;
-            color: #d4af37;
+        function openCryptoWallet() {
+            alert("Adresse Wallet Crypto : [VOTRE_ADRESSE_ICI]");
+        }
+
+        // FONCTION CRUCIALE : À appeler après succès du paiement
+        function unlockContent() {
+            document.getElementById('auth-overlay').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+        }
+    </script>
+</body>
+</html>            color: #d4af37;
             border: 2px solid #d4af37;
             padding: 10px 20px;
             border-radius: 50px;
