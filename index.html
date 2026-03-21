@@ -3,46 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP - Panel Stable</title>
+    <title>YourTvSat VIP - Final Fix</title>
     <style>
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; padding: 20px; }
+        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 20px; margin: 0; }
         .gold { color: #d4af37; }
-        .container { border: 1px solid #d4af37; border-radius: 15px; padding: 25px; max-width: 400px; margin: auto; background: #0a0a0a; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        
-        .diag-box { background: #151515; border-radius: 10px; padding: 15px; margin-bottom: 25px; border-left: 4px solid #d4af37; text-align: left; }
-        .diag-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.85rem; }
+        .container { border: 1px solid #d4af37; border-radius: 15px; padding: 20px; max-width: 400px; margin: auto; background: #0a0a0a; }
+        .diag-box { background: #151515; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: left; border-left: 4px solid #d4af37; }
+        .diag-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
         .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
-        .online { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; }
-        .offline { background: #e74c3c; box-shadow: 0 0 8px #e74c3c; }
-        .warning { background: #f1c40f; box-shadow: 0 0 8px #f1c40f; }
-
-        .btn-gen { background: linear-gradient(to bottom, #f9f295, #d4af37); color: #000; padding: 15px; border-radius: 8px; font-weight: bold; border: none; width: 100%; cursor: pointer; font-size: 1rem; text-transform: uppercase; }
-        .btn-gen:disabled { background: #333; color: #777; cursor: not-allowed; }
-        
+        .green { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; }
+        .red { background: #e74c3c; box-shadow: 0 0 8px #e74c3c; }
+        .btn-gen { background: linear-gradient(to bottom, #f9f295, #d4af37); color: #000; padding: 15px; border-radius: 8px; font-weight: bold; border: none; width: 100%; cursor: pointer; text-transform: uppercase; }
+        .btn-gen:disabled { background: #333; color: #777; }
         .server-select { display: flex; gap: 10px; margin-bottom: 20px; }
         .server-opt { flex: 1; padding: 10px; border: 1px solid #444; border-radius: 5px; cursor: pointer; font-size: 0.8rem; }
         .server-opt.active { border-color: #d4af37; background: rgba(212, 175, 55, 0.1); color: #d4af37; }
-        
         #result { display: none; background: #111; padding: 15px; border: 1px dashed #2ecc71; margin-top: 20px; text-align: left; font-family: monospace; font-size: 0.9rem; border-radius: 8px; }
     </style>
 </head>
 <body>
-
     <h2 class="gold">YOURTVSAT PANEL</h2>
-
     <div class="container">
         <div class="diag-box">
-            <div style="color:#888; font-size: 0.7rem; margin-bottom: 10px; font-weight: bold;">MONITEUR DE CONNEXION</div>
+            <div style="color:#888; font-size: 0.7rem; margin-bottom: 10px; font-weight: bold;">STATUT RÉEL DES CRÉDITS</div>
             <div id="diagList"></div>
         </div>
-
         <div class="server-select">
             <div id="opt-STRONG8K" class="server-opt active" onclick="selectServer('STRONG8K')">STRONG 8K</div>
             <div id="opt-NEO4K" class="server-opt" onclick="selectServer('NEO4K')">NEO 4K</div>
         </div>
-
-        <button id="mainBtn" class="btn-gen" onclick="generate()">⚡ Générer mon test</button>
-
+        <button id="mainBtn" class="btn-gen" onclick="generate()">⚡ GÉNÉRER MON TEST</button>
         <div id="result"></div>
     </div>
 
@@ -51,7 +41,6 @@
             STRONG8K: { name: "STRONG 8K", url: "http://pro.business-cdn-8kpro.ru/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51" },
             NEO4K: { name: "NEO 4K", url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d" }
         };
-
         let current = "STRONG8K";
 
         function selectServer(id) {
@@ -60,30 +49,24 @@
             document.getElementById('opt-' + id).classList.add('active');
         }
 
-        async function checkAll() {
+        async function checkStatus() {
             const list = document.getElementById('diagList');
             list.innerHTML = "";
-            
             for (const key in CONFIG) {
                 const s = CONFIG[key];
-                const testUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(s.url + '?api_key=' + s.key + '&action=new&type=m3u')}`;
-                
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(s.url + '?api_key=' + s.key + '&action=new&type=m3u')}`;
                 try {
-                    const r = await fetch(testUrl);
+                    const r = await fetch(proxyUrl);
                     const d = await r.json();
-                    const status = JSON.parse(d.contents);
+                    const data = JSON.parse(d.contents);
                     
-                    let color = "online";
-                    let msg = "Prêt";
-                    
-                    if (status.status === "false" || status.message?.includes("credit")) {
-                        color = "warning";
-                        msg = "Crédits 0";
-                    }
+                    // On vérifie si la réponse contient une erreur de crédit
+                    const hasCredits = !(data.message && data.message.toLowerCase().includes("credit"));
+                    const isOnline = (data.status === "true" || data.username || hasCredits);
 
-                    list.innerHTML += `<div class="diag-item"><span>${s.name}</span><span><span class="status-dot ${color}"></span><small>${msg}</small></span></div>`;
+                    list.innerHTML += `<div class="diag-item"><span>${s.name}</span><span><span class="status-dot ${hasCredits ? 'green' : 'red'}"></span><small>${hasCredits ? 'Prêt' : 'Crédits 0'}</small></span></div>`;
                 } catch (e) {
-                    list.innerHTML += `<div class="diag-item"><span>${s.name}</span><span><span class="status-dot offline"></span><small>Serveur HS</small></span></div>`;
+                    list.innerHTML += `<div class="diag-item"><span>${s.name}</span><span><span class="status-dot red"></span><small>Serveur HS</small></span></div>`;
                 }
             }
         }
@@ -91,39 +74,25 @@
         async function generate() {
             const btn = document.getElementById('mainBtn');
             const resDiv = document.getElementById('result');
-            btn.disabled = true;
-            btn.innerText = "Connexion...";
-            
+            btn.disabled = true; btn.innerText = "CONNEXION...";
             const s = CONFIG[current];
             const finalUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(s.url + '?api_key=' + s.key + '&action=new&type=m3u&sub=1&pack=all')}`;
-
             try {
                 const r = await fetch(finalUrl);
                 const d = await r.json();
                 const data = JSON.parse(d.contents);
-                const final = Array.isArray(data) ? data[0] : data;
-
-                if (final.username) {
+                if (data.username) {
                     resDiv.style.display = "block";
-                    resDiv.innerHTML = `<strong>SUCCÈS !</strong><br>Host: ${final.dns || s.url.split('/api')[0]}<br>User: ${final.username}<br>Pass: ${final.password}`;
-                    btn.innerText = "Généré avec succès";
+                    resDiv.innerHTML = `<strong>SUCCÈS !</strong><br>Host: ${data.dns || s.url.split('/api')[0]}<br>User: ${data.username}<br>Pass: ${data.password}`;
+                    btn.innerText = "GÉNÉRÉ !";
                 } else {
-                    alert("ERREUR : " + (final.message || "Crédits insuffisants."));
+                    alert("PANEL : " + (data.message || "Erreur inconnue (Vérifiez vos crédits)"));
                     reset();
                 }
-            } catch (e) {
-                alert("ERREUR RÉSEAU : Impossible de joindre le panel.");
-                reset();
-            }
+            } catch (e) { alert("ERREUR RÉSEAU"); reset(); }
         }
-
-        function reset() {
-            const btn = document.getElementById('mainBtn');
-            btn.disabled = false;
-            btn.innerText = "⚡ Générer mon test";
-        }
-
-        checkAll();
+        function reset() { const b = document.getElementById('mainBtn'); b.disabled = false; b.innerText = "⚡ GÉNÉRER MON TEST"; }
+        checkStatus();
     </script>
 </body>
 </html>
