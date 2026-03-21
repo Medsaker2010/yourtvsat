@@ -19,46 +19,30 @@
             100% { transform: translateX(-120px) scale(1.1); z-index: 15; }
         }
 
-        /* SECTION PRIX */
-        .price-box { padding: 20px; margin-top: 10px; }
-        .big-price { font-size: 5rem; font-weight: 900; color: #d4af37; margin: 10px 0; text-shadow: 0 0 20px rgba(212,175,55,0.4); }
+        /* GESTION DES PAGES */
+        .page { display: none; padding: 20px; }
+        .active { display: block !important; }
 
-        /* BOUTON STRIPE LUXUEUX */
-        .btn-container { margin-top: 30px; }
+        /* BOUTON LUXE */
         .btn-luxe {
             background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37);
-            color: #000;
-            padding: 22px 45px;
-            border-radius: 50px;
-            font-weight: 900;
-            font-size: 1.2rem;
-            text-decoration: none;
-            display: inline-block;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(212,175,55,0.4);
-            border: none;
-            transition: transform 0.2s;
+            color: #000; padding: 22px 45px; border-radius: 50px; font-weight: 900; font-size: 1.2rem;
+            text-decoration: none; display: inline-block; position: relative; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(212,175,55,0.4); border: none;
         }
-
-        /* Effet de reflet brillant */
         .btn-luxe::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -100%;
-            width: 50%;
-            height: 200%;
-            background: rgba(255,255,255,0.5);
-            transform: rotate(30deg);
-            animation: shine 3s infinite;
+            content: ''; position: absolute; top: -50%; left: -100%; width: 50%; height: 200%;
+            background: rgba(255,255,255,0.5); transform: rotate(30deg); animation: shine 3s infinite;
         }
+        @keyframes shine { 0% { left: -100%; } 20% { left: 150%; } 100% { left: 150%; } }
 
-        @keyframes shine {
-            0% { left: -100%; }
-            20% { left: 150%; }
-            100% { left: 150%; }
+        /* DESIGN PANEL VIP */
+        .card-vip { 
+            background: #111; border: 1px solid #222; border-left: 5px solid #d4af37; 
+            padding: 20px; border-radius: 12px; margin: 15px auto; max-width: 400px; text-align: left; 
         }
+        .dot { height: 10px; width: 10px; background: #00ff00; border-radius: 50%; display: inline-block; margin-right: 10px; box-shadow: 0 0 8px #00ff00; }
+        .btn-gen { background: #222; color: #d4af37; border: 1px solid #d4af37; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -68,15 +52,37 @@
         <h1 class="brand gold">YOURTVSAT<br><span style="font-size:0.9rem; letter-spacing:3px; color:#fff;">VIP ELITE</span></h1>
     </div>
 
-    <div class="price-box">
+    <div id="p-vente" class="page active">
         <p style="color: red; font-weight: bold; letter-spacing: 2px;">OFFRE LIMITÉE</p>
-        <div class="big-price">5.55 €</div>
+        <div style="font-size: 5rem; font-weight: 900; color: #d4af37; margin: 10px 0;">5.55 €</div>
         <p style="color:#888;">PASS ANNUEL SATELLITE</p>
+        <div style="margin-top: 30px;">
+            <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-luxe">💎 DEVENIR MEMBRE VIP</a>
+        </div>
     </div>
 
-    <div class="btn-container">
-        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-luxe">💎 DEVENIR MEMBRE VIP</a>
+    <div id="p-vip" class="page">
+        <h2 class="gold">PANEL DE GESTION VIP</h2>
+        <div class="card-vip"><span class="dot"></span> <b>IBO PLAYER</b> : Activé</div>
+        <div class="card-vip"><span class="dot"></span> <b>SMARTONE IPTV</b> : Activé</div>
+        
+        <div style="max-width:400px; margin: 30px auto;">
+            <h3>GÉNÉRATEUR DE TESTS</h3>
+            <button class="btn-gen">GÉNÉRER TEST STRONG 8K</button>
+            <button class="btn-gen">GÉNÉRER TEST NEO 4K</button>
+        </div>
     </div>
+
+    <script>
+        // Logique de bascule par URL
+        (function() {
+            const url = new URLSearchParams(window.location.search);
+            if (url.get('admin') === 'true' || url.get('success') === 'true') {
+                document.getElementById('p-vente').classList.remove('active');
+                document.getElementById('p-vip').classList.add('active');
+            }
+        })();
+    </script>
 
 </body>
 </html>
