@@ -7,8 +7,6 @@
     <style>
         body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; padding-bottom: 50px; }
         .gold { color: #d4af37; }
-        
-        /* HEADER & SATELLITE */
         .header { padding: 30px 0; position: relative; display: flex; justify-content: center; align-items: center; }
         .sat { font-size: 40px; position: absolute; animation: orbit 5s infinite ease-in-out; z-index: 5; }
         .brand { font-size: 1.8rem; font-weight: 900; z-index: 10; text-transform: uppercase; line-height: 1.1; }
@@ -17,33 +15,25 @@
             50% { transform: translateX(110px) scale(0.6); opacity: 0.4; z-index: 1; }
             100% { transform: translateX(-110px) scale(1.1); z-index: 15; }
         }
-
         .page { display: none; padding: 20px; }
         .active { display: block !important; }
-
-        /* LANDING */
         .big-price { font-size: 5rem; font-weight: 900; color: #d4af37; margin: 10px 0; }
         .btn-luxe {
             background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37);
             color: #000; padding: 20px 40px; border-radius: 50px; font-weight: 900; text-decoration: none; display: inline-block;
             box-shadow: 0 10px 30px rgba(212,175,55,0.4); border: none;
         }
-
-        /* PANEL VIP */
         .pill-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 20px; max-width: 600px; margin: auto; }
         .pill { 
             background: transparent; color: #d4af37; border: 2px solid #d4af37; 
             padding: 10px 18px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s;
         }
         .pill.active { background: #d4af37; color: #000; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
-
         .btn-generate {
             background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37);
             color: #000; padding: 20px 40px; border-radius: 12px; font-size: 1.2rem; font-weight: 900;
             border: none; cursor: pointer; margin-top: 30px; width: 90%; max-width: 400px;
         }
-
-        /* MODAL */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
         .modal-content { background: #111; border: 2px solid #d4af37; border-radius: 20px; padding: 30px; width: 85%; max-width: 400px; }
         .result-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border-left: 5px solid #00ff00; text-align: left; margin: 20px 0; font-family: monospace; font-size: 0.9rem; }
@@ -119,9 +109,7 @@
         async function startGeneration() {
             const btn = document.getElementById('genBtn');
             btn.disabled = true;
-            btn.innerText = "⌛ CONNEXION...";
-            const proxy = "https://cors-anywhere.herokuapp.com/";
-
+            btn.innerText = "⌛ GÉNÉRATION...";
             try {
                 const conf = API_CONFIG[currentServer];
                 const sub = (currentServer === "DINO_VIP") ? "99" : "1";
@@ -129,34 +117,8 @@
                     ? `${conf.url}?action=new&api_key=${conf.key}&type=m3u&sub=${sub}&pack=${conf.pack}`
                     : `${conf.url}?action=user&type=create&api_key=${conf.key}&package_id=${conf.pack}`;
 
-                const response = await fetch(proxy + apiUrl);
+                // NOUVEAU PROXY AUTOMATIQUE
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
+                const response = await fetch(proxyUrl);
                 const result = await response.json();
-                const data = result[0];
-
-                if (data?.status == "true" || data?.status == true) {
-                    document.getElementById('outHost').innerText = data.dns || data.url?.split('/get.php')[0] || "Portail Premium";
-                    document.getElementById('outUser').innerText = data.username || data.code || "N/A";
-                    document.getElementById('outPass').innerText = data.password || "N/A";
-                    document.getElementById('resultModal').style.display = 'flex';
-                    btn.innerText = "✅ GÉNÉRÉ !";
-                } else {
-                    alert("Erreur : " + (data?.message || "Serveur indisponible"));
-                    btn.innerText = "❌ RÉESSAYER";
-                    btn.disabled = false;
-                }
-            } catch (e) {
-                alert("Action requise : Activez le proxy sur 'https://cors-anywhere.herokuapp.com/corsdemo'");
-                btn.disabled = false;
-                btn.innerText = "❌ RÉESSAYER";
-            }
-        }
-
-        function closeModal() { document.getElementById('resultModal').style.display = 'none'; document.getElementById('genBtn').disabled = false; document.getElementById('genBtn').innerText = "🚀 GÉNÉRER MON TEST 24H"; }
-        function copyResult() {
-            const text = `Host: ${document.getElementById('outHost').innerText}\nUser: ${document.getElementById('outUser').innerText}\nPass: ${document.getElementById('outPass').innerText}`;
-            navigator.clipboard.writeText(text);
-            alert("Accès copiés !");
-        }
-    </script>
-</body>
-</html>
+                const data = JSON.
