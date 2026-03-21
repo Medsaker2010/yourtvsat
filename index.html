@@ -3,16 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP</title>
+    <title>YourTvSat VIP - Diagnostic</title>
     <style>
         body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
         .gold { color: #d4af37; }
-        .container { border: 2px solid #d4af37; border-radius: 20px; padding: 20px; max-width: 400px; margin: auto; background: #111; }
-        .pill-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; }
-        .pill { background: none; color: #d4af37; border: 2px solid #d4af37; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; }
-        .pill.active { background: #d4af37; color: #000; }
+        .container { border: 2px solid #d4af37; border-radius: 20px; padding: 20px; max-width: 450px; margin: auto; background: #111; }
+        
+        /* Style des voyants */
+        .server-status { background: #1a1a1a; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: left; border: 1px solid #333; }
+        .status-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .dot { height: 12px; width: 12px; border-radius: 50%; display: inline-block; margin-right: 10px; }
+        .red { background-color: #ff4d4d; box-shadow: 0 0 10px #ff4d4d; }
+        .green { background-color: #2ecc71; box-shadow: 0 0 10px #2ecc71; }
+        .gray { background-color: #95a5a6; }
+
+        .pill-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 20px 0; }
+        .pill { background: none; color: #d4af37; border: 1px solid #d4af37; padding: 8px 15px; border-radius: 50px; cursor: pointer; }
+        .pill.active { background: #d4af37; color: #000; font-weight: bold; }
+        
         .btn-gen { background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37); color: #000; padding: 18px; border-radius: 12px; font-weight: 900; border: none; cursor: pointer; width: 100%; font-size: 1.1rem; }
-        .result-box { background: #000; padding: 15px; border-radius: 10px; border: 1px solid #333; border-left: 5px solid #00ff00; text-align: left; margin-top: 20px; font-family: monospace; display: none; }
+        .result-box { background: #000; padding: 15px; border-radius: 10px; border-left: 5px solid #2ecc71; text-align: left; margin-top: 20px; display: none; }
     </style>
 </head>
 <body>
@@ -20,15 +30,19 @@
     <h1 class="gold">YOURTVSAT VIP</h1>
 
     <div class="container">
-        <h3 class="gold">CHOISISSEZ LE SERVEUR</h3>
+        <div class="server-status">
+            <div style="font-size: 0.8rem; color: #888; margin-bottom: 10px; text-transform: uppercase;">État des APIs (Temps réel)</div>
+            <div id="statusList"></div>
+        </div>
+
+        <h3 class="gold">GÉNÉRER UN TEST</h3>
         <div class="pill-container" id="pillContainer"></div>
         
-        <button id="genBtn" class="btn-gen" onclick="startGeneration()">🚀 GÉNÉRER TEST 24H</button>
+        <button id="genBtn" class="btn-gen" onclick="startGeneration()">🚀 LANCER LA GÉNÉRATION</button>
 
         <div id="resultBox" class="result-box">
-            <p>🌐 <b>Host:</b> <span id="outHost"></span></p>
-            <p>👤 <b>User:</b> <span id="outUser"></span></p>
-            <p>🔑 <b>Pass:</b> <span id="outPass"></span></p>
+            <p style="color:#2ecc71; font-weight:bold; margin-top:0;">✅ TEST GÉNÉRÉ AVEC SUCCÈS</p>
+            <div id="resDetails" style="font-family: monospace; font-size: 0.9rem;"></div>
         </div>
     </div>
 
@@ -38,7 +52,42 @@
             NEO4K: { name: "NEO 4K", url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d" }
         };
 
+        const PROXY = "https://cors-anywhere.herokuapp.com/";
         let currentServer = "STRONG8K";
+
+        // Fonction de Diagnostic (Les voyants)
+        async function checkStatus() {
+            const statusList = document.getElementById('statusList');
+            statusList.innerHTML = ""; // Reset
+
+            for (const [id, conf] of Object.entries(API_CONFIG)) {
+                const item = document.createElement('div');
+                item.className = "status-item";
+                
+                // Test de connexion rapide
+                const testUrl = `${PROXY}${conf.url}?api_key=${conf.key}&action=new&type=m3u&sub=1&pack=all`;
+                
+                try {
+                    const res = await fetch(testUrl, { method: 'GET' });
+                    const data = await res.json();
+                    const isOk = (data && (data.status === "true" || data[0]?.status === "true" || data.message));
+                    
+                    const statusColor = isOk ? "green" : "red";
+                    const statusText = isOk ? "Connecté" : "Erreur Panel";
+
+                    item.innerHTML = `
+                        <span>${conf.name}</span>
+                        <span><span class="dot ${statusColor}"></span> <small>${statusText}</small></span>
+                    `;
+                } catch (e) {
+                    item.innerHTML = `
+                        <span>${conf.name}</span>
+                        <span><span class="dot red"></span> <small>Bloqué (CORS)</small></span>
+                    `;
+                }
+                statusList.appendChild(item);
+            }
+        }
 
         function setupPills() {
             const container = document.getElementById('pillContainer');
@@ -54,7 +103,6 @@
                 container.appendChild(btn);
             });
         }
-        setupPills();
 
         async function startGeneration() {
             const btn = document.getElementById('genBtn');
@@ -62,34 +110,36 @@
             btn.innerText = "⌛ GÉNÉRATION...";
 
             const conf = API_CONFIG[currentServer];
-            const targetUrl = `${conf.url}?api_key=${conf.key}&action=new&type=m3u&sub=1&pack=all`;
-            
-            // Relais pour GitHub
-            const proxy = "https://cors-anywhere.herokuapp.com/" + targetUrl;
+            const url = `${PROXY}${conf.url}?api_key=${conf.key}&action=new&type=m3u&sub=1&pack=all`;
 
             try {
-                const response = await fetch(proxy);
+                const response = await fetch(url);
                 const data = await response.json();
                 const result = Array.isArray(data) ? data[0] : data;
 
                 if (result && (result.status === "true" || result.status === true)) {
-                    document.getElementById('outHost').innerText = result.dns || "http://pro.business-cdn-8kpro.ru";
-                    document.getElementById('outUser').innerText = result.username;
-                    document.getElementById('outPass').innerText = result.password;
+                    document.getElementById('resDetails').innerHTML = `
+                        <b>Host:</b> ${result.dns || conf.url.split('/api')[0]}<br>
+                        <b>User:</b> ${result.username}<br>
+                        <b>Pass:</b> ${result.password}
+                    `;
                     document.getElementById('resultBox').style.display = 'block';
                     btn.innerText = "✅ TERMINÉ";
                 } else {
-                    alert("Erreur Panel : Crédits insuffisants ou IP bloquée.");
+                    alert("ERREUR : " + (result.message || "Crédits insuffisants."));
                     btn.disabled = false;
                     btn.innerText = "🚀 RÉESSAYER";
                 }
             } catch (e) {
-                alert("Erreur : Cliquez d'abord sur le bouton bleu de CORS Anywhere.");
-                window.open("https://cors-anywhere.herokuapp.com/corsdemo", "_blank");
+                alert("CONNEXION IMPOSSIBLE : Allez sur https://cors-anywhere.herokuapp.com/corsdemo et cliquez sur le bouton bleu.");
                 btn.disabled = false;
                 btn.innerText = "🚀 RÉESSAYER";
             }
         }
+
+        // Lancement au démarrage
+        setupPills();
+        checkStatus(); // Vérifie les voyants dès l'ouverture
     </script>
 </body>
 </html>
