@@ -1,63 +1,18 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP - Elite</title>
+    <title>Test</title>
     <style>
-        :root { --gold: #d4af37; --dark: #000000; }
-        body { background: var(--dark); color: #fff; font-family: 'Arial', sans-serif; margin: 0; text-align: center; overflow-x: hidden; }
-
-        /* LOGO SATELLITE 3D */
-        .brand-header { padding: 40px 0; position: relative; display: flex; justify-content: center; align-items: center; }
-        .sat { font-size: 50px; position: absolute; animation: orbit 5s infinite ease-in-out; z-index: 5; }
-        .title { color: var(--gold); font-size: 2.2rem; font-weight: 900; z-index: 10; text-shadow: 0 0 10px rgba(212,175,55,0.4); }
-
-        @keyframes orbit {
-            0% { transform: translateX(-120px) scale(1); z-index: 15; }
-            50% { transform: translateX(120px) scale(0.6); opacity: 0.4; z-index: 1; }
-            100% { transform: translateX(-120px) scale(1); z-index: 15; }
-        }
-
-        /* NAVIGATION STRICTE */
-        .view { display: none; padding: 20px; animation: fadeIn 0.5s; }
-        .active { display: block !important; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* DESIGN ÉLITE */
-        .btn-luxe { background: linear-gradient(135deg, var(--gold), #f9f295); color: #000; padding: 20px 40px; border-radius: 50px; border: none; font-weight: 900; font-size: 1.1rem; cursor: pointer; text-decoration: none; display: inline-block; margin: 20px 0; }
-        .price { font-size: 4.5rem; color: var(--gold); font-weight: bold; margin: 10px 0; }
-        .card-vip { background: #111; border: 1px solid #333; padding: 18px; border-radius: 12px; margin: 10px auto; max-width: 400px; border-left: 4px solid var(--gold); text-align: left; }
+        body { background: black; color: gold; text-align: center; padding-top: 50px; font-family: sans-serif; }
+        .sat { font-size: 50px; display: block; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="brand-header">
-        <div class="sat">🛰️</div>
-        <div class="title">YOURTVSAT<br>VIP ELITE</div>
-    </div>
+    <div class="sat">🛰️</div>
+    <h1>YOURTVSAT VIP</h1>
+    <p>SI VOUS VOYEZ CECI, LE SITE FONCTIONNE.</p>
 
-    <div id="page-vente" class="view active">
-        <p style="color:red; font-weight:bold;">🔥 OFFRE VIP LIMITÉE</p>
-        <div class="price">5.55 €</div>
-        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-luxe">💎 S'ABONNER MAINTENANT</a>
-    </div>
-
-    <div id="page-vip" class="view">
-        <h2 class="gold">BIENVENUE DANS L'ÉLITE</h2>
-        <div class="card-vip">🚀 SERVEUR STRONG 8K : ACTIVÉ</div>
-        <div class="card-vip">🚀 SERVEUR NEO 4K : ACTIVÉ</div>
-        <button class="btn-luxe" style="width:100%; max-width:350px;">GÉNÉRER UN TEST 24H</button>
-    </div>
-
-    <script>
-        (function() {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('admin') === 'true' || params.get('success') === 'true') {
-                document.getElementById('page-vente').classList.remove('active');
-                document.getElementById('page-vip').classList.add('active');
-            }
-        })();
-    </script>
 </body>
 </html>
