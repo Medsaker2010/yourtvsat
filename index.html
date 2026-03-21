@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP - Ultra Engine v2.3</title>
+    <title>YourTvSat VIP - Ultra Engine v2.4</title>
     <style>
         body { background: #050505; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; text-align: center; margin: 0; }
         .gold { color: #d4af37; text-shadow: 0 0 10px rgba(212,175,55,0.5); }
@@ -11,50 +11,46 @@
         .pill-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
         .pill { background: transparent; color: #d4af37; border: 1px solid #d4af37; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.75rem; transition: 0.3s; }
         .pill.active { background: #d4af37; color: #000; font-weight: bold; }
-        
-        .console { background: #000; border: 1px solid #333; color: #00ff00; font-family: monospace; font-size: 0.7rem; padding: 12px; text-align: left; border-radius: 10px; margin: 15px 0; height: 120px; overflow-y: auto; }
-        .btn-main { background: linear-gradient(135deg, #d4af37, #f9f295); color: #000; border: none; padding: 18px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; transition: 0.3s; }
-        .btn-main:hover { transform: scale(1.02); }
-        
-        /* Modal */
+        .console { background: #000; border: 1px solid #333; color: #00ff00; font-family: monospace; font-size: 0.7rem; padding: 12px; text-align: left; border-radius: 10px; margin: 15px 0; height: 140px; overflow-y: auto; border-left: 3px solid #d4af37; }
+        .btn-main { background: linear-gradient(135deg, #d4af37, #f9f295); color: #000; border: none; padding: 18px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
         .modal-content { background: #111; border: 2px solid #d4af37; padding: 30px; border-radius: 20px; width: 85%; max-width: 350px; }
-        .copy-btn { background: #d4af37; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; }
     </style>
 </head>
 <body>
 
-    <h2 class="gold">YOURTVSAT ENGINE v2.3</h2>
+    <h2 class="gold">YOURTVSAT ENGINE v2.4</h2>
 
     <div class="card">
         <div class="pill-container">
             <button class="pill active" onclick="sel('DINO_VIP', this)">DINO VIP</button>
+            <button class="pill" onclick="sel('FUEGO', this)">FUEGO TV</button>
             <button class="pill" onclick="sel('STRONG8K', this)">STRONG 8K</button>
             <button class="pill" onclick="sel('NEO4K', this)">NEO 4K</button>
-            <button class="pill" onclick="sel('NEXON4K', this)">NEXON 4K</button>
             <button class="pill" onclick="sel('EAGLE4K', this)">EAGLE 4K</button>
+            <button class="pill" onclick="sel('NEXON4K', this)">NEXON 4K</button>
         </div>
 
         <button class="btn-main" id="go" onclick="run()">⚡ GÉNÉRER L'ABONNEMENT</button>
-
-        <div class="console" id="log">Console prête...</div>
+        <div class="console" id="log">Initialisation...</div>
         <button onclick="copyL()" style="background:none; border:none; color:#555; font-size:0.6rem; cursor:pointer;">📋 COPIER LOGS</button>
     </div>
 
     <div id="m" class="modal"><div class="modal-content">
-        <h2 class="gold">🏆 ACCÈS PRÊT</h2>
+        <h2 class="gold">🏆 ACCÈS GÉNÉRÉ</h2>
         <div id="res" style="background:#1a1a1a; padding:15px; border-radius:10px; text-align:left; font-family:monospace; margin-bottom:15px;"></div>
-        <button class="copy-btn" onclick="copyA()">📋 COPIER TOUT</button>
-        <p onclick="closeM()" style="color:#666; cursor:pointer; margin-top:15px;">Fermer</p>
+        <button onclick="copyA()" style="background:#d4af37; border:none; padding:12px; width:100%; border-radius:8px; font-weight:bold; cursor:pointer;">📋 COPIER TOUT</button>
+        <p onclick="document.getElementById('m').style.display='none'" style="color:#666; cursor:pointer; margin-top:15px;">Fermer</p>
     </div></div>
 
     <script>
         const CONFIG = {
             DINO_VIP: { url: "https://tvpluspanel.net/api/api.php", key: "a541fa9acb43c9be2f2759ca4ac5a47c", type: "DINO", p: "all" },
+            FUEGO:    { url: "http://api-cdn-fug.com/api/dev_api.php", key: "27F6CD585F600B5E8F35C88F5D19016C9101CD354BD69BE8", type: "DEV", p: "1" },
             STRONG8K: { url: "https://my8k.me/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51", type: "STD", p: "all" },
             NEO4K:    { url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d", type: "STD", p: "all" },
-            NEXON4K:  { url: "http://api-connect.icu/api/dev_api.php", key: "90E655F4EC3A04B518A98B189D2E62BE4E18BDBA2E2F7114", type: "DEV", p: "1" },
-            EAGLE4K:  { url: "http://api-elg-26.com/api/dev_api.php", key: "A0F121281A26DB634862390DC531DA6D204DD91E74516071", type: "DEV", p: "1" }
+            EAGLE4K:  { url: "http://api-elg-26.com/api/dev_api.php", key: "A0F121281A26DB634862390DC531DA6D204DD91E74516071", type: "DEV", p: "1" },
+            NEXON4K:  { url: "http://api-connect.icu/api/dev_api.php", key: "90E655F4EC3A04B518A98B189D2E62BE4E18BDBA2E2F7114", type: "DEV", p: "1" }
         };
 
         let selected = "DINO_VIP";
@@ -62,48 +58,46 @@
 
         function sel(k, b) { selected = k; document.querySelectorAll('.pill').forEach(x => x.classList.remove('active')); b.classList.add('active'); }
         function copyL() { navigator.clipboard.writeText(document.getElementById('log').innerText); alert("Logs copiés !"); }
-        function closeM() { document.getElementById('m').style.display='none'; }
 
-        async function api(params) {
-            const c = CONFIG[selected];
-            const url = `https://api.allorigins.win/get?url=${encodeURIComponent(c.url + "?" + params + "&api_key=" + c.key)}`;
-            const r = await fetch(url);
-            const j = await r.json();
-            let d = typeof j.contents === 'string' ? JSON.parse(j.contents) : j.contents;
-            return Array.isArray(d) ? d[0] : d;
+        async function apiCall(fullUrl) {
+            // Tunnel 1: AllOrigins
+            try {
+                let r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(fullUrl)}`);
+                let j = await r.json();
+                return typeof j.contents === 'string' ? JSON.parse(j.contents) : j.contents;
+            } catch (e) {
+                // Tunnel 2: CorsProxy.io (Secours)
+                l("Relais 1 saturé, passage au Relais 2...");
+                let r = await fetch(`https://corsproxy.io/?${encodeURIComponent(fullUrl)}`);
+                return await r.json();
+            }
         }
 
         async function run() {
-            const b = document.getElementById('go'); b.disabled = true; b.innerText = "PATIENTEZ...";
-            l(`Lancement: ${selected}...`);
+            const b = document.getElementById('go'); b.disabled = true; b.innerText = "CONNEXION...";
+            l(`Démarrage: ${selected}`);
             const c = CONFIG[selected];
             
             try {
-                // Tentative 1 : Création directe (30 jours)
-                let p = (c.type === "STD" || c.type === "DINO") 
-                    ? `action=new&type=m3u&sub=1&pack=${c.p}` 
-                    : `action=user&type=create&package_id=${c.p}`;
+                let params = (c.type === "STD" || c.type === "DINO") 
+                    ? `action=new&type=m3u&sub=1&pack=${c.p}&api_key=${c.key}` 
+                    : `action=user&type=create&package_id=${c.p}&api_key=${c.key}`;
                 
-                let res = await api(p);
-                
-                if (res.username || res.status === "true") {
+                let res = await apiCall(c.url + "?" + params);
+                if (Array.isArray(res)) res = res[0];
+
+                if (res.username || res.status === "true" || res.status === true) {
                     l("✅ SUCCÈS !");
                     document.getElementById('res').innerText = `User: ${res.username || res.code}\nPass: ${res.password || 'N/A'}`;
                     document.getElementById('m').style.display='flex';
                 } else {
-                    l(`⚠️ Refus: ${res.message || 'Format inconnu'}`);
-                    // Tentative 2 : Si STRONG ou NEO, on check les packages
-                    if (c.type === "STD") {
-                        l("Analyse des packages autorisés...");
-                        let packs = await api("action=packages");
-                        l(`Packages trouvés: ${JSON.stringify(packs).substring(0, 30)}...`);
-                    }
+                    l(`⚠️ Panel dit: ${res.message || "Erreur inconnue"}`);
                 }
-            } catch (e) { l("🚨 Erreur de communication"); }
+            } catch (e) { l("🚨 Échec total des relais."); }
             b.disabled = false; b.innerText = "⚡ GÉNÉRER L'ABONNEMENT";
         }
 
-        function copyA() { navigator.clipboard.writeText(document.getElementById('res').innerText); alert("Copié !"); }
+        function copyA() { navigator.clipboard.writeText(document.getElementById('res').innerText); alert("Accès copiés !"); }
     </script>
 </body>
-        </html>
+</html>
