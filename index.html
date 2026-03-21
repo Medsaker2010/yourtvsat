@@ -36,7 +36,7 @@
         }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
         .modal-content { background: #111; border: 2px solid #d4af37; border-radius: 20px; padding: 30px; width: 85%; max-width: 400px; }
-        .result-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border-left: 5px solid #00ff00; text-align: left; margin: 20px 0; font-family: monospace; font-size: 0.9rem; word-break: break-all; }
+        .result-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border-left: 5px solid #00ff00; text-align: left; margin: 20px 0; font-family: monospace; font-size: 0.8rem; word-break: break-all; }
     </style>
 </head>
 <body>
@@ -52,14 +52,14 @@
     </div>
 
     <div id="p-vip" class="page">
-        <h3 class="gold">1. CHOISISSEZ VOTRE SERVEUR</h3>
+        <h3 class="gold">PANEL DE GÉNÉRATION</h3>
         <div class="pill-container" id="pillContainer"></div>
         <button id="genBtn" class="btn-generate" onclick="startGeneration()">🚀 GÉNÉRER MON TEST 24H</button>
     </div>
 
     <div id="resultModal" class="modal">
         <div class="modal-content">
-            <h2 class="gold">🏆 TEST GÉNÉRÉ</h2>
+            <h2 class="gold">🏆 TEST PRÊT</h2>
             <div class="result-box">
                 <p>🌐 <b>Host:</b> <span id="outHost"></span></p>
                 <p>👤 <b>User:</b> <span id="outUser"></span></p>
@@ -76,12 +76,20 @@
                 name: "STRONG 8K", 
                 url: "http://pro.business-cdn-8kpro.ru/api/api.php", 
                 key: "fbe7199e1b0ea7d1f604bb1d930afa51", 
-                type: "STD", 
-                pack: "all" 
+                params: "&action=new&type=m3u&sub=1&pack=all&proxy=0" // proxy=0 pour désactiver le proxy de flux par défaut
             },
-            NEO4K: { name: "NEO 4K", url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d", type: "STD", pack: "all" },
-            DINO_VIP: { name: "DINO VIP", url: "https://tvpluspanel.net/api/api.php", key: "a541fa9acb43c9be2f2759ca4ac5a47c", type: "DINO", pack: "all" },
-            EAGLE4K: { name: "EAGLE 4K", url: "http://api-elg-26.com/api/dev_api.php", key: "A0F121281A26DB634862390DC531DA6D204DD91E74516071", type: "DEV", pack: "1" }
+            NEO4K: { 
+                name: "NEO 4K", 
+                url: "https://neo4kpro.me/api/api.php", 
+                key: "990f58084a19da19da13831da85aaa3d", 
+                params: "&action=new&type=m3u&sub=1&pack=all&proxy=0"
+            },
+            DINO_VIP: { 
+                name: "DINO VIP", 
+                url: "https://tvpluspanel.net/api/api.php", 
+                key: "a541fa9acb43c9be2f2759ca4ac5a47c", 
+                params: "&action=new&type=m3u&sub=99&pack=all" 
+            }
         };
 
         let currentServer = "STRONG8K";
@@ -97,7 +105,6 @@
 
         function setupPills() {
             const container = document.getElementById('pillContainer');
-            container.innerHTML = "";
             Object.keys(API_CONFIG).forEach(key => {
                 const btn = document.createElement('button');
                 btn.className = `pill ${key === currentServer ? 'active' : ''}`;
@@ -114,40 +121,30 @@
         async function startGeneration() {
             const btn = document.getElementById('genBtn');
             btn.disabled = true;
-            btn.innerText = "⌛ GÉNÉRATION EN COURS...";
+            btn.innerText = "⌛ ACTION EN COURS...";
+
+            const conf = API_CONFIG[currentServer];
+            const apiUrl = `${conf.url}?api_key=${conf.key}${conf.params}`;
 
             try {
-                const conf = API_CONFIG[currentServer];
-                const sub = (currentServer === "DINO_VIP") ? "99" : "1";
-                
-                let apiUrl = (conf.type === "STD" || conf.type === "DINO") 
-                    ? `${conf.url}?action=new&api_key=${conf.key}&type=m3u&sub=${sub}&pack=${conf.pack}`
-                    : `${conf.url}?action=user&type=create&api_key=${conf.key}&package_id=${conf.pack}`;
-
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
-
-                const response = await fetch(proxyUrl);
+                // Appel direct via AllOrigins pour éviter le blocage navigateur sans interférer avec vos proxys IPTV
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`);
                 const result = await response.json();
-                
-                // On essaie de lire les données renvoyées par le serveur
-                const rawData = JSON.parse(result.contents);
-                const data = rawData[0];
+                const data = JSON.parse(result.contents)[0];
 
                 if (data && (data.status === "true" || data.status === true)) {
-                    document.getElementById('outHost').innerText = data.dns || "http://pro.business-cdn-8kpro.ru";
-                    document.getElementById('outUser').innerText = data.username || data.code || "N/A";
+                    document.getElementById('outHost').innerText = data.dns || conf.url.split('/api')[0];
+                    document.getElementById('outUser').innerText = data.username || data.code;
                     document.getElementById('outPass').innerText = data.password || "N/A";
                     document.getElementById('resultModal').style.display = 'flex';
-                    btn.innerText = "✅ GÉNÉRÉ !";
+                    btn.innerText = "✅ RÉUSSI !";
                 } else {
-                    // On affiche le message d'erreur réel du panel pour comprendre
-                    const msg = data?.message || "Erreur de configuration API.";
-                    alert("Réponse Panel : " + msg);
+                    alert("Erreur Panel : " + (data?.message || "Vérifiez vos crédits ou la configuration Cloud Pro."));
                     btn.innerText = "❌ RÉESSAYER";
                     btn.disabled = false;
                 }
             } catch (e) {
-                alert("Erreur technique de connexion au panel.");
+                alert("Erreur de communication avec le serveur IPTV.");
                 btn.disabled = false;
                 btn.innerText = "❌ RÉESSAYER";
             }
@@ -157,8 +154,8 @@
         function copyResult() {
             const text = `Host: ${document.getElementById('outHost').innerText}\nUser: ${document.getElementById('outUser').innerText}\nPass: ${document.getElementById('outPass').innerText}`;
             navigator.clipboard.writeText(text);
-            alert("Identifiants copiés !");
+            alert("Accès copiés !");
         }
     </script>
 </body>
-</html>
+                                      </html>
