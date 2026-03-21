@@ -3,33 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP - v3.7 Fixed</title>
+    <title>YourTvSat VIP - v3.8 Power</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         body { background: #050505; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; text-align: center; margin: 0; }
         .gold { color: #d4af37; text-shadow: 0 0 10px rgba(212,175,55,0.5); }
-        .card { border: 1px solid #d4af37; border-radius: 20px; padding: 25px; max-width: 450px; margin: auto; background: #0a0a0a; border-top: 5px solid #d4af37; }
-        .console { background: #000; border: 1px solid #333; color: #00ff00; font-family: monospace; font-size: 0.75rem; padding: 15px; text-align: left; border-radius: 10px; margin: 20px 0; height: 180px; overflow-y: auto; white-space: pre-wrap; }
+        .card { border: 1px solid #d4af37; border-radius: 20px; padding: 25px; max-width: 450px; margin: auto; background: #0a0a0a; border-bottom: 5px solid #d4af37; }
+        .console { background: #000; border: 1px solid #333; color: #00ff00; font-family: monospace; font-size: 0.75rem; padding: 15px; text-align: left; border-radius: 10px; margin: 20px 0; height: 180px; overflow-y: auto; white-space: pre-wrap; border-left: 3px solid #d4af37; }
         .btn-main { background: linear-gradient(135deg, #d4af37, #f9f295); color: #000; border: none; padding: 20px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; }
+        #m { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:100; align-items:center; justify-content:center; }
+        .m-content { background:#111; border:2px solid #d4af37; padding:30px; border-radius:25px; width:90%; max-width:380px; }
     </style>
 </head>
 <body>
 
-    <h2 class="gold">YOURTVSAT - DINO 1-DAY FIX</h2>
+    <h2 class="gold">YOURTVSAT - DINO POWER v3.8</h2>
 
     <div class="card">
-        <button class="btn-main" id="btnGo" onclick="generateNow()">⚡ GÉNÉRER TEST (1 DAY)</button>
-        <div class="console" id="log">Initialisation v3.7...</div>
+        <button class="btn-main" id="btnGo" onclick="generateDino()">⚡ FORCER CRÉATION 1-DAY</button>
+        <div class="console" id="log">Mode Forçage v3.8 activé...</div>
     </div>
 
-    <div id="m" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:100; align-items:center; justify-content:center;">
-        <div style="background:#111; border:2px solid #d4af37; padding:30px; border-radius:25px; width:90%; max-width:380px;">
-            <h2 class="gold">✅ TEST GÉNÉRÉ</h2>
-            <div id="res" style="background:#1a1a1a; padding:15px; border-radius:10px; color:#00ff00; font-size:0.75rem; word-break:break-all; margin-bottom:15px;"></div>
-            <div id="qrcode" style="background:#fff; padding:10px; display:inline-block; border-radius:8px;"></div>
-            <button onclick="location.reload()" style="background:#d4af37; border:none; padding:15px; width:100%; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:20px;">FERMER</button>
-        </div>
-    </div>
+    <div id="m"><div class="m-content">
+        <h2 class="gold">✅ TEST 1-DAY GÉNÉRÉ</h2>
+        <div id="res" style="background:#1a1a1a; padding:15px; border-radius:10px; color:#00ff00; font-size:0.75rem; word-break:break-all; margin-bottom:15px;"></div>
+        <div id="qrcode" style="background:#fff; padding:10px; display:inline-block; border-radius:8px;"></div>
+        <button onclick="location.reload()" style="background:#d4af37; border:none; padding:15px; width:100%; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:20px;">TERMINER</button>
+    </div></div>
 
     <script>
         const API_KEY = "a541fa9acb43c9be2f2759ca4ac5a47c";
@@ -39,34 +39,34 @@
             const e = document.getElementById('log'); 
             e.innerHTML += `\n> ${msg}`; 
             e.scrollTop = e.scrollHeight; 
-            console.log(msg);
         };
 
-        async function generateNow() {
+        async function fetchWithProxy(url) {
+            // Tentative 1: corsproxy.io
+            try {
+                l("Tentative via Canal de Secours 1...");
+                const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
+                const d = await r.json();
+                return d;
+            } catch(e) {
+                // Tentative 2: allorigins (fallback)
+                l("Tentative via Canal de Secours 2...");
+                const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}&t=${Date.now()}`);
+                const j = await r.json();
+                return typeof j.contents === 'string' ? JSON.parse(j.contents) : j.contents;
+            }
+        }
+
+        async function generateDino() {
             const btn = document.getElementById('btnGo');
             btn.disabled = true;
-            l("🚀 Envoi de la commande '1d'...");
+            l("🚀 Envoi commande Sub=1d...");
 
-            // Construction de l'URL propre
-            const params = `action=new&type=m3u&sub=1d&pack=all&api_key=${API_KEY}`;
-            const target = `${API_URL}?${params}`;
-
-            // Utilisation d'un proxy plus stable
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(target)}&timestamp=${Date.now()}`;
+            // On utilise l'ID bouquet 30745 qu'on a vu précédemment
+            const target = `${API_URL}?action=new&type=m3u&sub=1d&pack=30745&api_key=${API_KEY}`;
 
             try {
-                const response = await fetch(proxyUrl);
-                if (!response.ok) throw new Error("Erreur Réseau Proxy");
-                
-                const data = await response.json();
-                let contents = data.contents;
-
-                // Nettoyage de la réponse si c'est du texte brut
-                if (typeof contents === "string") {
-                    try { contents = JSON.parse(contents); } catch(e) {}
-                }
-
-                // Normalisation du résultat (Dino renvoie souvent un tableau [{}])
+                const contents = await fetchWithProxy(target);
                 const result = Array.isArray(contents) ? contents[0] : contents;
 
                 if (result && (result.statut === "vrai" || result.status === "true")) {
@@ -76,11 +76,11 @@
                     new QRCode(document.getElementById("qrcode"), { text: result.url, width: 150, height: 150 });
                     document.getElementById('m').style.display = 'flex';
                 } else {
-                    l(`❌ Refus Panel: ${result.message || "Identifiant '1d' non reconnu via API"}`);
+                    l(`❌ Refus: ${result.message || "Erreur Panel"}`);
                 }
             } catch (err) {
-                l("🚨 Erreur fatale: Le proxy ou l'API ne répond pas.");
-                l("Veuillez vérifier votre connexion ou réessayer.");
+                l("🚨 Échec critique des canaux de communication.");
+                l("Le serveur Dino bloque les accès externes.");
             } finally {
                 btn.disabled = false;
             }
