@@ -3,165 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP - Plateforme Elite</title>
+    <title>YourTvSat VIP - Official Platform</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root { --gold: #d4af37; --dark: #050505; --green: #00ff00; --silver: #c0c0c0; }
-        body { background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 50px; }
-        
-        /* HEADER & LOGO */
-        header { padding: 30px; text-align: center; background: linear-gradient(to bottom, #111, transparent); }
-        .logo { font-size: 2.5rem; font-weight: 900; color: var(--gold); text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); letter-spacing: 2px; }
-        .points-badge { background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold); padding: 5px 15px; border-radius: 20px; color: var(--gold); font-size: 0.9rem; margin-top: 10px; display: inline-block; }
+        :root { --gold: #d4af37; --gold-light: #f9f295; --black: #050505; --dark-grey: #111; --green: #00ff00; --red: #ff4444; }
+        * { box-sizing: border-box; }
+        body { background: var(--black); color: #fff; font-family: 'Poppins', 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
 
-        /* CONTAINER PRINCIPAL */
-        .container { max-width: 600px; margin: auto; padding: 20px; text-align: center; }
+        /* --- ANIMATIONS --- */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* SECTION SERVICES (TABLEAU DE BORD) */
-        .yts-pill-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; padding: 15px; background: #111; border-radius: 25px; border: 1px solid #222; }
-        .pill-btn { background: transparent; color: var(--silver); border: 1px solid #444; padding: 10px 18px; border-radius: 50px; cursor: pointer; transition: 0.3s; font-weight: bold; font-size: 0.8rem; }
-        .pill-btn.active { background: var(--gold); color: #000; border-color: var(--gold); box-shadow: 0 0 10px var(--gold); }
+        /* --- LANDING PAGE (LOGIN) --- */
+        #page-login { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%); }
+        .logo-giant { font-size: 3.5rem; font-weight: 900; color: var(--gold); text-shadow: 0 0 30px rgba(212, 175, 55, 0.4); letter-spacing: 8px; margin-bottom: 10px; }
+        .google-btn { background: #fff; color: #444; padding: 15px 35px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; font-size: 1.1rem; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .google-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255,255,255,0.1); }
 
-        /* BOUTON ACTION MAÎTRE */
-        .main-btn { background: linear-gradient(135deg, var(--gold), #f9f295, var(--gold)); color: #000; border: none; padding: 22px; border-radius: 15px; font-size: 1.1rem; font-weight: 900; width: 100%; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.3s; margin: 20px 0; text-transform: uppercase; }
-        .main-btn:active { transform: scale(0.98); }
+        /* --- DASHBOARD --- */
+        #page-dashboard { display: none; padding: 20px; animation: fadeIn 0.8s ease; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222; margin-bottom: 20px; }
+        .points-badge { background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold); padding: 5px 15px; border-radius: 20px; color: var(--gold); font-size: 0.8rem; }
 
-        /* SECTION RÉCOMPENSES & ROUE */
-        .rewards-box { background: #0a0a0a; border: 1px solid #333; border-radius: 20px; padding: 20px; margin-top: 30px; position: relative; overflow: hidden; }
-        .wheel-container { width: 200px; height: 200px; border: 5px solid var(--gold); border-radius: 50%; margin: 20px auto; position: relative; transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1); background: conic-gradient(#111 0deg 60deg, #222 60deg 120deg, #111 120deg 180deg, #222 180deg 240deg, #111 240deg 300deg, #222 300deg 360deg); }
-        .wheel-pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid var(--gold); z-index: 10; }
+        /* OFFRE SPÉCIALE (PUB) */
+        .promo-banner { background: linear-gradient(135deg, #1a1a1a 0%, #050505 100%); border: 2px solid var(--gold); border-radius: 25px; padding: 25px; margin-bottom: 30px; position: relative; overflow: hidden; text-align: center; box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); }
+        .promo-banner::before { content: "OFFRE VIP"; position: absolute; top: 10px; right: -30px; background: var(--gold); color: #000; padding: 5px 40px; transform: rotate(45deg); font-weight: 900; font-size: 0.6rem; }
+        .price-huge { font-size: 3rem; font-weight: 900; margin: 10px 0; color: #fff; }
+        .price-huge span { font-size: 1.2rem; color: var(--gold); vertical-align: super; }
+
+        /* GRILLE PRODUITS */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .card { background: var(--dark-grey); border: 1px solid #222; border-radius: 15px; padding: 15px; text-align: center; transition: 0.3s; cursor: pointer; }
+        .card:hover, .card.active { border-color: var(--gold); background: #161616; transform: translateY(-5px); }
+        .card h4 { margin: 10px 0 5px; font-size: 0.9rem; color: var(--gold); }
+        .card p { font-size: 0.7rem; color: #888; margin: 0; }
+        .card .price-small { font-weight: bold; font-size: 1rem; margin-top: 10px; display: block; }
+        .card.disabled { opacity: 0.5; cursor: not-allowed; border-color: #333 !important; }
+
+        /* BOUTON GENERER */
+        .main-btn { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #000; border: none; padding: 20px; border-radius: 50px; font-weight: 900; font-size: 1.1rem; width: 100%; cursor: pointer; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); text-transform: uppercase; margin-top: 20px; }
+
+        /* ROUE & JEU */
+        .wheel-box { background: #0a0a0a; border: 1px solid #222; border-radius: 20px; padding: 20px; margin-top: 40px; text-align: center; }
+        .wheel { width: 180px; height: 180px; border: 4px solid var(--gold); border-radius: 50%; margin: 15px auto; transition: 4s cubic-bezier(0.15, 0, 0.15, 1); background: conic-gradient(#111 0deg 60deg, #222 60deg 120deg, #111 120deg 180deg, #222 180deg 240deg, #111 240deg 300deg, #222 300deg 360deg); }
 
         /* MODAL */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(15px); }
-        .modal-content { background: #111; border: 2px solid var(--gold); padding: 25px; border-radius: 25px; width: 85%; max-width: 400px; text-align: center; }
-        .info-card { background: #000; border-left: 4px solid var(--green); padding: 15px; text-align: left; margin: 15px 0; font-family: monospace; font-size: 0.8rem; }
-        
-        .console { background: #000; color: var(--green); font-family: monospace; font-size: 0.7rem; padding: 10px; height: 60px; overflow-y: auto; border: 1px solid #222; border-radius: 10px; margin-top: 10px; text-align: left; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+        .modal-content { background: #111; border: 2px solid var(--gold); padding: 30px; border-radius: 30px; width: 100%; max-width: 400px; text-align: center; }
+        .res-box { background: #000; padding: 15px; border-radius: 15px; text-align: left; border-left: 5px solid var(--green); margin: 20px 0; font-family: monospace; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">YOURTVSAT</div>
-        <div class="points-badge">💎 <span id="userPoints">150</span> HisL</div>
-    </header>
+    <section id="page-login">
+        <div class="logo-giant">YOURTVSAT</div>
+        <p style="color: #666; letter-spacing: 3px; margin-bottom: 40px;">THE GOLDEN STANDARD</p>
+        <button class="google-btn" onclick="handleLogin()">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20" alt="G">
+            Accès Membre via Google
+        </button>
+    </section>
 
-    <div class="container">
-        <h3 class="gold">SÉLECTIONNEZ VOTRE SERVEUR</h3>
-        
-        <div class="yts-pill-container">
-            <button class="pill-btn active" onclick="setSrv('STRONG8K', this)">STRONG 8K</button>
-            <button class="pill-btn" onclick="setSrv('NEO4K', this)">NEO 4K</button>
-            <button class="pill-btn" onclick="setSrv('DINO', this)">DINO VIP</button>
-            <button class="pill-btn" onclick="setSrv('NEXON', this)">NEXON 4K</button>
+    <section id="page-dashboard">
+        <header>
+            <div style="color: var(--gold); font-weight: bold; letter-spacing: 1px;">YOURTVSAT VIP</div>
+            <div class="points-badge">💎 <span id="userPoints">150</span> HisL</div>
+        </header>
+
+        <div id="welcomeMsg" style="margin-bottom: 20px; font-size: 0.9rem;"></div>
+
+        <div class="promo-banner">
+            <h2 style="color: var(--gold); margin: 0; font-size: 1.2rem;">TEST PREMIUM SERVEUR À VIE</h2>
+            <div class="price-huge">5.55<span>€</span></div>
+            <p style="color: var(--green); font-weight: bold; font-size: 0.8rem; margin: 0;">⚡ ACTIVATION INSTANTANÉE ⚡</p>
+            <button class="main-btn" style="padding: 12px; margin-top: 15px; font-size: 0.8rem; width: auto;">Profiter maintenant</button>
         </div>
 
-        <button id="launchBtn" class="main-btn" onclick="generateAccess()">🚀 GÉNÉRER MON ACCÈS VIP</button>
-        
-        <div class="console" id="log">> Système de distribution prêt...</div>
+        <h3>📡 Serveurs VIP</h3>
+        <div class="product-grid" id="srv-grid"></div>
 
-        <div class="rewards-box">
-            <h3 class="gold">ROUE DES RÉCOMPENSES</h3>
-            <p style="font-size: 0.8rem; color: #888;">Gagnez des mois gratuits ou des points HisL</p>
-            <div class="wheel-pointer"></div>
-            <div id="wheel" class="wheel-container"></div>
-            <button class="pill-btn" style="border-color: var(--gold); color: var(--gold);" onclick="spinWheel()">TENTER MA CHANCE (50 HisL)</button>
+        <h3>📺 Lecteurs</h3>
+        <div class="product-grid">
+            <div class="card active"><h4>SMARTERS PRO</h4><p>Inclus</p></div>
+            <div class="card active"><h4>IBO PLAYER</h4><p>9.99€</p></div>
+            <div class="card disabled"><h4>iPLAY</h4><p>Indispo.</p></div>
+            <div class="card disabled"><h4>T-REX</h4><p>Indispo.</p></div>
         </div>
-    </div>
+
+        <button class="main-btn" onclick="generate()">⚡ Générer mon test : <span id="activeName">STRONG 8K</span></button>
+
+        <div class="wheel-box">
+            <h3 style="margin: 0; color: var(--gold);">Roue des Récompenses</h3>
+            <div class="wheel" id="wheel"></div>
+            <button class="google-btn" style="margin: auto; font-size: 0.8rem;" onclick="spin()">Tenter ma chance (50 HisL)</button>
+        </div>
+    </section>
 
     <div id="modal" class="modal"><div class="modal-content">
-        <h2 class="gold">🏆 ACCÈS GÉNÉRÉ</h2>
-        <div id="qrcode" style="margin-bottom: 15px;"></div>
-        <div class="info-card">
+        <h2 style="color:var(--gold)">VOTRE ACCÈS 24H</h2>
+        <div id="qrcode" style="display:flex; justify-content:center; margin:20px 0;"></div>
+        <div class="res-box">
             <p>🌐 <b>HOST:</b> <span id="resHost" style="color:var(--green)"></span></p>
             <p>👤 <b>USER:</b> <span id="resUser" style="color:var(--green)"></span></p>
             <p>🔑 <b>PASS:</b> <span id="resPass" style="color:var(--green)"></span></p>
         </div>
-        <button class="main-btn" style="padding: 15px; font-size: 0.9rem;" onclick="copyAll()">📋 COPIER LES ACCÈS</button>
-        <p onclick="closeModal()" style="color:#555; cursor:pointer; margin-top:15px;">[ FERMER ]</p>
+        <button class="main-btn" style="padding: 15px;" onclick="copy()">COPIER LES ACCÈS</button>
+        <p onclick="closeM()" style="color:#555; cursor:pointer; margin-top:20px; font-size:0.8rem;">[ FERMER ]</p>
     </div></div>
 
     <script>
-        // --- BASE DE DONNÉES TECHNIQUE ---
-        const CONFIG = {
-            STRONG8K: { url: "https://my8k.me/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51", sub: "1", dns: "my8k.me:80" },
-            NEO4K:    { url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d", sub: "1", dns: "neo4kpro.me:80" },
-            DINO:     { url: "https://tvpluspanel.net/api/api.php", key: "a541fa9acb43c9be2f2759ca4ac5a47c", sub: "99", dns: "line.dndnscloud.ru:80" },
-            NEXON:    { url: "http://api-connect.icu/api/dev_api.php", key: "90E655F4EC3A04B518A98B189D2E62BE4E18BDBA2E2F7114", sub: "1", dns: "nexon.me:80" }
-        };
+        const SERVEURS = [
+            { id: "STRONG8K", nom: "STRONG 8K", prix: "65€", api: "https://my8k.me/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51", dns: "my8k.me:80" },
+            { id: "NEO4K", nom: "NEO 4K", prix: "55€", api: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d", dns: "neo4kpro.me:80" },
+            { id: "DINO", nom: "DINO VIP", prix: "45€", api: "https://tvpluspanel.net/api/api.php", key: "a541fa9acb43c9be2f2759ca4ac5a47c", dns: "line.dndnscloud.ru:80" }
+        ];
 
-        let selected = "STRONG8K";
+        let current = SERVEURS[0];
         let points = 150;
-        const l = (m) => { document.getElementById('log').innerText = "> " + m; };
 
-        function setSrv(key, btn) {
-            selected = key;
-            document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            l("Serveur basculé sur " + key);
+        // --- GESTION CONNEXION ---
+        function handleLogin() {
+            let visits = parseInt(localStorage.getItem('v_count') || 0);
+            visits++;
+            localStorage.setItem('v_count', visits);
+            
+            document.getElementById('page-login').style.display = 'none';
+            document.getElementById('page-dashboard').style.display = 'block';
+            
+            const msg = visits > 1 
+                ? "Heureux de vous revoir, l'élite vous attend ! ✨" 
+                : "Bienvenue parmi nous ! Votre compte est prêt. 🏆";
+            document.getElementById('welcomeMsg').innerText = msg;
+            init();
         }
 
-        async function generateAccess() {
-            const btn = document.getElementById('launchBtn');
-            const conf = CONFIG[selected];
-            btn.disabled = true;
-            btn.innerHTML = "⌛ CONNEXION SÉCURISÉE...";
-            l("Requête envoyée au panel...");
+        function init() {
+            const grid = document.getElementById('srv-grid');
+            grid.innerHTML = "";
+            SERVEURS.forEach(s => {
+                grid.innerHTML += `
+                    <div class="card ${s.id===current.id?'active':''}" id="c-${s.id}" onclick="select('${s.id}')">
+                        <h4>${s.nom}</h4>
+                        <span class="price-small">${s.prix}</span>
+                    </div>`;
+            });
+        }
 
+        function select(id) {
+            current = SERVEURS.find(s => s.id === id);
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            document.getElementById('c-'+id).classList.add('active');
+            document.getElementById('activeName').innerText = current.nom;
+        }
+
+        // --- GENERATEUR CHAMPION ---
+        async function generate() {
+            const btn = document.querySelector('.main-btn');
+            btn.innerHTML = "⏳ CRYPTAGE ET CONNEXION...";
+            
             try {
-                const target = `${conf.url}?action=new&api_key=${conf.key}&type=m3u&sub=${conf.sub}&pack=all&t=${Date.now()}`;
+                const target = `${current.api}?action=new&api_key=${current.key}&type=m3u&sub=1&pack=all&t=${Date.now()}`;
                 const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
                 const json = await res.json();
-                const data = JSON.parse(json.contents)[0] || JSON.parse(json.contents);
+                const d = JSON.parse(json.contents)[0] || JSON.parse(json.contents);
 
-                if (data.statut === "vrai" || data.status === "true" || data.status === true) {
-                    let fullUrl = data.url;
-                    if(fullUrl.includes("http:///")) fullUrl = fullUrl.replace("http:///", `http://${conf.dns}/`);
+                if (d.statut === "vrai" || d.status === "true") {
+                    let uStr = d.url;
+                    if(uStr.includes("http:///")) uStr = uStr.replace("http:///", `http://${current.dns}/`);
                     
-                    const u = new URL(fullUrl);
+                    const u = new URL(uStr);
                     document.getElementById('resHost').innerText = u.protocol + "//" + u.host;
-                    document.getElementById('resUser').innerText = u.searchParams.get('username') || data.username;
-                    document.getElementById('resPass').innerText = u.searchParams.get('password') || data.password;
+                    document.getElementById('resUser').innerText = u.searchParams.get('username') || d.username;
+                    document.getElementById('resPass').innerText = u.searchParams.get('password') || d.password;
                     
                     document.getElementById('qrcode').innerHTML = "";
-                    new QRCode(document.getElementById('qrcode'), { text: fullUrl, width: 150, height: 150 });
-                    
+                    new QRCode(document.getElementById('qrcode'), { text: uStr, width: 140, height: 140 });
                     document.getElementById('modal').style.display = 'flex';
-                    l("✅ ACCÈS GÉNÉRÉ AVEC SUCCÈS");
-                } else {
-                    l("❌ PANEL : " + (data.message || "Crédits insuffisants."));
-                }
-            } catch (e) {
-                l("🚨 ERREUR : Connexion API impossible.");
-            }
-            btn.disabled = false;
-            btn.innerHTML = "🚀 OBTENIR MON ACCÈS VIP";
+                } else { alert("Plus de tickets disponibles pour ce serveur."); }
+            } catch (e) { alert("Erreur réseau Proxy."); }
+            btn.innerHTML = `⚡ GÉNÉRER MON ACCÈS : ${current.nom}`;
         }
 
-        // --- SYSTÈME DE LA ROUE ---
-        function spinWheel() {
-            if(points < 50) { alert("Pas assez de HisL !"); return; }
-            points -= 50;
-            document.getElementById('userPoints').innerText = points;
-            
-            const wheel = document.getElementById('wheel');
-            const randomDegree = Math.floor(Math.random() * 360) + 3600; // 10 tours min
-            wheel.style.transform = `rotate(${randomDegree}deg)`;
-            
-            setTimeout(() => {
-                alert("Félicitations ! Vous avez gagné un Bonus de +100 HisL !");
-                points += 100;
-                document.getElementById('userPoints').innerText = points;
+        // --- JEU ROUE ---
+        function spin() {
+            if(points < 50) return alert("Besoin de 50 HisL !");
+            points -= 50; document.getElementById('userPoints').innerText = points;
+            const w = document.getElementById('wheel');
+            const deg = Math.floor(Math.random() * 360) + 3600;
+            w.style.transform = `rotate(${deg}deg)`;
+            setTimeout(() => { 
+                alert("Bravo ! +100 HisL gagnés !"); 
+                points += 100; document.getElementById('userPoints').innerText = points;
             }, 4000);
         }
 
-        function copyAll() {
-            const txt = `Host: ${document.getElementById('resHost').innerText}\nUser: ${document.getElementById('resUser').innerText}\nPass: ${document.getElementById('resPass').innerText}`;
-            navigator.clipboard.writeText(txt);
-            alert("Accès copiés dans le presse-papier !");
+        function copy() {
+            const t = `Host: ${document.getElementById('resHost').innerText}\nUser: ${document.getElementById('resUser').innerText}\nPass: ${document.getElementById('resPass').innerText}`;
+            navigator.clipboard.writeText(t); alert("Copié !");
         }
-
-        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+        function closeM() { document.getElementById('modal').style.display = 'none'; }
     </script>
 </body>
 </html>
