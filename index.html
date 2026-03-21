@@ -2,83 +2,96 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>YourTvSat VIP - L'Accès Élite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YourTvSat VIP - L'Expérience Satellite Or</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --gold-pure: #d4af37; --gold-light: #f9f295; --dark-premium: #0a0a0a; --dark-bg: #000000; --green-emerald: #004d3d; --text-silver: #c0c0c0; }
-        
-        body { background-color: var(--dark-bg); color: white; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; text-align: center; -webkit-font-smoothing: antialiased; }
-        
-        /* --- LOGO LUXUEUX DYNAMIQUE (Généré par code) --- */
-        .logo-container { position: relative; margin: 30px auto; width: 150px; height: 150px; }
-        
-        /* Cercle de base Émeraude et Or */
-        .logo-base { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 3px solid var(--gold-pure); border-radius: 50%; background: radial-gradient(circle, #1a1a1a, #000); box-shadow: 0 0 25px rgba(212, 175, 55, 0.5); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        
-        /* Texte Or brillant */
-        .logo-text { font-weight: 900; font-size: 1.4rem; color: var(--gold-pure); text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; text-shadow: 0 0 10px var(--gold-light); transform: rotate(-5deg); z-index: 2; }
-        
-        /* Onde dynamique pulsante Émeraude */
-        .logo-wave { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: rgba(0, 255, 127, 0.1); animation: wave-pulse 2.5s infinite ease-out; z-index: 1; }
-        @keyframes wave-pulse { 0% { transform: scale(0.9); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
-        
-        /* Flottaison douce du logo entier */
-        .floating-logo { animation: float 3s infinite ease-in-out; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        :root { --gold: #d4af37; --gold-bright: #f9f295; --dark: #000000; --emerald: #004d3d; }
+        body { background: var(--dark); color: white; font-family: 'Poppins', sans-serif; margin: 0; overflow-x: hidden; }
 
-        /* --- LANDING PAGE (VOTRE OFFRE) --- */
-        #landing-page { display: none; /* Masqué au chargement pour éviter le flash */ min-height: 100vh; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); }
+        /* --- LOGO SATELLITE DYNAMIQUE --- */
+        .header-brand { position: relative; height: 220px; display: flex; justify-content: center; align-items: center; margin-top: 20px; }
         
-        .promo-badge { background: #ff0000; color: white; padding: 6px 18px; border-radius: 5px; font-weight: bold; font-size: 0.85rem; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; animation: flash-badge 1s infinite; }
-        @keyframes flash-badge { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-
-        .big-price { font-size: 5rem; font-weight: 900; color: var(--gold-pure); margin: 5px 0; line-height: 0.9; text-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); }
-        .price-details { font-size: 1.1rem; color: var(--text-silver); margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px; }
-
-        /* BOUTON LUXE GOLD */
-        .btn-gold { background: linear-gradient(135deg, var(--gold-pure) 0%, var(--gold-light) 50%, var(--gold-pure) 100%); color: black; padding: 22px 50px; border-radius: 50px; font-weight: 900; border: none; cursor: pointer; font-size: 1.3rem; text-decoration: none; transition: 0.4s; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4); display: inline-block; position: relative; overflow: hidden; }
-        .btn-gold:hover { transform: scale(1.05) translateY(-3px); box-shadow: 0 15px 40px var(--gold-pure); }
-        /* Effet de reflet sur le bouton */
-        .btn-gold::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.13) 77%, rgba(255,255,255,0.5) 92%, rgba(255,255,255,0.0) 100%); animation: shimmer 3s infinite; }
-        @keyframes shimmer { 0% { transform: rotate(10deg) translateX(-100%); } 100% { transform: rotate(10deg) translateX(100%); } }
-
-        /* --- ESPACE VIP (SERVEURS / TESTS) --- */
-        #vip-page { display: none; padding: 40px 20px; background: var(--dark-premium); min-height: 100vh; }
-        .vip-title { color: var(--gold-pure); font-weight: 900; font-size: 2.5rem; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 15px var(--gold-pure); margin-bottom: 5px; }
+        .orbit-system { position: absolute; width: 300px; height: 100px; transform-style: preserve-3d; }
         
-        .card-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin: 30px 0; }
-        .app-card { background: #111; border: 1px solid #222; border-radius: 12px; padding: 15px; transition: 0.3s; }
-        .app-card:hover { border-color: var(--gold-pure); transform: translateY(-3px); }
-        .app-card b { display: block; margin-bottom: 5px; color: white; }
-        .app-card span { font-size: 0.8rem; color: #888; }
+        /* Le Satellite Doré */
+        .satellite { position: absolute; width: 40px; height: 40px; background: var(--gold); border-radius: 5px; box-shadow: 0 0 15px var(--gold-bright); animation: orbitRotation 6s infinite linear; display: flex; align-items: center; justify-content: center; z-index: 5; }
+        .satellite::before { content: ''; position: absolute; width: 60px; height: 2px; background: var(--gold); border-radius: 2px; } /* Panneaux solaires */
 
-        .server-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 25px; }
-        .pill-btn { background: transparent; color: var(--gold-pure); border: 2px solid var(--gold-pure); padding: 14px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.3s; font-family: 'Poppins', sans-serif; }
-        .pill-btn.active { background: #008000; color: white; border-color: #00ff00; box-shadow: 0 0 15px rgba(0, 128, 0, 0.7); }
-        
-        .main-action-btn { background: var(--gold-pure); color: black; border: none; padding: 20px; width: 100%; max-width: 400px; border-radius: 12px; font-weight: 900; font-size: 1.3rem; margin-top: 40px; cursor: pointer; font-family: 'Poppins', sans-serif; transition: 0.3s; }
-        .main-action-btn:hover { background: var(--gold-light); transform: scale(1.02); }
+        @keyframes orbitRotation {
+            0% { transform: translateX(140px) translateZ(10px) scale(1); z-index: 5; }
+            25% { transform: translateX(0px) translateZ(-50px) scale(0.7); z-index: 1; opacity: 0.5; }
+            50% { transform: translateX(-140px) translateZ(10px) scale(1); z-index: 5; opacity: 1; }
+            75% { transform: translateX(0px) translateZ(50px) scale(1.2); z-index: 10; }
+            100% { transform: translateX(140px) translateZ(10px) scale(1); z-index: 5; }
+        }
 
-        /* Chargement initial pour éviter le flash */
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .spinner { width: 50px; height: 50px; border: 5px solid #222; border-top-color: var(--gold-pure); border-radius: 50%; animation: spin 1s infinite linear; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .main-title { position: relative; z-index: 3; text-align: center; }
+        .main-title h1 { font-size: 2.2rem; margin: 0; background: linear-gradient(to bottom, #fff, var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(212,175,55,0.3)); }
+
+        /* --- PAGES --- */
+        #landing-page { display: none; min-height: 100vh; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
+        #vip-page { display: none; padding: 20px; }
+
+        .price-tag { font-size: 5rem; font-weight: 900; color: var(--gold); text-shadow: 0 0 20px rgba(212,175,55,0.5); margin: 10px 0; }
+        .btn-premium { background: linear-gradient(135deg, var(--gold), var(--gold-bright), var(--gold)); color: #000; padding: 20px 45px; border-radius: 50px; font-weight: 900; text-decoration: none; font-size: 1.2rem; box-shadow: 0 10px 30px rgba(212,175,55,0.4); transition: 0.3s; display: inline-block; }
+        .btn-premium:hover { transform: scale(1.05); }
+
+        /* --- VIP PANEL --- */
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .app-card { background: #111; border: 1px solid #222; padding: 15px; border-radius: 15px; text-align: center; }
+        .server-btn { background: none; border: 2px solid var(--gold); color: var(--gold); padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; margin: 5px 0; }
+        .server-btn.active { background: var(--gold); color: #000; }
+
+        #loader { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 999; }
     </style>
 </head>
 <body>
 
-    <div id="loader"><div class="spinner"></div></div>
+    <div id="loader"><div style="color:var(--gold)">CHARGEMENT DU SIGNAL...</div></div>
+
+    <div class="header-brand">
+        <div class="orbit-system">
+            <div class="satellite">🛰️</div>
+        </div>
+        <div class="main-title">
+            <h1>YOURTVSAT<br><span style="font-size: 1rem; color: var(--gold);">ELITE VIP</span></h1>
+        </div>
+    </div>
 
     <div id="landing-page">
-        <div class="floating-logo">
-            <div class="logo-container">
-                <div class="logo-wave"></div>
-                <div class="logo-base">
-                    <div class="logo-text">YOURTV<br>SAT</div>
-                </div>
-            </div>
+        <div style="color: red; font-weight: bold; margin-bottom: 10px;">🔥 OFFRE SATELLITE EXCLUSIVE</div>
+        <div class="price-tag">5.55 €</div>
+        <p style="color: #888; letter-spacing: 2px;">ACCÈS VIP ANNUEL ILLIMITÉ</p>
+        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-premium">⚡ DÉBLOQUER L'ACCÈS</a>
+    </div>
+
+    <div id="vip-page">
+        <h2 style="color:var(--gold)">ESPACE CLIENT PRIVÉ</h2>
+        <div class="card-grid">
+            <div class="app-card">IBO PLAYER</div>
+            <div class="app-card">SMARTONE</div>
         </div>
+        <h3 style="margin-top:30px;">GÉNÉRATEUR DE TEST 24H</h3>
+        <button class="server-btn active">STRONG 8K</button>
+        <button class="server-btn">NEO 4K</button>
+        <button class="btn-premium" style="width:100%; margin-top:20px;" onclick="alert('Signal envoyé !')">GÉNÉRER MON ACCÈS</button>
+    </div>
+
+    <script>
+        window.onload = function() {
+            document.getElementById('loader').style.display = 'none';
+            const success = new URLSearchParams(window.location.search).get('success');
+            
+            if (success === 'true') {
+                document.getElementById('vip-page').style.display = 'block';
+            } else {
+                document.getElementById('landing-page').style.display = 'flex';
+            }
+        };
+    </script>
+</body>
+</html>        </div>
 
         <div class="promo-badge">🔥 OFFRE DE LANCEMENT EXCLUSIVE</div>
         <h1 style="margin:0; letter-spacing:1px; font-weight:700;">ACCÈS VIP ILLIMITÉ</h1>
