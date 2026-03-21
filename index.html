@@ -3,15 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP v5.2 - Fix Final</title>
+    <title>YourTvSat VIP v7.0 - Omni-Dino</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root { --gold: #d4af37; --dark: #050505; --green: #00ff00; }
+        :root { --gold: #d4af37; --dark: #050505; --green: #00ff00; --red: #ff4d4d; }
         body { background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; text-align: center; margin: 0; }
         .gold { color: var(--gold); text-shadow: 0 0 10px rgba(212,175,55,0.3); }
-        .card { border: 1px solid var(--gold); border-radius: 25px; padding: 30px; max-width: 450px; margin: auto; background: #0a0a0a; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
-        .console { background: #000; border: 1px solid #222; color: var(--green); font-family: monospace; font-size: 0.75rem; padding: 15px; text-align: left; border-radius: 12px; margin: 20px 0; height: 120px; overflow-y: auto; border-left: 3px solid var(--gold); white-space: pre-wrap; }
-        .btn-main { background: linear-gradient(135deg, var(--gold), #f9f295); color: #000; border: none; padding: 18px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; }
+        .card { border: 1px solid var(--gold); border-radius: 25px; padding: 25px; max-width: 480px; margin: auto; background: #0a0a0a; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
+        .console { background: #000; border: 1px solid #222; color: var(--green); font-family: monospace; font-size: 0.75rem; padding: 15px; text-align: left; border-radius: 12px; margin: 15px 0; height: 120px; overflow-y: auto; border-left: 3px solid var(--gold); white-space: pre-wrap; }
+        
+        .grid-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .btn { border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; transition: 0.3s; }
+        
+        .btn-demo { background: #333; color: #fff; border: 1px solid var(--gold); }
+        .btn-1day { background: linear-gradient(135deg, var(--gold), #f9f295); color: #000; }
+        .btn-repair { background: #1a1a1a; color: var(--green); border: 1px solid var(--green); grid-column: span 2; }
+        
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .modal-content { background: #111; border: 2px solid var(--gold); padding: 25px; border-radius: 25px; width: 85%; max-width: 380px; }
         #qrcode { background: #fff; padding: 10px; display: inline-block; border-radius: 10px; margin: 15px 0; }
@@ -19,17 +26,25 @@
 </head>
 <body>
 
-    <h1 class="gold">YOURTVSAT <span style="font-size: 0.4em;">v5.2</span></h1>
+    <h1 class="gold">YOURTVSAT <span style="font-size: 0.4em;">v7.0</span></h1>
 
     <div class="card">
-        <button class="btn-main" onclick="startGeneration()">⚡ GÉNÉRER TEST (24H)</button>
-        <div class="console" id="log">SYSTÈME PRÊT...
-> API: tvpluspanel.net (HTTPS)
-> Flux: line.dndnscloud.ru:80 (HTTP)</div>
+        <p style="font-size: 0.8rem; color: #888; margin-bottom: 20px;">Gestionnaire de Scénarios Dino (TVPLUS)</p>
+        
+        <div class="grid-buttons">
+            <button class="btn btn-demo" onclick="runScenario('99')">🎟️ TEST DÉMO<br><small>(Sans Crédit)</small></button>
+            
+            <button class="btn btn-1day" onclick="runScenario('1d')">⚡ TEST 1 DAY<br><small>(Panel Direct)</small></button>
+            
+            <button class="btn btn-repair" onclick="manualRepair()">🔧 RÉPARER UNE URL "http:///"</button>
+        </div>
+
+        <div class="console" id="log">SYSTÈME OMNI-DINO PRÊT...
+> En attente d'un scénario.</div>
     </div>
 
     <div id="m" class="modal"><div class="modal-content">
-        <h2 class="gold">TEST PRÊT</h2>
+        <h2 class="gold">RÉSULTAT GÉNÉRÉ</h2>
         <div id="res" style="background:#000; padding:12px; border-radius:10px; color:var(--green); font-size:0.7rem; word-break:break-all; border: 1px solid #333; margin-bottom:10px;"></div>
         <div id="qrcode"></div>
         <button onclick="copy()" style="background:var(--gold); border:none; padding:12px; width:100%; border-radius:10px; font-weight:bold; cursor:pointer;">📋 COPIER LE LIEN</button>
@@ -39,37 +54,50 @@
     <script>
         const API_KEY = "a541fa9acb43c9be2f2759ca4ac5a47c";
         const API_URL = "https://tvpluspanel.net/api/api.php";
-        const PROXY = "https://api.allorigins.win/get?url=";
-        const DNS_FIX = "http://line.dndnscloud.ru:80/"; // Application du port 80
+        const DNS_FIX = "http://line.dndnscloud.ru:80/";
 
-        const l = (m) => { document.getElementById('log').innerText += `\n> ${m}`; };
+        const l = (m) => { document.getElementById('log').innerText += `\n> ${m}`; document.getElementById('log').scrollTop = 9999; };
 
-        async function startGeneration() {
-            if(!confirm("⚠️ Vérifie tes 'Demo Tickets' avant de continuer pour éviter de perdre un crédit réel.")) return;
-
-            l("Tentative de création...");
-            const target = `${API_URL}?action=new&type=m3u&sub=99&pack=30745&api_key=${API_KEY}`;
+        async function runScenario(subType) {
+            if(subType === '1d' && !confirm("⚠️ ATTENTION : Le mode '1 Day' peut consommer 1 CRÉDIT RÉEL si tes tickets démo sont à zéro. Continuer ?")) return;
+            
+            l(`Lancement scénario : sub=${subType}`);
+            const target = `${API_URL}?action=new&type=m3u&sub=${subType}&pack=30745&api_key=${API_KEY}`;
             
             try {
-                const response = await fetch(PROXY + encodeURIComponent(target));
+                // Utilisation de AllOrigins pour plus de stabilité sur les gros JSON
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}&t=${Date.now()}`);
                 const data = await response.json();
                 const res = JSON.parse(data.contents)[0] || JSON.parse(data.contents);
 
                 if (res.statut === "vrai" || res.status === "true") {
-                    // Force le Host et le Port 80 sur l'URL reçue
-                    let finalUrl = res.url.replace(/http:\/\/.*?\//, DNS_FIX);
-                    
-                    document.getElementById('res').innerText = finalUrl;
-                    document.getElementById("qrcode").innerHTML = "";
-                    new QRCode(document.getElementById("qrcode"), { text: finalUrl, width: 150, height: 150 });
-                    document.getElementById('m').style.display = 'flex';
-                    l("✅ Succès ! Lien réparé avec Port 80.");
+                    showResult(res.url);
+                    l("✅ Succès !");
                 } else {
-                    l(`❌ Panel: ${res.message || "Erreur de tickets."}`);
+                    l(`❌ Erreur Panel: ${res.message}`);
+                    if(res.message.includes("Tickets")) l("Conseil: Recharge tes tickets démo sur le panel.");
                 }
             } catch (e) {
-                l("🚨 Erreur de connexion au proxy.");
+                l("🚨 Erreur Réseau (Proxy saturé).");
             }
+        }
+
+        function manualRepair() {
+            const url = prompt("Colle l'URL cassée (http:///) ici :");
+            if (url) {
+                const repaired = url.replace(/http:\/\/.*?\//, DNS_FIX);
+                showResult(repaired);
+                l("🔧 Réparation manuelle effectuée.");
+            }
+        }
+
+        function showResult(url) {
+            // Nettoyage automatique systématique
+            const cleanUrl = url.replace(/http:\/\/.*?\//, DNS_FIX);
+            document.getElementById('res').innerText = cleanUrl;
+            document.getElementById("qrcode").innerHTML = "";
+            new QRCode(document.getElementById("qrcode"), { text: cleanUrl, width: 150, height: 150 });
+            document.getElementById('m').style.display = 'flex';
         }
 
         function copy() {
