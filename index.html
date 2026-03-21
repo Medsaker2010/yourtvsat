@@ -19,10 +19,46 @@
             100% { transform: translateX(-120px) scale(1.1); z-index: 15; }
         }
 
-        /* PAGE VENTE */
-        .price-box { padding: 20px; margin-top: 20px; }
+        /* PRIX */
+        .price-box { padding: 20px; }
         .big-price { font-size: 5rem; font-weight: 900; margin: 10px 0; color: #d4af37; text-shadow: 0 0 20px rgba(212,175,55,0.4); }
         .offer { color: red; font-weight: bold; letter-spacing: 2px; }
+
+        /* BOUTON LUXE AVEC REFLET */
+        .btn-container { padding: 20px; }
+        .btn-stripe { 
+            background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37); 
+            color: #000; 
+            padding: 20px 40px; 
+            border-radius: 50px; 
+            font-weight: 900; 
+            font-size: 1.2rem; 
+            text-decoration: none; 
+            display: inline-block; 
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(212,175,55,0.3);
+            border: none;
+        }
+
+        /* Effet de reflet qui passe */
+        .btn-stripe::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -100%;
+            width: 50%;
+            height: 200%;
+            background: rgba(255,255,255,0.4);
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 150%; }
+            100% { left: 150%; }
+        }
     </style>
 </head>
 <body>
@@ -36,6 +72,10 @@
         <p class="offer">OFFRE EXCLUSIVE</p>
         <div class="big-price">5.55 €</div>
         <p style="color:#888;">PASS ANNUEL ILLIMITÉ</p>
+    </div>
+
+    <div class="btn-container">
+        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-stripe">💎 DEVENIR MEMBRE VIP</a>
     </div>
 
 </body>
