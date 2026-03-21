@@ -3,38 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP - Test Immédiat</title>
+    <title>YourTvSat VIP</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
+        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; text-align: center; overflow-x: hidden; }
         .gold { color: #d4af37; }
-        .sat-logo { font-size: 50px; animation: rotate 4s infinite linear; display: inline-block; margin: 20px; }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .btn { background: #d4af37; color: #000; padding: 15px 30px; border-radius: 10px; font-weight: bold; text-decoration: none; display: block; margin: 10px auto; max-width: 250px; cursor: pointer; border: none; }
-        .card { background: #111; border: 1px solid #d4af37; padding: 15px; border-radius: 10px; margin-bottom: 10px; }
+        
+        /* LOGO SATELLITE LUXUEUX */
+        .header { height: 200px; display: flex; justify-content: center; align-items: center; position: relative; }
+        .satellite { font-size: 40px; position: absolute; animation: orbit 6s infinite linear; z-index: 10; }
+        @keyframes orbit {
+            0% { transform: rotateY(0deg) translateX(120px) rotateY(0deg); }
+            50% { transform: rotateY(180deg) translateX(120px) rotateY(-180deg); opacity: 0.3; }
+            100% { transform: rotateY(360deg) translateX(120px) rotateY(-360deg); }
+        }
+
+        /* PAGES */
+        .page { display: none; padding: 20px; }
+        .btn { background: #d4af37; color: #000; padding: 18px 40px; border-radius: 50px; font-weight: bold; text-decoration: none; display: inline-block; margin: 10px; border: none; cursor: pointer; font-size: 1.1rem; }
+        .card { background: #111; border: 1px solid #333; padding: 20px; border-radius: 15px; margin: 10px auto; max-width: 400px; }
     </style>
 </head>
 <body>
 
-    <div class="sat-logo">🛰️</div>
-    <h1 class="gold">YOURTVSAT VIP</h1>
+    <div class="header">
+        <div class="satellite">🛰️</div>
+        <h1 class="gold">YOURTVSAT<br>VIP ELITE</h1>
+    </div>
 
-    <div id="test-zone">
-        <h2 class="gold">BIENVENUE (MODE TEST)</h2>
-        <div class="card">🚀 ACCÈS ILLIMITÉ DÉBLOQUÉ</div>
+    <div id="p-vente" class="page">
+        <div style="color:red; font-weight:bold;">🔥 OFFRE LIMITÉE</div>
+        <h2 style="font-size:4rem; margin:10px;" class="gold">5.55 €</h2>
+        <p>ACCÈS VIP ANNUEL</p>
+        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn">💎 S'ABONNER</a>
+    </div>
+
+    <div id="p-vip" class="page">
+        <h2 class="gold">PANEL DE CONTRÔLE VIP</h2>
+        <div class="card">IBO PLAYER - ACTIVÉ ✅</div>
+        <div class="card">SMARTONE - ACTIVÉ ✅</div>
         
-        <div style="margin: 30px 0;">
+        <div style="margin-top:30px;">
             <h3>GÉNÉRATEUR DE TESTS</h3>
-            <button class="btn">GÉNÉRER UN CODE STRONG 8K</button>
-            <button class="btn" style="background:#444; color:white;">GÉNÉRER UN CODE NEO 4K</button>
-        </div>
-
-        <div class="card">
-            <p><b>Statut Serveur :</b> <span style="color:green">Connecté</span></p>
-            <p><b>Utilisateurs :</b> 1,248 en ligne</p>
+            <button class="btn" onclick="alert('Génération STRONG...')">STRONG 8K</button>
+            <button class="btn" onclick="alert('Génération NEO...')">NEO 4K</button>
         </div>
     </div>
 
+    <script>
+        // SCRIPT DE NAVIGATION SÉCURISÉ
+        (function() {
+            const url = new URLSearchParams(window.location.search);
+            const vente = document.getElementById('p-vente');
+            const vip = document.getElementById('p-vip');
+
+            // Si success=true OU admin=true, on montre le VIP
+            if (url.get('success') === 'true' || url.get('admin') === 'true') {
+                vente.style.display = 'none';
+                vip.style.display = 'block';
+            } else {
+                vente.style.display = 'block';
+                vip.style.display = 'none';
+            }
+        })();
+    </script>
 </body>
+</html></body>
 </html>
     <div id="page-vente" class="section">
         <p style="color:red">OFFRE EXCLUSIVE</p>
