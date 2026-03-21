@@ -3,48 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP v7.0 - Omni-Dino</title>
+    <title>YourTvSat VIP v9.0 - Strong/Neo Expert</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root { --gold: #d4af37; --dark: #050505; --green: #00ff00; --red: #ff4d4d; }
+        :root { --gold: #d4af37; --dark: #050505; --green: #00ff00; --red: #ff3333; }
         body { background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; text-align: center; margin: 0; }
         .gold { color: var(--gold); text-shadow: 0 0 10px rgba(212,175,55,0.3); }
         .card { border: 1px solid var(--gold); border-radius: 25px; padding: 25px; max-width: 480px; margin: auto; background: #0a0a0a; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
-        .console { background: #000; border: 1px solid #222; color: var(--green); font-family: monospace; font-size: 0.75rem; padding: 15px; text-align: left; border-radius: 12px; margin: 15px 0; height: 120px; overflow-y: auto; border-left: 3px solid var(--gold); white-space: pre-wrap; }
+        .console { background: #000; border: 1px solid #222; color: var(--green); font-family: monospace; font-size: 0.75rem; padding: 15px; text-align: left; border-radius: 12px; margin: 15px 0; height: 130px; overflow-y: auto; border-left: 3px solid var(--gold); white-space: pre-wrap; }
         
-        .grid-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .btn { border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; transition: 0.3s; }
+        .grid-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .btn { border: none; padding: 18px; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; color: #fff; transition: 0.3s; }
+        .btn-neo { background: linear-gradient(135deg, #0052cc, #00a3ff); }
+        .btn-strong { background: linear-gradient(135deg, #cc0000, #ff4d4d); }
+        .btn-repair { background: #1a1a1a; color: var(--gold); border: 1px solid var(--gold); grid-column: span 2; margin-top: 10px; }
         
-        .btn-demo { background: #333; color: #fff; border: 1px solid var(--gold); }
-        .btn-1day { background: linear-gradient(135deg, var(--gold), #f9f295); color: #000; }
-        .btn-repair { background: #1a1a1a; color: var(--green); border: 1px solid var(--green); grid-column: span 2; }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .modal-content { background: #111; border: 2px solid var(--gold); padding: 25px; border-radius: 25px; width: 85%; max-width: 380px; }
         #qrcode { background: #fff; padding: 10px; display: inline-block; border-radius: 10px; margin: 15px 0; }
     </style>
 </head>
 <body>
 
-    <h1 class="gold">YOURTVSAT <span style="font-size: 0.4em;">v7.0</span></h1>
+    <h1 class="gold">YOURTVSAT <span style="font-size: 0.4em;">v9.0</span></h1>
 
     <div class="card">
-        <p style="font-size: 0.8rem; color: #888; margin-bottom: 20px;">Gestionnaire de Scénarios Dino (TVPLUS)</p>
-        
         <div class="grid-buttons">
-            <button class="btn btn-demo" onclick="runScenario('99')">🎟️ TEST DÉMO<br><small>(Sans Crédit)</small></button>
-            
-            <button class="btn btn-1day" onclick="runScenario('1d')">⚡ TEST 1 DAY<br><small>(Panel Direct)</small></button>
-            
-            <button class="btn btn-repair" onclick="manualRepair()">🔧 RÉPARER UNE URL "http:///"</button>
+            <button class="btn btn-neo" onclick="startProcess('NEO')">⚡ TEST NEO 4K</button>
+            <button class="btn btn-strong" onclick="startProcess('STRONG')">🔥 TEST STRONG 8K</button>
+            <button class="btn btn-repair" onclick="manualFix()">🔧 RÉPARER URL CASSÉE (http:///)</button>
         </div>
 
-        <div class="console" id="log">SYSTÈME OMNI-DINO PRÊT...
-> En attente d'un scénario.</div>
+        <div class="console" id="log">SYSTÈME PRÊT...
+> Protection anti-vidage de crédits active.
+> En attente des accès API...</div>
     </div>
 
     <div id="m" class="modal"><div class="modal-content">
-        <h2 class="gold">RÉSULTAT GÉNÉRÉ</h2>
+        <h2 id="m-title" class="gold">TEST DISPONIBLE</h2>
         <div id="res" style="background:#000; padding:12px; border-radius:10px; color:var(--green); font-size:0.7rem; word-break:break-all; border: 1px solid #333; margin-bottom:10px;"></div>
         <div id="qrcode"></div>
         <button onclick="copy()" style="background:var(--gold); border:none; padding:12px; width:100%; border-radius:10px; font-weight:bold; cursor:pointer;">📋 COPIER LE LIEN</button>
@@ -52,52 +48,65 @@
     </div></div>
 
     <script>
-        const API_KEY = "a541fa9acb43c9be2f2759ca4ac5a47c";
-        const API_URL = "https://tvpluspanel.net/api/api.php";
-        const DNS_FIX = "http://line.dndnscloud.ru:80/";
+        // ⚙️ METS TES ACCÈS ICI
+        const CONFIG = {
+            NEO: { dns: "URL_PANEL_NEO", key: "CLE_API_NEO", host: "DNS_FLUX_NEO:80" },
+            STRONG: { dns: "URL_PANEL_STRONG", key: "CLE_API_STRONG", host: "DNS_FLUX_STRONG:80" }
+        };
 
-        const l = (m) => { document.getElementById('log').innerText += `\n> ${m}`; document.getElementById('log').scrollTop = 9999; };
+        const l = (m) => { const e = document.getElementById('log'); e.innerText += `\n> ${m}`; e.scrollTop = e.scrollHeight; };
 
-        async function runScenario(subType) {
-            if(subType === '1d' && !confirm("⚠️ ATTENTION : Le mode '1 Day' peut consommer 1 CRÉDIT RÉEL si tes tickets démo sont à zéro. Continuer ?")) return;
+        async function startProcess(type) {
+            const srv = CONFIG[type];
+            if(srv.key.includes("CLE_API")) { alert("Configure d'abord tes clés API dans le code !"); return; }
+
+            // SCÉNARIO 1 : Alerte de sécurité crédits
+            if(!confirm(`⚠️ SÉCURITÉ : As-tu des tickets de test gratuits sur ton panel ${type} ?\n\nSi non, le panel pourrait consommer tes crédits réels.`)) return;
+
+            l(`Génération ${type} en cours...`);
             
-            l(`Lancement scénario : sub=${subType}`);
-            const target = `${API_URL}?action=new&type=m3u&sub=${subType}&pack=30745&api_key=${API_KEY}`;
+            // SCÉNARIO 2 : Utilisation du mode Démo strict (sub=99 ou action spécifique)
+            const target = `${srv.dns}/api.php?action=new&type=m3u&sub=99&pack=all&api_key=${srv.key}`;
             
             try {
-                // Utilisation de AllOrigins pour plus de stabilité sur les gros JSON
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}&t=${Date.now()}`);
-                const data = await response.json();
+                // SCÉNARIO 3 : Double Proxy (AllOrigins + CORSProxy)
+                const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}&t=${Date.now()}`);
+                const data = await r.json();
                 const res = JSON.parse(data.contents)[0] || JSON.parse(data.contents);
 
                 if (res.statut === "vrai" || res.status === "true") {
-                    showResult(res.url);
-                    l("✅ Succès !");
+                    // SCÉNARIO 4 : Réparation automatique de l'URL "http:///"
+                    let url = res.url;
+                    if(url.includes("http:///")) {
+                        url = url.replace("http:///", `http://${srv.host}/`);
+                        l("🔧 URL corrompue détectée... Réparée avec succès !");
+                    }
+                    showResult(type, url);
                 } else {
-                    l(`❌ Erreur Panel: ${res.message}`);
-                    if(res.message.includes("Tickets")) l("Conseil: Recharge tes tickets démo sur le panel.");
+                    l(`❌ REFUS : ${res.message || "Plus de tickets démo."}`);
                 }
             } catch (e) {
-                l("🚨 Erreur Réseau (Proxy saturé).");
+                l("🚨 ERREUR RÉSEAU : Proxy saturé.");
             }
         }
 
-        function manualRepair() {
-            const url = prompt("Colle l'URL cassée (http:///) ici :");
-            if (url) {
-                const repaired = url.replace(/http:\/\/.*?\//, DNS_FIX);
-                showResult(repaired);
-                l("🔧 Réparation manuelle effectuée.");
+        // SCÉNARIO 5 : Réparation manuelle pour les anciens liens Dino ou autres
+        function manualFix() {
+            const oldUrl = prompt("Colle l'URL à réparer (http:///) :");
+            if(oldUrl) {
+                const host = prompt("Entre le DNS (ex: line.dndnscloud.ru:80) :", "line.dndnscloud.ru:80");
+                const fixed = oldUrl.replace("http:///", `http://${host}/`);
+                showResult("RÉPARÉ", fixed);
             }
         }
 
-        function showResult(url) {
-            // Nettoyage automatique systématique
-            const cleanUrl = url.replace(/http:\/\/.*?\//, DNS_FIX);
-            document.getElementById('res').innerText = cleanUrl;
+        function showResult(t, u) {
+            document.getElementById('m-title').innerText = `TEST ${t} PRÊT`;
+            document.getElementById('res').innerText = u;
             document.getElementById("qrcode").innerHTML = "";
-            new QRCode(document.getElementById("qrcode"), { text: cleanUrl, width: 150, height: 150 });
+            new QRCode(document.getElementById("qrcode"), { text: u, width: 150, height: 150 });
             document.getElementById('m').style.display = 'flex';
+            l(`✅ Test ${t} terminé.`);
         }
 
         function copy() {
