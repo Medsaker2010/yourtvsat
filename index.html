@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat - Diagnostic Expert</title>
+    <title>YourTvSat Diagnostic VIP</title>
     <style>
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; margin: 0; }
-        .gold { color: #d4af37; }
-        .card { border: 1px solid #d4af37; border-radius: 15px; padding: 25px; max-width: 400px; margin: auto; background: #0a0a0a; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .info-box { background: #111; border: 1px solid #333; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: left; font-size: 0.9rem; }
-        .info-box p { margin: 10px 0; display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding-bottom: 5px; }
-        .status-val { color: #d4af37; font-weight: bold; }
-        .btn { background: #d4af37; color: #000; padding: 15px; border-radius: 8px; font-weight: 900; border: none; width: 100%; cursor: pointer; margin-bottom: 12px; text-transform: uppercase; }
-        .btn-check { background: #222; color: #d4af37; border: 1px solid #d4af37; }
-        #log { font-size: 0.7rem; color: #666; margin-top: 15px; text-align: left; max-height: 100px; overflow: auto; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; }
+        .gold { color: #d4af37; text-transform: uppercase; letter-spacing: 2px; }
+        .card { border: 1px solid #d4af37; border-radius: 20px; padding: 30px; max-width: 380px; margin: auto; background: linear-gradient(145deg, #0a0a0a, #1a1a1a); box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
+        .info-box { background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 12px; padding: 15px; margin-bottom: 25px; text-align: left; }
+        .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; font-size: 0.9rem; }
+        .val { color: #d4af37; font-weight: bold; }
+        .btn { background: linear-gradient(180deg, #f9f295 0%, #d4af37 100%); color: #000; padding: 16px; border-radius: 10px; font-weight: 900; border: none; width: 100%; cursor: pointer; margin-bottom: 15px; transition: 0.3s; }
+        .btn:active { transform: scale(0.98); }
+        .btn-alt { background: #111; color: #d4af37; border: 1px solid #d4af37; }
+        #debug { font-size: 0.65rem; color: #555; margin-top: 15px; font-family: monospace; }
     </style>
 </head>
 <body>
@@ -22,45 +23,56 @@
 
     <div class="card">
         <div class="info-box">
-            <div style="color:#888; font-size: 0.7rem; margin-bottom: 10px; font-weight: bold; text-transform: uppercase;">Réponse du Panel NEO 4K</div>
-            <p>Connexion API: <span id="api_status" class="status-val">---</span></p>
-            <p>Crédits : <span id="api_credits" class="status-val" style="color:#2ecc71;">--</span></p>
-            <p>Type de compte : <span id="api_group" class="status-val">--</span></p>
+            <div class="info-row"><span>Connexion API :</span> <span id="st" class="val">Prêt</span></div>
+            <div class="info-row"><span>Crédits :</span> <span id="cr" class="val">--</span></div>
+            <div class="info-row"><span>Compte :</span> <span id="gp" class="val">--</span></div>
         </div>
 
-        <button class="btn btn-check" onclick="getAccountInfo()">🔍 VOIR MES CRÉDITS</button>
-        <button class="btn" onclick="generateTest()">🚀 TESTER LA GÉNÉRATION</button>
+        <button class="btn btn-alt" onclick="fetchInfo()">🔍 VOIR MES CRÉDITS</button>
+        <button class="btn" onclick="runGen()">🚀 TESTER LA GÉNÉRATION</button>
         
-        <div id="log"></div>
+        <div id="debug">Attente d'action...</div>
     </div>
 
     <script>
-        const NEO_URL = "https://neo4kpro.me/api/api.php";
-        const NEO_KEY = "990f58084a19da19da13831da85aaa3d";
-        const PROXY = "https://api.allorigins.win/get?url=";
+        const API_URL = "https://neo4kpro.me/api/api.php";
+        const API_KEY = "990f58084a19da19da13831da85aaa3d";
 
-        function addLog(msg) {
-            const l = document.getElementById('log');
-            l.innerHTML += "> " + msg + "<br>";
-        }
-
-        async function getAccountInfo() {
-            document.getElementById('api_status').innerText = "Analyse...";
-            addLog("Tentative de lecture 'user_info'...");
-            
-            const target = `${NEO_URL}?api_key=${NEO_KEY}&action=user_info`;
+        async function callAPI(actionParams) {
+            const log = document.getElementById('debug');
+            const target = `${API_URL}?api_key=${API_KEY}&${actionParams}`;
+            log.innerText = "Appel en cours...";
             
             try {
-                const response = await fetch(PROXY + encodeURIComponent(target));
-                const json = await response.json();
-                const data = JSON.parse(json.contents);
-
-                if (data) {
-                    document.getElementById('api_status').innerText = "Connecté ✅";
-                    document.getElementById('api_credits').innerText = (data.credits !== undefined) ? data.credits : "N/A";
-                    document.getElementById('api_group').innerText = data.group_name || "Revendeur";
-                    addLog("Données reçues avec succès.");
-                }
+                // Utilisation d'un proxy plus rapide pour les boutons qui ne répondent pas
+                const resp = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
+                const json = await resp.json();
+                return JSON.parse(json.contents);
             } catch (e) {
-                document.getElementById('api_status').innerText = "Erreur ❌";
-                addLog("Erreur de communication avec le proxy
+                log.innerText = "Erreur de relais proxy.";
+                return null;
+            }
+        }
+
+        async function fetchInfo() {
+            const res = await callAPI("action=user_info");
+            if(res) {
+                document.getElementById('cr').innerText = res.credits || "0";
+                document.getElementById('gp').innerText = res.group_name || "Revendeur";
+                document.getElementById('debug').innerText = "Données mises à jour.";
+            } else {
+                alert("Impossible de lire les crédits. Tentez directement la génération.");
+            }
+        }
+
+        async function runGen() {
+            const res = await callAPI("action=new&type=m3u&sub=1&pack=all");
+            if(res && res.username) {
+                alert(`✅ SUCCÈS !\nUser: ${res.username}\nPass: ${res.password}`);
+            } else {
+                alert("PANEL : " + (res ? res.message : "Erreur inconnue"));
+            }
+        }
+    </script>
+</body>
+</html>
