@@ -5,36 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YourTvSat VIP - L'Expérience Élite</title>
     <style>
+        /* --- LE STYLE (CSS) --- */
         :root { --gold: #d4af37; --dark: #050505; --green: #008000; }
-        body { background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; overflow-x: hidden; }
+        body { background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; }
         
-        /* --- LANDING PAGE (AVANT PAIEMENT) --- */
-        #landing { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); padding: 20px; }
-        .logo { width: 160px; filter: drop-shadow(0 0 15px var(--gold)); animation: float 3s infinite ease-in-out; margin-bottom: 20px; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        #landing { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); }
+        .logo { width: 160px; filter: drop-shadow(0 0 15px var(--gold)); margin-bottom: 20px; }
+        .price-title { font-size: 4rem; font-weight: 900; color: var(--gold); margin: 5px 0; }
         
-        .buzz-tag { background: #ff0000; color: white; padding: 6px 15px; border-radius: 5px; font-weight: bold; font-size: 0.8rem; margin-bottom: 15px; animation: blink 1s infinite; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-
-        .price-title { font-size: 4.5rem; font-weight: 900; color: var(--gold); margin: 5px 0; line-height: 1; }
-        .price-sub { font-size: 1.1rem; color: #888; margin-bottom: 35px; text-transform: uppercase; letter-spacing: 2px; }
-
-        .btn-stripe { background: linear-gradient(45deg, var(--gold), #f9f295, var(--gold)); color: black; padding: 22px 50px; border-radius: 50px; font-weight: 900; border: none; cursor: pointer; font-size: 1.3rem; text-decoration: none; transition: 0.4s; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); display: inline-block; }
-        .btn-stripe:hover { transform: scale(1.05); box-shadow: 0 15px 40px var(--gold); }
-
-        /* --- ESPACE VIP (APRÈS PAIEMENT) --- */
-        #vip-content { display: none; padding: 40px 20px; }
-        .server-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 30px; }
-        .pill-btn { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-main { background: linear-gradient(45deg, var(--gold), #f9f295); color: black; padding: 20px 40px; border-radius: 50px; font-weight: 900; border: none; cursor: pointer; font-size: 1.2rem; text-decoration: none; display: inline-block; margin-top: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        
+        #vip-content { display: none; padding: 40px 10px; }
+        .pill-btn { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; margin: 5px; }
         .pill-btn.active { background: var(--green); color: white; border-color: #00ff00; box-shadow: 0 0 15px var(--green); }
-        
-        .main-action-btn { background: var(--gold); color: black; border: none; padding: 20px; width: 100%; max-width: 400px; border-radius: 10px; font-weight: 900; font-size: 1.2rem; margin-top: 40px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="landing">
-        <div class="buzz-tag">🔥 OFFRE DE LANCEMENT EXCLUSIVE</div>
+        <img src="https://i.ibb.co/V9X8H7G/yourtvsat-logo-premium.png" class="logo">
+        <h1 style="letter-spacing:2px; margin:0;">ACCÈS VIP ILLIMITÉ</h1>
+        <div class="price-title">5.55 €</div>
+        <p style="color:#888; text-transform:uppercase;">Pass Annuel - Buzz de Lancement</p>
+        
+        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-main">💎 S'ABONNER MAINTENANT</a>
+    </div>
+
+    <div id="vip-content">
+        <h1 style="color:var(--gold)">VOTRE PANEL VIP</h1>
+        <div class="server-grid">
+            <button class="pill-btn active">STRONG 8K</button>
+            <button class="pill-btn">NEO 4K</button>
+        </div>
+        </div>
+
+    <script>
+        // Si l'URL contient ?success=true, on cache la vente et on montre le VIP
+        if (window.location.search.includes('success=true')) {
+            document.getElementById('landing').style.display = 'none';
+            document.getElementById('vip-content').style.display = 'block';
+        }
+    </script>
+</body>
+</html>        <div class="buzz-tag">🔥 OFFRE DE LANCEMENT EXCLUSIVE</div>
         <img src="https://medsaker2010.github.io/yourtvsat/logo.png" class="logo" alt="Logo YourTvSat">
         <h1 style="margin:0; letter-spacing:1px;">ACCÈS VIP ILLIMITÉ</h1>
         <div class="price-title">5.55 €</div>
