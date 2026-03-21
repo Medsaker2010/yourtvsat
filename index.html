@@ -12,7 +12,6 @@
         .header { padding: 40px 0; position: relative; display: flex; justify-content: center; align-items: center; }
         .sat { font-size: 45px; position: absolute; animation: orbit 5s infinite ease-in-out; z-index: 5; }
         .brand { font-size: 2rem; font-weight: 900; z-index: 10; text-transform: uppercase; line-height: 1.1; }
-
         @keyframes orbit {
             0% { transform: translateX(-120px) scale(1.1); z-index: 15; }
             50% { transform: translateX(120px) scale(0.6); opacity: 0.4; z-index: 1; }
@@ -26,24 +25,23 @@
         /* BOUTON LUXE */
         .btn-luxe {
             background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37);
-            color: #000; padding: 22px 45px; border-radius: 50px; font-weight: 900; font-size: 1.2rem;
+            color: #000; padding: 20px 40px; border-radius: 50px; font-weight: 900; font-size: 1.1rem;
             text-decoration: none; display: inline-block; position: relative; overflow: hidden;
             box-shadow: 0 10px 30px rgba(212,175,55,0.4); border: none;
         }
-        .btn-luxe::after {
-            content: ''; position: absolute; top: -50%; left: -100%; width: 50%; height: 200%;
-            background: rgba(255,255,255,0.5); transform: rotate(30deg); animation: shine 3s infinite;
-        }
-        @keyframes shine { 0% { left: -100%; } 20% { left: 150%; } 100% { left: 150%; } }
 
-        /* DESIGN PANEL VIP COMPLET */
+        /* DESIGN PANEL VIP */
+        .section-title { margin-top: 30px; border-bottom: 1px solid #333; padding-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; color: #888; }
+        .grid-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 500px; margin: 20px auto; }
+        
         .card-vip { 
-            background: #111; border: 1px solid #222; border-left: 5px solid #d4af37; 
-            padding: 20px; border-radius: 12px; margin: 15px auto; max-width: 400px; text-align: left; 
+            background: #111; border: 1px solid #222; border-left: 4px solid #d4af37; 
+            padding: 15px; border-radius: 10px; text-align: left; font-size: 0.85rem;
         }
-        .dot { height: 10px; width: 10px; background: #00ff00; border-radius: 50%; display: inline-block; margin-right: 10px; box-shadow: 0 0 8px #00ff00; }
-        .btn-gen { background: #222; color: #d4af37; border: 1px solid #d4af37; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
-        .btn-gen:active { background: #d4af37; color: #000; }
+        .dot { height: 8px; width: 8px; background: #00ff00; border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 5px #00ff00; }
+        
+        .btn-gen { background: #222; color: #d4af37; border: 1px solid #333; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
+        .btn-whatsapp { background: #25D366; color: white; padding: 15px; border-radius: 50px; text-decoration: none; display: inline-block; margin-top: 40px; font-weight: bold; width: 80%; max-width: 300px; }
     </style>
 </head>
 <body>
@@ -54,29 +52,38 @@
     </div>
 
     <div id="p-vente" class="page active">
-        <p style="color: red; font-weight: bold; letter-spacing: 2px;">OFFRE LIMITÉE</p>
-        <div style="font-size: 5rem; font-weight: 900; color: #d4af37; margin: 10px 0;">5.55 €</div>
+        <p style="color: red; font-weight: bold;">OFFRE LIMITÉE</p>
+        <div style="font-size: 5rem; font-weight: 900; color: #d4af37;">5.55 €</div>
         <p style="color:#888;">PASS ANNUEL SATELLITE</p>
         <div style="margin-top: 30px;">
-            <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="yts-btn">💎 DEVENIR MEMBRE VIP</a>
+            <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-luxe">💎 DEVENIR MEMBRE VIP</a>
         </div>
     </div>
 
     <div id="p-vip" class="page">
         <h2 class="gold">PANEL DE GESTION VIP</h2>
-        
-        <div class="card-vip"><span class="dot"></span> <b>IBO PLAYER</b> : Activé ✅</div>
-        <div class="card-vip"><span class="dot"></span> <b>SMARTONE IPTV</b> : Activé ✅</div>
-        <div class="card-vip"><span class="dot"></span> <b>BOB PLAYER</b> : Activé ✅</div>
-        <div class="card-vip"><span class="dot"></span> <b>ATLAS PRO</b> : Activé ✅</div>
-        
-        <div style="max-width:400px; margin: 30px auto;">
-            <h3 class="gold">GÉNÉRATEUR DE TESTS</h3>
-            <button class="btn-gen">GÉNÉRER TEST STRONG 8K</button>
-            <button class="btn-gen">GÉNÉRER TEST NEO 4K</button>
-            <button class="btn-gen">GÉNÉRER TEST DINO OTT</button>
-            <button class="btn-gen">GÉNÉRER TEST CRYSTAL</button>
+
+        <p class="section-title">Activations Lecteurs</p>
+        <div class="grid-panel">
+            <div class="card-vip"><span class="dot"></span> IBO PLAYER</div>
+            <div class="card-vip"><span class="dot"></span> SMARTONE</div>
+            <div class="card-vip"><span class="dot"></span> BOB PLAYER</div>
+            <div class="card-vip"><span class="dot"></span> MAC PLAYER</div>
+            <div class="card-vip"><span class="dot"></span> SET IPTV</div>
+            <div class="card-vip"><span class="dot"></span> NET IPTV</div>
         </div>
+
+        <p class="section-title">Générateurs de Tests 24H</p>
+        <div class="grid-panel">
+            <button class="btn-gen">STRONG 8K</button>
+            <button class="btn-gen">NEO 4K</button>
+            <button class="btn-gen">DINO OTT</button>
+            <button class="btn-gen">CRYSTAL</button>
+            <button class="btn-gen">ATLAS PRO</button>
+            <button class="btn-gen">KING 365</button>
+        </div>
+
+        <a href="https://wa.me/VOTRE_NUMERO" class="btn-whatsapp">💬 SUPPORT WHATSAPP VIP</a>
     </div>
 
     <script>
@@ -88,6 +95,5 @@
             }
         })();
     </script>
-
 </body>
 </html>
