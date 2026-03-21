@@ -5,224 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YourTvSat VIP - L'Expérience Élite</title>
     <style>
-        /* --- LE STYLE (CSS) --- */
-        :root { --gold: #d4af37; --dark: #050505; --green: #008000; }
-        body { background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; }
+        :root { --gold: #d4af37; --dark: #050505; --green: #008000; --silver: #c0c0c0; }
+        body { background: var(--dark); color: white; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; text-align: center; overflow-x: hidden; }
         
-        #landing { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); }
-        .logo { width: 160px; filter: drop-shadow(0 0 15px var(--gold)); margin-bottom: 20px; }
-        .price-title { font-size: 4rem; font-weight: 900; color: var(--gold); margin: 5px 0; }
+        /* --- LANDING PAGE --- */
+        #landing { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); padding: 20px; }
+        .logo { width: 180px; filter: drop-shadow(0 0 15px var(--gold)); animation: float 3s infinite ease-in-out; margin-bottom: 20px; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         
-        .btn-main { background: linear-gradient(45deg, var(--gold), #f9f295); color: black; padding: 20px 40px; border-radius: 50px; font-weight: 900; border: none; cursor: pointer; font-size: 1.2rem; text-decoration: none; display: inline-block; margin-top: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .buzz-tag { background: #ff0000; color: white; padding: 6px 15px; border-radius: 5px; font-weight: bold; font-size: 0.8rem; margin-bottom: 15px; animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .price-title { font-size: 4.5rem; font-weight: 900; color: var(--gold); margin: 5px 0; line-height: 1; }
+        .price-sub { font-size: 1.1rem; color: var(--silver); margin-bottom: 35px; text-transform: uppercase; letter-spacing: 2px; }
+
+        .btn-stripe { background: linear-gradient(45deg, var(--gold), #f9f295, var(--gold)); color: black; padding: 22px 50px; border-radius: 50px; font-weight: 900; border: none; cursor: pointer; font-size: 1.3rem; text-decoration: none; transition: 0.4s; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); display: inline-block; }
+        .btn-stripe:hover { transform: scale(1.05); box-shadow: 0 15px 40px var(--gold); }
+        .btn-crypto { background: transparent; color: white; border: 1px solid var(--gold); margin-top: 15px; padding: 12px 30px; font-size: 1rem; }
+
+        /* --- ESPACE VIP (CACHÉ PAR DÉFAUT) --- */
+        #vip-content { display: none; padding: 40px 20px; animation: fadeIn 1s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        #vip-content { display: none; padding: 40px 10px; }
-        .pill-btn { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; margin: 5px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin: 30px 0; }
+        .card { background: #111; border: 1px solid #222; padding: 15px; border-radius: 12px; transition: 0.3s; }
+        .card img { width: 60px; margin-bottom: 10px; }
+        
+        .server-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
+        .pill-btn { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 12px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .pill-btn.active { background: var(--green); color: white; border-color: #00ff00; box-shadow: 0 0 15px var(--green); }
+        .main-action { background: var(--gold); color: black; border: none; padding: 20px; width: 100%; max-width: 400px; border-radius: 10px; font-weight: 900; font-size: 1.2rem; margin-top: 30px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="landing">
-        <img src="https://i.ibb.co/V9X8H7G/yourtvsat-logo-premium.png" class="logo">
-        <h1 style="letter-spacing:2px; margin:0;">ACCÈS VIP ILLIMITÉ</h1>
-        <div class="price-title">5.55 €</div>
-        <p style="color:#888; text-transform:uppercase;">Pass Annuel - Buzz de Lancement</p>
-        
-        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-main">💎 S'ABONNER MAINTENANT</a>
-    </div>
-
-    <div id="vip-content">
-        <h1 style="color:var(--gold)">VOTRE PANEL VIP</h1>
-        <div class="server-grid">
-            <button class="pill-btn active">STRONG 8K</button>
-            <button class="pill-btn">NEO 4K</button>
-        </div>
-        </div>
-
-    <script>
-        // Si l'URL contient ?success=true, on cache la vente et on montre le VIP
-        if (window.location.search.includes('success=true')) {
-            document.getElementById('landing').style.display = 'none';
-            document.getElementById('vip-content').style.display = 'block';
-        }
-    </script>
-</body>
-</html>        <div class="buzz-tag">🔥 OFFRE DE LANCEMENT EXCLUSIVE</div>
-        <img src="https://medsaker2010.github.io/yourtvsat/logo.png" class="logo" alt="Logo YourTvSat">
+        <div class="buzz-tag">🔥 OFFRE DE LANCEMENT EXCLUSIVE</div>
+        <img src="https://raw.githubusercontent.com/base44dev/encourgeant-le-d-bit-du-cours-d-eau-principal/main/logo.png" class="logo" alt="YourTvSat Logo">
         <h1 style="margin:0; letter-spacing:1px;">ACCÈS VIP ILLIMITÉ</h1>
         <div class="price-title">5.55 €</div>
-        <div class="price-sub">PAR AN / SANS ENGAGEMENT</div>
+        <div class="price-sub">PAR AN / TEST GRATUIT À VIE</div>
         
-        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7Hfn000" class="btn-stripe">💎 COMMENCER L'EXPÉRIENCE</a>
+        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-stripe">💎 COMMENCER L'EXPÉRIENCE</a>
+        <button class="btn-stripe btn-crypto" onclick="showCrypto()">₿ PAYER EN CRYPTO</button>
         
-        <div style="margin-top:40px; color:#444; font-size:0.9rem;">
-            Paiement sécurisé par <b>Stripe</b> & Support 24/7
-        </div>
+        <div style="margin-top:40px; color:#444; font-size:0.9rem;">Paiement sécurisé par <b>Stripe</b></div>
     </div>
 
     <div id="vip-content">
-        <h1 style="color:var(--gold)">ESPACE MEMBRE YOURTVSAT</h1>
-        <p>Sélectionnez un serveur pour générer votre test 24h :</p>
+        <h1 style="color:var(--gold); text-transform: uppercase;">Bienvenue dans l'Élite</h1>
+        <p style="color:var(--silver)">Votre abonnement est actif. Profitez de vos services.</p>
 
-        <div class="server-grid">
-            <button class="pill-btn active" onclick="selectS('STRONG8K', this)">STRONG 8K</button>
-            <button class="pill-btn" onclick="selectS('NEO4K', this)">NEO 4K</button>
-            <button class="pill-btn" onclick="selectS('NEXON4K', this)">NEXON 4K</button>
-            <button class="pill-btn" onclick="selectS('EAGLE4K', this)">EAGLE 4K</button>
-        </div>
-
-        <button class="main-action-btn" onclick="startProcess()">🚀 OBTENIR MON ACCÈS</button>
-        
-        <div id="result-box" style="margin-top:20px; font-family:monospace; background:#111; padding:15px; border-radius:10px; display:none;">
-            </div>
-    </div>
-
-    <script>
-        // 1. Vérification du paiement (via l'URL ?success=true)
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('success') === 'true') {
-            document.getElementById('landing').style.display = 'none';
-            document.getElementById('vip-content').style.display = 'block';
-        }
-
-        // 2. Logique des serveurs (Simplifiée pour l'exemple)
-        let selected = "STRONG8K";
-        function selectS(name, btn) {
-            selected = name;
-            document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        async function startProcess() {
-            alert("Traitement en cours pour le serveur " + selected + "...");
-            // Ton code de génération de test avec le proxy CORS ici
-        }
-    </script>
-</body>
-</html>
-        <div id="g_id_onload" data-client_id="VOTRE_GOOGLE_CLIENT_ID" data-callback="handleCredentialResponse"></div>
-        <div class="g_id_signin" data-type="standard"></div>
-
-        <button class="btn-premium" onclick="startStripePayment()">💎 JE M'ABONNE (5.55€)</button>
-        <button class="btn-premium btn-crypto" onclick="openCryptoWallet()">₿ PAYER EN CRYPTO</button>
-    </div>
-
-    <div id="main-content">
-        <h2 class="gold-text">Espace Membre YourTvSat</h2>
-        <div id="product-list">
-            <p>Chargement des produits Premium...</p>
-        </div>
-    </div>
-
-    <script>
-        const stripe = Stripe('VOTRE_STRIPE_PUBLIC_KEY');
-
-        function handleCredentialResponse(response) {
-            console.log("Connecté avec Google");
-            // Ici, vous pouvez vérifier si l'utilisateur a déjà payé dans votre base
-        }
-
-        async function startStripePayment() {
-            // Appel à votre backend ou Stripe Checkout direct
-            alert("Redirection vers Stripe... (Prêt pour votre API)");
-            // stripe.redirectToCheckout({ sessionId: '...' });
-        }
-
-        function openCryptoWallet() {
-            alert("Adresse Wallet Crypto : [VOTRE_ADRESSE_ICI]");
-        }
-
-        // FONCTION CRUCIALE : À appeler après succès du paiement
-        function unlockContent() {
-            document.getElementById('auth-overlay').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-        }
-    </script>
-</body>
-</html>            color: #d4af37;
-            border: 2px solid #d4af37;
-            padding: 10px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 700;
-        }
-
-        .pill-btn.active {
-            background: #008000;
-            color: #fff;
-            border-color: #00ff00;
-            box-shadow: 0 0 15px rgba(0, 128, 0, 0.6);
-            transform: scale(1.05);
-        }
-
-        /* Bouton Rectangulaire Doré */
-        .yts-rect-btn {
-            background: linear-gradient(135deg, #d4af37 0%, #f9f295 50%, #d4af37 100%);
-            color: #000;
-            border: none;
-            padding: 20px 40px;
-            border-radius: 12px;
-            font-size: 1.2rem;
-            font-weight: 900;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-            transition: 0.3s;
-            margin-top: 40px;
-            width: 100%;
-            max-width: 450px;
-        }
-
-        .yts-rect-btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
-
-        /* Modal (Pop-up) */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: #111; border: 2px solid #d4af37; width: 90%; max-width: 400px;
-            border-radius: 20px; padding: 25px; text-align: center;
-        }
-        .access-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border-left: 5px solid #008000; text-align: left; margin: 20px 0; }
-        .close-modal { color: #d4af37; float: right; font-size: 28px; cursor: pointer; }
-    </style>
-</head>
-<body>
-
-    <h1>YourTvSat VIP Panel</h1>
-
-    <div class="yts-pill-container">
-        <button class="pill-btn active" onclick="selectServer('STRONG8K', this)">STRONG 8K</button>
-        <button class="pill-btn" onclick="selectServer('NEO4K', this)">NEO 4K</button>
-        <button class="pill-btn" onclick="selectServer('NEXON4K', this)">NEXON 4K</button>
-        <button class="pill-btn" onclick="selectServer('EAGLE4K', this)">EAGLE 4K</button>
-        <button class="pill-btn" onclick="selectServer('FUEGO', this)">FUEGO TV</button>
-        <button class="pill-btn" onclick="selectServer('DINO_VIP', this)">DINO VIP</button>
-    </div>
-
-    <button id="mainLaunchBtn" class="yts-rect-btn" onclick="startProcess()">
-        🚀 OBTENIR MON ACCÈS GRATUIT
-    </button>
-
-    <div id="accessModal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <h2 style="color:#d4af37">🏆 ACCÈS GÉNÉRÉ</h2>
-            <div id="pointsEarned" style="color:#00ff00; font-weight:bold;"></div>
-            <div class="access-box">
-                <p>🌐 <b>Host:</b> <span id="resHost"></span></p>
-                <p>👤 <b>User:</b> <span id="resUser"></span></p>
-                <p>🔑 <b>Pass:</b> <span id="resPass"></span></p>
-            </div>
-            <button onclick="copyAccess()" style="background:#d4af37; border:none; padding:10px; border-radius:5px; cursor:pointer; width:100%; font-weight:bold;">📋 COPIER TOUT</button>
-        </div>
-    </div>
-
-    <script>
-        /* --- CONFIGURATION & MOTEUR --- */
-        const CONFIG_GLOBAL = {
-            STRONG8K: { url: "https://my8k.me/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51", type: "STD", pack: "all" },
+        <div class="product-grid">
+            <div class="card"><img src="https://yourtvsat.com/wp-content/uploads/2023/IBO.png"><br><b>IBO PLAYER</b></div>
+            <div class="card"><img src="api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51", type: "STD", pack: "all" },
             NEO4K:    { url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d", type: "STD", pack: "all" },
             NEXON4K:  { url: "http://api-connect.icu/api/dev_api.php", key: "90E655F4EC3A04B518A98B189D2E62BE4E18BDBA2E2F7114", type: "DEV", pack: "1" },
             EAGLE4K:  { url: "http://api-elg-26.com/api/dev_api.php", key: "A0F121281A26DB634862390DC531DA6D204DD91E74516071", type: "DEV", pack: "1" },
