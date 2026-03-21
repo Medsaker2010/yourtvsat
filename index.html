@@ -5,36 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YourTvSat VIP</title>
     <style>
-        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; text-align: center; }
         .gold { color: #d4af37; }
-        .sat { font-size: 50px; margin: 20px; animation: move 4s infinite ease-in-out; display: inline-block; }
-        @keyframes move { 0%, 100% { transform: translateX(-20px); } 50% { transform: translateX(20px); } }
-        .view { display: none; padding: 20px; width: 100%; max-width: 450px; box-sizing: border-box; }
-        .active { display: block !important; }
-        .btn { background: #d4af37; color: #000; padding: 15px 30px; border-radius: 50px; display: inline-block; text-decoration: none; font-weight: bold; margin: 10px; border: none; cursor: pointer; }
-        .card { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #333; margin: 10px 0; }
-        .pill { background: #222; color: #fff; border: 1px solid #444; padding: 8px 15px; border-radius: 20px; cursor: pointer; margin: 5px; font-size: 0.8rem; }
-        .pill.active { background: #d4af37; color: #000; }
-        #accessModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; }
-        .modal-content { background: #111; padding: 20px; border-radius: 15px; border: 2px solid #d4af37; width: 90%; max-width: 350px; }
-        .res { background: #222; padding: 10px; border-radius: 8px; margin: 10px 0; text-align: left; font-family: monospace; font-size: 0.9rem; word-break: break-all; }
+        
+        /* Animation Satellite simple (Anti-Bug) */
+        .header { padding: 30px 0; }
+        .sat { font-size: 45px; display: inline-block; animation: move 4s infinite ease-in-out; }
+        @keyframes move {
+            0%, 100% { transform: translateX(-80px); }
+            50% { transform: translateX(80px); }
+        }
+
+        /* Séparation stricte des pages */
+        .page { display: none; padding: 20px; }
+        .show { display: block !important; }
+
+        /* Style Boutique */
+        .price { font-size: 4.5rem; font-weight: 900; margin: 15px 0; color: #d4af37; }
+        .btn { background: #d4af37; color: #000; padding: 18px 35px; border-radius: 50px; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 20px; border: none; cursor: pointer; }
+        .card { background: #111; border: 1px solid #333; padding: 15px; border-radius: 10px; margin: 10px auto; max-width: 350px; border-left: 4px solid #d4af37; }
     </style>
 </head>
 <body>
-    <div class="sat">🛰️</div>
-    <h1 class="gold">YOURTVSAT VIP</h1>
-    <div id="L" class="view">
-        <h2 style="font-size:3rem; margin:10px 0;">5.55 €</h2>
-        <p>Accès Premium Annuel</p>
-        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn">💎 ACCÈS VIP</a>
+
+    <div class="header">
+        <div class="sat">🛰️</div>
+        <h1 class="gold">YOURTVSAT VIP</h1>
     </div>
-    <div id="V" class="view">
-        <div class="card">
-            <h2 class="gold">ESPACE CLIENT</h2>
-            <div style="display:flex; flex-wrap:wrap; justify-content:center; margin-bottom:15px;">
-                <button class="pill active" onclick="sel('STRONG8K',this)">STRONG8K</button>
-                <button class="pill" onclick="sel('NEO4K',this)">NEO4K</button>
-                <button class="pill" onclick="sel('NEXON4K',this)">NEXON4K</button>
+
+    <div id="Vente" class="page show">
+        <p style="color:red">OFFRE LIMITÉE</p>
+        <div class="price">5.55 €</div>
+        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn">💎 S'ABONNER</a>
+    </div>
+
+    <div id="VIP" class="page">
+        <h2 class="gold">ESPACE CLIENT PRIVÉ</h2>
+        <div class="card">IBO PLAYER ACTIVÉ ✅</div>
+        <div class="card">SMARTONE ACTIVÉ ✅</div>
+        <button class="btn" style="width:80%">🚀 GÉNÉRER TEST 24H</button>
+    </div>
+
+    <script>
+        // Ce script est le SEUL moyen de séparer les pages
+        const url = new URLSearchParams(window.location.search);
+        if (url.get('admin') === 'true') {
+            document.getElementById('Vente').classList.remove('show');
+            document.getElementById('VIP').classList.add('show');
+        }
+    </script>
+</body>
+</html>                <button class="pill" onclick="sel('NEXON4K',this)">NEXON4K</button>
                 <button class="pill" onclick="sel('DINO_VIP',this)">DINO VIP</button>
             </div>
             <button id="go" class="btn" style="width:100%;" onclick="start()">🚀 GÉNÉRER ACCÈS</button>
