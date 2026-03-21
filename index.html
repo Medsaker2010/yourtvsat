@@ -3,40 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP - Dino Expert v3.3</title>
+    <title>YourTvSat VIP - Dino Engine v3.4</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         body { background: #050505; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; text-align: center; margin: 0; }
         .gold { color: #d4af37; text-shadow: 0 0 10px rgba(212,175,55,0.5); }
         .card { border: 1px solid #d4af37; border-radius: 20px; padding: 25px; max-width: 450px; margin: auto; background: #0a0a0a; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
-        .console { background: #000; border: 1px solid #333; color: #00ff00; font-family: monospace; font-size: 0.75rem; padding: 15px; text-align: left; border-radius: 10px; margin: 20px 0; height: 200px; overflow-y: auto; border-left: 3px solid #d4af37; }
+        .console { background: #000; border: 1px solid #333; color: #00ff00; font-family: monospace; font-size: 0.75rem; padding: 15px; text-align: left; border-radius: 10px; margin: 20px 0; height: 180px; overflow-y: auto; border-left: 3px solid #d4af37; }
         .btn-main { background: linear-gradient(135deg, #d4af37, #f9f295); color: #000; border: none; padding: 18px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; margin-bottom: 10px; }
-        .btn-sub { background: #1a1a1a; color: #d4af37; border: 1px solid #d4af37; padding: 10px; border-radius: 8px; width: 48%; cursor: pointer; font-size: 0.7rem; }
+        .btn-sub { background: #1a1a1a; color: #d4af37; border: 1px solid #444; padding: 10px; border-radius: 8px; width: 48%; cursor: pointer; font-size: 0.65rem; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; }
         .modal-content { background: #111; border: 2px solid #d4af37; padding: 30px; border-radius: 20px; width: 85%; max-width: 350px; }
+        #qrcode { background: #fff; padding: 10px; margin: 15px auto; display: inline-block; border-radius: 8px; }
     </style>
 </head>
 <body>
 
-    <h2 class="gold">YOURTVSAT - DINO ENGINE v3.3</h2>
+    <h2 class="gold">YOURTVSAT - DINO Engine v3.4</h2>
 
     <div class="card">
-        <button class="btn-main" onclick="generateTest()">⚡ GÉNÉRER TEST (DEMO 99)</button>
+        <button class="btn-main" id="go" onclick="generateDinoTest()">⚡ GÉNÉRER TEST (24H)</button>
         
         <div style="display: flex; justify-content: space-between;">
-            <button class="btn-sub" onclick="getBouquets()">🔍 LISTER BOUQUETS</button>
-            <button class="btn-sub" onclick="getInfos()">💰 INFOS COMPTE</button>
+            <button class="btn-sub" onclick="getDinoBouquets()">🔍 LISTER BOUQUETS</button>
+            <button class="btn-sub" onclick="getDinoCredits()">💰 CRÉDITS RESTANTS</button>
         </div>
 
-        <div class="console" id="log">En attente d'action...</div>
+        <div class="console" id="log">Prêt pour Dino VIP...</div>
     </div>
 
     <div id="m" class="modal"><div class="modal-content">
-        <h2 class="gold">🎁 TEST RÉUSSI !</h2>
-        <div id="res" style="background:#1a1a1a; padding:15px; border-radius:10px; text-align:left; font-family:monospace; color:#00ff00; font-size:0.8rem; word-break: break-all;"></div>
-        <div id="qrcode" style="background:#fff; padding:10px; margin:15px auto; display:inline-block;"></div>
-        <button onclick="copyA()" style="background:#d4af37; border:none; padding:12px; width:100%; border-radius:8px; font-weight:bold; cursor:pointer;">📋 COPIER LIEN M3U</button>
-        <p onclick="document.getElementById('m').style.display='none'" style="color:#666; cursor:pointer; margin-top:15px;">Fermer</p>
+        <h2 class="gold">🎁 TEST GÉNÉRÉ !</h2>
+        <div id="res" style="background:#1a1a1a; padding:15px; border-radius:10px; text-align:left; font-family:monospace; color:#00ff00; font-size:0.75rem; word-break: break-all; margin-bottom:10px;"></div>
+        <div id="qrcode"></div>
+        <button onclick="copyA()" style="background:#d4af37; border:none; padding:12px; width:100%; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:10px;">📋 COPIER LE LIEN</button>
+        <p onclick="document.getElementById('m').style.display='none'" style="color:#666; cursor:pointer; margin-top:15px; font-size:0.8rem;">Fermer</p>
     </div></div>
 
     <script>
@@ -45,43 +46,51 @@
         
         const l = (msg) => { const e = document.getElementById('log'); e.innerHTML += `<br>> ${msg}`; e.scrollTop = e.scrollHeight; };
 
-        async function call(params) {
+        async function apiReq(params) {
             const target = `${API_URL}?${params}&api_key=${API_KEY}`;
             const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
             const j = await r.json();
-            return typeof j.contents === 'string' ? JSON.parse(j.contents) : j.contents;
+            const data = typeof j.contents === 'string' ? JSON.parse(j.contents) : j.contents;
+            return Array.isArray(data) ? data[0] : data;
         }
 
-        async function getBouquets() {
-            l("Récupération des bouquets...");
-            const res = await call("action=bouquet");
-            if (Array.isArray(res)) {
-                res.forEach(b => l(`ID: ${b.id} | ${b.nom}`));
-            } else { l("Erreur: " + JSON.stringify(res)); }
+        async function getDinoBouquets() {
+            l("🔍 Analyse des bouquets...");
+            // Selon votre doc, c'est action=bouquet au singulier
+            const res = await apiReq("action=bouquet");
+            if (res && !res.status) { // Si c'est une liste d'objets directe
+                l("Bouquets autorisés :");
+                const list = Array.isArray(res) ? res : [res];
+                list.forEach(b => l(`[ID: ${b.id}] ${b.nom}`));
+            } else { l("Erreur liste: " + JSON.stringify(res)); }
         }
 
-        async function getInfos() {
-            l("Vérification compte...");
-            const res = await call("action=reseller_info");
-            const d = res[0] || res;
-            l(`Credits: ${d.credits} | User: ${d.username}`);
+        async function getDinoCredits() {
+            l("💰 Vérification des crédits...");
+            const res = await apiReq("action=reseller_info");
+            l(`Compte: ${res.username} | Crédits: ${res.credits}`);
         }
 
-        async function generateTest() {
-            l("Génération Test (Sub 99)...");
-            // On utilise 'all' par défaut, mais si vous trouvez un ID avec 'LISTER', remplacez-le.
-            const res = await call("action=new&type=m3u&sub=99&pack=all");
-            const d = res[0] || res;
+        async function generateDinoTest() {
+            const btn = document.getElementById('go');
+            btn.disabled = true; btn.innerText = "CRÉATION...";
+            l("🚀 Demande de démo (Sub 99)...");
 
-            if (d.statut === "vrai" || d.status === "true") {
-                l("✅ Succès !");
-                document.getElementById('res').innerText = d.url;
-                document.getElementById("qrcode").innerHTML = "";
-                new QRCode(document.getElementById("qrcode"), { text: d.url, width: 150, height: 150 });
-                document.getElementById('m').style.display = 'flex';
-            } else {
-                l("❌ Échec: " + (d.message || "Erreur inconnue"));
-            }
+            try {
+                // On utilise sub=99 pour le ticket démo comme indiqué dans le fichier
+                const res = await apiReq("action=new&type=m3u&sub=99&pack=all");
+
+                if (res.statut === "vrai" || res.status === "true") {
+                    l("✅ SUCCÈS !");
+                    document.getElementById('res').innerText = res.url;
+                    document.getElementById("qrcode").innerHTML = "";
+                    new QRCode(document.getElementById("qrcode"), { text: res.url, width: 140, height: 140 });
+                    document.getElementById('m').style.display = 'flex';
+                } else {
+                    l(`❌ Refus: ${res.message || "Erreur panel"}`);
+                }
+            } catch (e) { l("🚨 Erreur réseau ou API."); }
+            btn.disabled = false; btn.innerText = "⚡ GÉNÉRER TEST (24H)";
         }
 
         function copyA() { navigator.clipboard.writeText(document.getElementById('res').innerText); alert("Lien copié !"); }
