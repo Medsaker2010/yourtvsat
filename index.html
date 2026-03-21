@@ -5,36 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YourTvSat VIP</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; text-align: center; overflow-x: hidden; }
+        /* BASE & RESET */
+        * { box-sizing: border-box; }
+        body { background-color: #000000; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; text-align: center; }
         .gold { color: #d4af37; }
-        
-        /* LOGO SATELLITE LUXUEUX */
-        .header { height: 200px; display: flex; justify-content: center; align-items: center; position: relative; }
-        .satellite { font-size: 40px; position: absolute; animation: orbit 6s infinite linear; z-index: 10; }
+
+        /* HEADER & LOGO SATELLITE */
+        .header-area { padding: 50px 0; overflow: hidden; position: relative; }
+        .sat-icon { font-size: 50px; display: inline-block; animation: orbit 5s infinite ease-in-out; }
         @keyframes orbit {
-            0% { transform: rotateY(0deg) translateX(120px) rotateY(0deg); }
-            50% { transform: rotateY(180deg) translateX(120px) rotateY(-180deg); opacity: 0.3; }
-            100% { transform: rotateY(360deg) translateX(120px) rotateY(-360deg); }
+            0% { transform: translateX(-120px) scale(1); z-index: 10; }
+            50% { transform: translateX(120px) scale(0.6); opacity: 0.4; z-index: 1; }
+            100% { transform: translateX(-120px) scale(1); z-index: 10; }
         }
 
-        /* PAGES */
-        .page { display: none; padding: 20px; }
-        .btn { background: #d4af37; color: #000; padding: 18px 40px; border-radius: 50px; font-weight: bold; text-decoration: none; display: inline-block; margin: 10px; border: none; cursor: pointer; font-size: 1.1rem; }
-        .card { background: #111; border: 1px solid #333; padding: 20px; border-radius: 15px; margin: 10px auto; max-width: 400px; }
+        /* GESTION DES PAGES (Strict) */
+        .page-section { display: none; padding: 20px; }
+        
+        /* DESIGN LUXE */
+        .btn-luxe { background: linear-gradient(135deg, #d4af37, #f9f295); color: #000; padding: 20px 45px; border-radius: 50px; font-weight: 900; text-decoration: none; display: inline-block; border: none; cursor: pointer; font-size: 1.2rem; box-shadow: 0 10px 20px rgba(212,175,55,0.3); margin-top: 20px; }
+        .price { font-size: 5rem; font-weight: 900; margin: 10px 0; }
+        .box-vip { background: #111; border: 1px solid #333; padding: 20px; border-radius: 15px; margin: 15px auto; max-width: 450px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="satellite">🛰️</div>
-        <h1 class="gold">YOURTVSAT<br>VIP ELITE</h1>
+    <div class="header-area">
+        <div class="sat-icon">🛰️</div>
+        <h1 class="gold" style="margin:0; font-size: 2.5rem;">YOURTVSAT<br>VIP ELITE</h1>
     </div>
 
-    <div id="p-vente" class="page">
-        <div style="color:red; font-weight:bold;">🔥 OFFRE LIMITÉE</div>
-        <h2 style="font-size:4rem; margin:10px;" class="gold">5.55 €</h2>
-        <p>ACCÈS VIP ANNUEL</p>
-        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn">💎 S'ABONNER</a>
+    <div id="view-vente" class="page-section" style="display: block;">
+        <p style="color:red; font-weight:bold;">🔥 OFFRE VIP SATELLITE</p>
+        <div class="price gold">5.55 €</div>
+        <p style="letter-spacing: 2px;">PASS ANNUEL ILLIMITÉ</p>
+        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-luxe">💎 S'ABONNER MAINTENANT</a>
+    </div>
+
+    <div id="view-vip" class="page-section">
+        <h2 class="gold">ACCÈS CLIENT PRIVÉ</h2>
+        <div class="box-vip">🚀 SERVEUR STRONG 8K : <b>ACTIF</b></div>
+        <div class="box-vip">🚀 SERVEUR NEO 4K : <b>ACTIF</b></div>
+        
+        <h3 style="margin-top:40px;">GÉNÉRATEUR DE TESTS</h3>
+        <button class="btn-luxe" onclick="alert('Génération en cours...')">OBTENIR UN CODE TEST</button>
+    </div>
+
+    <script>
+        // SCRIPT DE CONTRÔLE D'ACCÈS
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const vente = document.getElementById('view-vente');
+            const vip = document.getElementById('view-vip');
+
+            // Force la séparation : si admin ou success est dans l'URL
+            if (params.get('admin') === 'true' || params.get('success') === 'true') {
+                vente.style.display = 'none';
+                vip.style.display = 'block';
+                document.title = "YourTvSat - Espace VIP";
+            }
+        })();
+    </script>
+
+</body>
+</html>        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn">💎 S'ABONNER</a>
     </div>
 
     <div id="p-vip" class="page">
