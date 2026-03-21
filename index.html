@@ -6,35 +6,59 @@
     <title>YourTvSat VIP - L'Expérience Élite</title>
     <style>
         :root { --gold: #d4af37; --dark: #050505; --green: #008000; --silver: #c0c0c0; }
-        body { background: var(--dark); color: white; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; text-align: center; overflow-x: hidden; }
+        body { background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; }
         
-        /* --- LANDING PAGE --- */
+        /* LOGO DYNAMIQUE (Garanti d'affichage) */
+        .logo-box { margin: 20px auto; width: 120px; height: 120px; border: 3px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #222, #000); box-shadow: 0 0 20px var(--gold); animation: pulse 2s infinite; }
+        .logo-text { color: var(--gold); font-weight: 900; font-size: 1.2rem; transform: rotate(-10deg); }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* LANDING PAGE */
         #landing { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); padding: 20px; }
-        .logo { width: 180px; filter: drop-shadow(0 0 15px var(--gold)); animation: float 3s infinite ease-in-out; margin-bottom: 20px; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        
-        .buzz-tag { background: #ff0000; color: white; padding: 6px 15px; border-radius: 5px; font-weight: bold; font-size: 0.8rem; margin-bottom: 15px; animation: blink 1s infinite; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .price-title { font-size: 4.5rem; font-weight: 900; color: var(--gold); margin: 5px 0; }
+        .btn-stripe { background: linear-gradient(45deg, var(--gold), #f9f295); color: black; padding: 22px 50px; border-radius: 50px; font-weight: 900; border: none; cursor: pointer; font-size: 1.3rem; text-decoration: none; display: inline-block; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); }
 
-        .price-title { font-size: 4.5rem; font-weight: 900; color: var(--gold); margin: 5px 0; line-height: 1; }
-        .price-sub { font-size: 1.1rem; color: var(--silver); margin-bottom: 35px; text-transform: uppercase; letter-spacing: 2px; }
+        /* ESPACE VIP */
+        #vip-content { display: none; padding: 40px 20px; }
+        .card { background: #111; border: 1px solid #222; padding: 15px; border-radius: 12px; margin: 10px; display: inline-block; width: 140px; }
+        .pill-btn { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 12px 20px; border-radius: 50px; cursor: pointer; margin: 5px; }
+        .pill-btn.active { background: var(--green); color: white; border-color: #00ff00; }
+    </style>
+</head>
+<body>
 
-        .btn-stripe { background: linear-gradient(45deg, var(--gold), #f9f295, var(--gold)); color: black; padding: 22px 50px; border-radius: 50px; font-weight: 900; border: none; cursor: pointer; font-size: 1.3rem; text-decoration: none; transition: 0.4s; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); display: inline-block; }
-        .btn-stripe:hover { transform: scale(1.05); box-shadow: 0 15px 40px var(--gold); }
-        .btn-crypto { background: transparent; color: white; border: 1px solid var(--gold); margin-top: 15px; padding: 12px 30px; font-size: 1rem; }
+    <div id="landing">
+        <div class="logo-box"><div class="logo-text">YOURTV<br>SAT</div></div>
+        <h1 style="letter-spacing:2px; margin:0;">ACCÈS VIP ILLIMITÉ</h1>
+        <div class="price-title">5.55 €</div>
+        <p style="color:var(--silver); margin-bottom: 30px;">PASS ANNUEL / TEST GRATUIT À VIE</p>
+        
+        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-stripe">💎 COMMENCER L'EXPÉRIENCE</a>
+    </div>
 
-        /* --- ESPACE VIP (CACHÉ PAR DÉFAUT) --- */
-        #vip-content { display: none; padding: 40px 20px; animation: fadeIn 1s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin: 30px 0; }
-        .card { background: #111; border: 1px solid #222; padding: 15px; border-radius: 12px; transition: 0.3s; }
-        .card img { width: 60px; margin-bottom: 10px; }
-        
-        .server-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
-        .pill-btn { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 12px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .pill-btn.active { background: var(--green); color: white; border-color: #00ff00; box-shadow: 0 0 15px var(--green); }
-        .main-action { background: var(--gold); color: black; border: none; padding: 20px; width: 100%; max-width: 400px; border-radius: 10px; font-weight: 900; font-size: 1.2rem; margin-top: 30px; cursor: pointer; }
+    <div id="vip-content">
+        <h1 style="color:var(--gold)">BIENVENUE VIP</h1>
+        <div class="product-grid">
+            <div class="card"><b>IBO PLAYER</b></div>
+            <div class="card"><b>SMARTONE</b></div>
+            <div class="card"><b>BOB PLAYER</b></div>
+        </div>
+        <h3 style="margin-top:40px;">GÉNÉRATEUR DE TESTS 24H</h3>
+        <div id="servers">
+            <button class="pill-btn active">STRONG 8K</button>
+            <button class="pill-btn">NEO 4K</button>
+        </div>
+        <button class="btn-stripe" style="margin-top:30px; width:100%; max-width:400px;" onclick="alert('Génération en cours...')">🚀 GÉNÉRER MON TEST</button>
+    </div>
+
+    <script>
+        if (window.location.search.includes('success=true')) {
+            document.getElementById('landing').style.display = 'none';
+            document.getElementById('vip-content').style.display = 'block';
+        }
+    </script>
+</body>
+</html>        .main-action { background: var(--gold); color: black; border: none; padding: 20px; width: 100%; max-width: 400px; border-radius: 10px; font-weight: 900; font-size: 1.2rem; margin-top: 30px; cursor: pointer; }
     </style>
 </head>
 <body>
