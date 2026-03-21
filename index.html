@@ -3,38 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat - Elite VIP</title>
+    <title>YourTvSat VIP</title>
     <style>
-        /* --- STRUCTURE DE BASE (ANTI-BUG) --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
-
-        /* --- LOGO SATELLITE 3D --- */
-        .brand-container { height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; perspective: 1000px; }
-        .satellite { font-size: 40px; position: absolute; animation: orbit3D 5s infinite linear; z-index: 5; }
-        .brand-text { color: #d4af37; font-size: 2.2rem; font-weight: 900; text-align: center; text-transform: uppercase; z-index: 10; text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
-
-        @keyframes orbit3D {
-            0% { transform: rotateY(0deg) translateX(130px) rotateY(0deg) scale(1.2); z-index: 15; }
-            50% { transform: rotateY(180deg) translateX(130px) rotateY(-180deg) scale(0.7); opacity: 0.4; z-index: 1; }
-            100% { transform: rotateY(360deg) translateX(130px) rotateY(-360deg) scale(1.2); z-index: 15; }
+        :root {
+            --gold: #d4af37;
+            --black: #000;
+            --white: #fff;
+            --gray: #333;
         }
-
-        /* --- GESTION DES PAGES --- */
-        .view { display: none; padding: 20px; text-align: center; width: 100%; max-width: 500px; margin: 0 auto; }
-        .active-view { display: block !important; }
-
-        /* --- DESIGN LUXE --- */
-        .badge { background: #ff0000; color: white; padding: 5px 15px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; display: inline-block; }
-        .price { font-size: 5rem; font-weight: 900; color: #d4af37; margin: 10px 0; line-height: 1; }
+        body { 
+            background: var(--black); 
+            color: var(--white); 
+            text-align: center; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .gold { color: var(--gold); }
         
-        .btn-gold { background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37); color: #000; padding: 20px; width: 100%; border-radius: 50px; border: none; font-weight: 900; font-size: 1.2rem; cursor: pointer; text-decoration: none; display: block; margin-top: 20px; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); }
-
-        .vip-card { background: #111; border: 1px solid #222; border-left: 5px solid #d4af37; padding: 20px; border-radius: 12px; margin-bottom: 15px; text-align: left; }
-        .server-status { color: #00ff00; float: right; font-weight: bold; }
+        /* Satellite simple et fluide */
+        .sat { 
+            font-size: 50px; 
+            display: inline-block; 
+            animation: move 4s infinite ease-in-out; 
+            margin: 20px; 
+        }
+        @keyframes move { 
+            0%, 100% { transform: translateX(-50px); } 
+            50% { transform: translateX(50px); } 
+        }
+        
+        /* Pages séparées */
+        .view { 
+            display: none; 
+            padding: 20px; 
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .active { display: block !important; }
+        
+        .btn { 
+            background: var(--gold); 
+            color: var(--black); 
+            padding: 15px 30px; 
+            border-radius: 50px; 
+            display: inline-block; 
+            text-decoration: none; 
+            font-weight: bold; 
+            margin: 20px auto; 
+            max-width: 300px;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            background: #f1c40f;
+        }
+        
+        .card {
+            border: 1px solid var(--gray); 
+            padding: 20px; 
+            border-radius: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body>
+    <div class="sat" aria-hidden="true">🛰️</div>
+    <h1 class="gold">YOURTVSAT VIP</h1>
+    
+    <div id="L" class="view active">
+        <h2 style="font-size:3rem">5.55 €</h2>
+        <a href="#" class="btn">ACCÈS VIP</a>
+    </div>
+    
+    <div id="V" class="view">
+        <h2 class="gold">ESPACE CLIENT</h2>
+        <div class="card">
+            SERVEURS ACTIFS ✅
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const viewL = document.getElementById('L');
+            const viewV = document.getElementById('V');
+
+            if (params.get('admin') === 'true') {
+                if (viewL && viewV) {
+                    viewL.classList.remove('active');
+                    viewV.classList.add('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html><body>
 
     <div class="brand-container">
         <div class="satellite">🛰️</div>
