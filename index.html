@@ -3,108 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP Elite</title>
+    <title>YourTvSat - Panel VIP Elite</title>
     <style>
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; padding-bottom: 50px; }
         .gold { color: #d4af37; }
-
+        
         /* HEADER & SATELLITE */
-        .header { padding: 40px 0; position: relative; display: flex; justify-content: center; align-items: center; }
-        .sat { font-size: 45px; position: absolute; animation: orbit 5s infinite ease-in-out; z-index: 5; }
-        .brand { font-size: 2rem; font-weight: 900; z-index: 10; text-transform: uppercase; line-height: 1.1; }
+        .header { padding: 30px 0; position: relative; display: flex; justify-content: center; align-items: center; }
+        .sat { font-size: 40px; position: absolute; animation: orbit 5s infinite ease-in-out; z-index: 5; }
+        .brand { font-size: 1.8rem; font-weight: 900; z-index: 10; text-transform: uppercase; line-height: 1.1; }
         @keyframes orbit {
-            0% { transform: translateX(-120px) scale(1.1); z-index: 15; }
-            50% { transform: translateX(120px) scale(0.6); opacity: 0.4; z-index: 1; }
-            100% { transform: translateX(-120px) scale(1.1); z-index: 15; }
+            0% { transform: translateX(-110px) scale(1.1); z-index: 15; }
+            50% { transform: translateX(110px) scale(0.6); opacity: 0.4; z-index: 1; }
+            100% { transform: translateX(-110px) scale(1.1); z-index: 15; }
         }
 
-        .page { display: none; padding: 20px; }
-        .active { display: block !important; }
+        /* SÉLECTEUR DE SERVEURS (PILLS) */
+        .server-selector { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 20px; max-width: 600px; margin: auto; }
+        .pill { 
+            background: transparent; color: #d4af37; border: 2px solid #d4af37; 
+            padding: 10px 18px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        .pill.active { background: #d4af37; color: #000; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
 
-        /* LANDING */
-        .big-price { font-size: 5rem; font-weight: 900; color: #d4af37; margin: 10px 0; text-shadow: 0 0 20px rgba(212,175,55,0.4); }
-        .btn-luxe {
+        /* BOUTON DE GÉNÉRATION */
+        .btn-generate {
             background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37);
-            color: #000; padding: 20px 40px; border-radius: 50px; font-weight: 900; text-decoration: none; display: inline-block;
-            box-shadow: 0 10px 30px rgba(212,175,55,0.4); border: none;
+            color: #000; padding: 20px 40px; border-radius: 12px; font-size: 1.2rem; font-weight: 900;
+            border: none; cursor: pointer; margin-top: 30px; width: 90%; max-width: 400px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: 0.3s;
         }
+        .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* PANEL VIP */
-        .section-title { margin-top: 35px; border-bottom: 1px solid #d4af37; padding-bottom: 8px; text-transform: uppercase; font-size: 0.8rem; color: #d4af37; font-weight: bold; letter-spacing: 2px; }
-        .grid-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 500px; margin: 20px auto; }
-        
-        .card-vip { 
-            background: #111; border: 1px solid #222; border-left: 4px solid #d4af37; 
-            padding: 12px; border-radius: 8px; text-align: left; font-size: 0.8rem; font-weight: bold;
-        }
-        .dot { height: 8px; width: 8px; background: #00ff00; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 5px #00ff00; }
-        
-        .btn-gen { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.75rem; transition: 0.3s; }
-        .btn-gen:hover { border-color: #d4af37; color: #d4af37; }
-        
-        .support-wa { background: #25D366; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; display: inline-block; margin: 40px 0; font-weight: bold; }
+        /* MODAL RÉSULTAT */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
+        .modal-content { background: #111; border: 2px solid #d4af37; border-radius: 20px; padding: 30px; width: 85%; max-width: 400px; position: relative; }
+        .result-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border-left: 5px solid #00ff00; text-align: left; margin: 20px 0; font-family: monospace; }
+        .btn-copy { background: #d4af37; color: #000; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <div class="sat">🛰️</div>
-        <h1 class="brand gold">YOURTVSAT<br><span style="font-size:0.9rem; letter-spacing:3px; color:#fff;">VIP ELITE</span></h1>
+        <h1 class="brand gold">YOURTVSAT<br><span style="font-size:0.8rem; letter-spacing:3px; color:#fff;">PANEL VIP ELITE</span></h1>
     </div>
 
-    <div id="p-vente" class="page active">
-        <div class="big-price">5.55 €</div>
-        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-luxe">💎 ACCÈS VIP ILLIMITÉ</a>
+    <h3 class="gold" style="margin-top:20px;">1. CHOISISSEZ VOTRE SERVEUR</h3>
+    <div class="server-selector" id="pillContainer">
+        </div>
+
+    <div style="margin-top: 20px;">
+        <button id="genBtn" class="btn-generate" onclick="startGeneration()">🚀 GÉNÉRER MON TEST 24H</button>
     </div>
 
-    <div id="p-vip" class="page">
-        <h2 class="gold">TABLEAU DE BORD VIP</h2>
-
-        <p class="section-title">Activations Lecteurs</p>
-        <div class="grid-panel">
-            <div class="card-vip"><span class="dot"></span> IBO PLAYER</div>
-            <div class="card-vip"><span class="dot"></span> SMARTONE</div>
-            <div class="card-vip"><span class="dot"></span> BOB PLAYER</div>
-            <div class="card-vip"><span class="dot"></span> FLIX IPTV</div>
-            <div class="card-vip"><span class="dot"></span> SET IPTV</div>
-            <div class="card-vip"><span class="dot"></span> ELK PLAYER</div>
-            <div class="card-vip"><span class="dot"></span> NANOMID</div>
-            <div class="card-vip"><span class="dot"></span> TIVIMATE</div>
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <h2 class="gold">🏆 TEST GÉNÉRÉ</h2>
+            <div class="result-box">
+                <p>🌐 <b>Host:</b> <span id="outHost"></span></p>
+                <p>👤 <b>User:</b> <span id="outUser"></span></p>
+                <p>🔑 <b>Pass:</b> <span id="outPass"></span></p>
+            </div>
+            <button class="btn-copy" onclick="copyResult()">📋 COPIER LES ACCÈS</button>
+            <p onclick="closeModal()" style="margin-top:20px; cursor:pointer; color:#888;">Fermer</p>
         </div>
-
-        <p class="section-title">Serveurs Actifs ✅</p>
-        <div class="grid-panel">
-            <div class="card-vip"><span class="dot"></span> FOXX</div>
-            <div class="card-vip"><span class="dot"></span> INFINITY</div>
-            <div class="card-vip"><span class="dot"></span> IPLAY</div>
-            <div class="card-vip"><span class="dot"></span> PURE</div>
-        </div>
-
-        <p class="section-title">Générateurs de Tests 24H</p>
-        <div class="grid-panel">
-            <button class="btn-gen">STRONG 8K</button>
-            <button class="btn-gen">NEO 4K</button>
-            <button class="btn-gen">DINO OTT</button>
-            <button class="btn-gen">CRYSTAL</button>
-            <button class="btn-gen">ATLAS PRO</button>
-            <button class="btn-gen">KING 365</button>
-            <button class="btn-gen">MAGNUM</button>
-            <button class="btn-gen">ORCA PRO</button>
-            <button class="btn-gen">DIAMOND</button>
-            <button class="btn-gen">VIPREMIUM</button>
-        </div>
-
-        <a href="https://wa.me/VOTRE_NUMERO" class="support-wa">📲 CONTACTER LE SUPPORT VIP</a>
     </div>
 
     <script>
-        (function() {
-            const url = new URLSearchParams(window.location.search);
-            if (url.get('admin') === 'true' || url.get('success') === 'true') {
-                document.getElementById('p-vente').classList.remove('active');
-                document.getElementById('p-vip').classList.add('active');
+        const API_CONFIG = {
+            STRONG8K: { name: "STRONG 8K", url: "https://my8k.me/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51", type: "STD", pack: "all" },
+            NEO4K: { name: "NEO 4K", url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d", type: "STD", pack: "all" },
+            NEXON4K: { name: "NEXON 4K", url: "http://api-connect.icu/api/dev_api.php", key: "90E655F4EC3A04B518A98B189D2E62BE4E18BDBA2E2F7114", type: "DEV", pack: "1" },
+            EAGLE4K: { name: "EAGLE 4K", url: "http://api-elg-26.com/api/dev_api.php", key: "A0F121281A26DB634862390DC531DA6D204DD91E74516071", type: "DEV", pack: "1" },
+            FUEGO: { name: "FUEGO TV", url: "http://api-cdn-fug.com/api/dev_api.php", key: "27F6CD585F600B5E8F35C88F5D19016C9101CD354BD69BE8", type: "DEV", pack: "1" },
+            DINO_VIP: { name: "DINO VIP", url: "https://tvpluspanel.net/api/api.php", key: "a541fa9acb43c9be2f2759ca4ac5a47c", type: "DINO", pack: "all" }
+        };
+
+        let currentServer = "STRONG8K";
+
+        // Génération des boutons pills
+        const container = document.getElementById('pillContainer');
+        Object.keys(API_CONFIG).forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = `pill ${key === currentServer ? 'active' : ''}`;
+            btn.innerText = API_CONFIG[key].name;
+            btn.onclick = () => {
+                document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                currentServer = key;
+            };
+            container.appendChild(btn);
+        });
+
+        async function startGeneration() {
+            const btn = document.getElementById('genBtn');
+            btn.disabled = true;
+            btn.innerText = "⌛ CONNEXION AU SERVEUR...";
+
+            try {
+                const conf = API_CONFIG[currentServer];
+                const sub = (currentServer === "DINO_VIP") ? "99" : "1";
+                let apiUrl = (conf.type === "STD" || conf.type === "DINO") 
+                    ? `${conf.url}?action=new&api_key=${conf.key}&type=m3u&sub=${sub}&pack=${conf.pack}`
+                    : `${conf.url}?action=user&type=create&api_key=${conf.key}&package_id=${conf.pack}`;
+
+                const response = await fetch(apiUrl);
+                const result = await response.json();
+                const data = result[0];
+
+                if (data && (data.status === "true" || data.status === true)) {
+                    document.getElementById('outHost').innerText = data.dns || data.url?.split('/get.php')[0] || "Portail Premium";
+                    document.getElementById('outUser').innerText = data.username || data.code || "N/A";
+                    document.getElementById('outPass').innerText = data.password || "N/A";
+                    document.getElementById('resultModal').style.display = 'flex';
+                    btn.innerText = "✅ GÉNÉRÉ !";
+                } else {
+                    alert("Erreur Serveur : " + (data?.message || "Plus de crédits ou serveur hors ligne."));
+                    btn.innerText = "❌ RÉESSAYER";
+                    btn.disabled = false;
+                }
+            } catch (e) {
+                alert("Erreur de connexion : Vérifiez votre accès internet.");
+                btn.disabled = false;
+                btn.innerText = "❌ RÉESSAYER";
             }
-        })();
+        }
+
+        function closeModal() { document.getElementById('resultModal').style.display = 'none'; document.getElementById('genBtn').disabled = false; document.getElementById('genBtn').innerText = "🚀 GÉNÉRER MON TEST 24H"; }
+        
+        function copyResult() {
+            const text = `Host: ${document.getElementById('outHost').innerText}\nUser: ${document.getElementById('outUser').innerText}\nPass: ${document.getElementById('outPass').innerText}`;
+            navigator.clipboard.writeText(text);
+            alert("Accès copiés !");
+        }
     </script>
 </body>
-    </html>
+</html>
