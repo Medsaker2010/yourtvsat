@@ -3,58 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourTvSat VIP Elite</title>
+    <title>YourTvSat VIP</title>
     <style>
-        body { background: #000; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin: 0; padding-bottom: 50px; }
+        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
         .gold { color: #d4af37; }
-        .header { padding: 40px 0; background: linear-gradient(to bottom, #111, #000); border-bottom: 1px solid #333; margin-bottom: 30px; }
-        .brand { font-size: 2.2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; line-height: 1; }
-        .brand span { font-size: 0.9rem; letter-spacing: 5px; color: #aaa; }
-        
-        .page { display: none; padding: 20px; animation: fadeIn 0.5s ease; }
-        .active { display: block !important; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .pill-container { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 20px; max-width: 600px; margin: auto; }
-        .pill { background: rgba(212, 175, 55, 0.1); color: #d4af37; border: 2px solid #d4af37; padding: 12px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 0.9rem; }
-        .pill.active { background: #d4af37; color: #000; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
-
-        .btn-gen { background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37); color: #000; padding: 22px; border-radius: 15px; font-size: 1.3rem; font-weight: 900; border: none; cursor: pointer; width: 90%; max-width: 450px; margin-top: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-        .btn-gen:disabled { filter: grayscale(1); cursor: not-allowed; }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: #111; border: 2px solid #d4af37; border-radius: 25px; padding: 35px; width: 85%; max-width: 420px; }
-        .result-box { background: #000; padding: 20px; border-radius: 15px; border-left: 5px solid #00ff00; text-align: left; margin: 25px 0; font-family: 'Courier New', monospace; font-size: 0.9rem; line-height: 1.6; border: 1px solid #333; border-left: 5px solid #00ff00; }
-        
-        .copy-hint { color: #888; font-size: 0.7rem; margin-top: 5px; }
+        .container { border: 2px solid #d4af37; border-radius: 20px; padding: 20px; max-width: 400px; margin: auto; background: #111; }
+        .pill-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; }
+        .pill { background: none; color: #d4af37; border: 2px solid #d4af37; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; }
+        .pill.active { background: #d4af37; color: #000; }
+        .btn-gen { background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37); color: #000; padding: 18px; border-radius: 12px; font-weight: 900; border: none; cursor: pointer; width: 100%; font-size: 1.1rem; }
+        .result-box { background: #000; padding: 15px; border-radius: 10px; border: 1px solid #333; border-left: 5px solid #00ff00; text-align: left; margin-top: 20px; font-family: monospace; display: none; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1 class="brand gold">YOURTVSAT<br><span>PANEL VIP ELITE</span></h1>
-    </div>
+    <h1 class="gold">YOURTVSAT VIP</h1>
 
-    <div id="p-vente" class="page active">
-        <div style="font-size: 4rem; margin: 20px 0;">💎</div>
-        <h2 class="gold">ACCÈS PRIVÉ ILLIMITÉ</h2>
-        <p style="color: #ccc;">Générez vos propres tests 24H instantanément.</p>
-        <button onclick="window.location.href='?admin=true'" class="btn-gen">ACCÉDER AU GÉNÉRATEUR</button>
-    </div>
-
-    <div id="p-vip" class="page">
-        <h3 class="gold">1. CHOISISSEZ VOTRE SERVEUR</h3>
+    <div class="container">
+        <h3 class="gold">CHOISISSEZ LE SERVEUR</h3>
         <div class="pill-container" id="pillContainer"></div>
-        <button id="genBtn" class="btn-gen" onclick="startGeneration()">🚀 GÉNÉRER MON TEST 24H</button>
-        <p style="margin-top: 20px; font-size: 0.8rem; color: #666;">Statut : <span id="statusText" style="color: #00ff00;">Connecté</span></p>
+        
+        <button id="genBtn" class="btn-gen" onclick="startGeneration()">🚀 GÉNÉRER TEST 24H</button>
+
+        <div id="resultBox" class="result-box">
+            <p>🌐 <b>Host:</b> <span id="outHost"></span></p>
+            <p>👤 <b>User:</b> <span id="outUser"></span></p>
+            <p>🔑 <b>Pass:</b> <span id="outPass"></span></p>
+        </div>
     </div>
 
-    <div id="resultModal" class="modal">
-        <div class="modal-content">
-            <h2 class="gold">🏆 TEST GÉNÉRÉ</h2>
-            <div class="result-box" id="resultData">
-                <p>🌐 <b>Host:</b> <span id="outHost"></span></p>
-                <p>👤 <b>User:</b> <span id="outUser"></span></p>
-                <p>🔑 <b>Pass:</b> <span id="outPass"></span></p>
-            </div>
-            <button onclick="copyToClipboard()" style="background:#d4af37; border:none; padding:15px; border-radius:10px; width:100%; font-weight:bold; cursor:pointer; margin-bottom:10px;">📋 COPIER LES ACCÈS</
+    <script>
+        const API_CONFIG = {
+            STRONG8K: { name: "STRONG 8K", url: "http://pro.business-cdn-8kpro.ru/api/api.php", key: "fbe7199e1b0ea7d1f604bb1d930afa51" },
+            NEO4K: { name: "NEO 4K", url: "https://neo4kpro.me/api/api.php", key: "990f58084a19da19da13831da85aaa3d" }
+        };
+
+        let currentServer = "STRONG8K";
+
+        function setupPills() {
+            const container = document.getElementById('pillContainer');
+            Object.keys(API_CONFIG).forEach(key => {
+                const btn = document.createElement('button');
+                btn.className = `pill ${key === currentServer ? 'active' : ''}`;
+                btn.innerText = API_CONFIG[key].name;
+                btn.onclick = () => {
+                    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentServer = key;
+                };
+                container.appendChild(btn);
+            });
+        }
+        setupPills();
+
+        async function startGeneration() {
+            const btn = document.getElementById('genBtn');
+            btn.disabled = true;
+            btn.innerText = "⌛ GÉNÉRATION...";
+
+            const conf = API_CONFIG[currentServer];
+            const targetUrl = `${conf.url}?api_key=${conf.key}&action=new&type=m3u&sub=1&pack=all`;
+            
+            // Relais pour GitHub
+            const proxy = "https://cors-anywhere.herokuapp.com/" + targetUrl;
+
+            try {
+                const response = await fetch(proxy);
+                const data = await response.json();
+                const result = Array.isArray(data) ? data[0] : data;
+
+                if (result && (result.status === "true" || result.status === true)) {
+                    document.getElementById('outHost').innerText = result.dns || "http://pro.business-cdn-8kpro.ru";
+                    document.getElementById('outUser').innerText = result.username;
+                    document.getElementById('outPass').innerText = result.password;
+                    document.getElementById('resultBox').style.display = 'block';
+                    btn.innerText = "✅ TERMINÉ";
+                } else {
+                    alert("Erreur Panel : Crédits insuffisants ou IP bloquée.");
+                    btn.disabled = false;
+                    btn.innerText = "🚀 RÉESSAYER";
+                }
+            } catch (e) {
+                alert("Erreur : Cliquez d'abord sur le bouton bleu de CORS Anywhere.");
+                window.open("https://cors-anywhere.herokuapp.com/corsdemo", "_blank");
+                btn.disabled = false;
+                btn.innerText = "🚀 RÉESSAYER";
+            }
+        }
+    </script>
+</body>
+</html>
