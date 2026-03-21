@@ -3,83 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YOURTVSAT CHAMPION v10</title>
+    <title>STRONG 8K CHAMPION</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root { --gold: #d4af37; --dark: #000; --green: #00ff00; }
-        body { background: var(--dark); color: #fff; font-family: sans-serif; text-align: center; padding: 10px; }
-        .card { border: 2px solid var(--gold); border-radius: 20px; padding: 20px; max-width: 400px; margin: auto; background: #050505; }
-        .console { background: #000; color: var(--green); font-family: monospace; font-size: 0.7rem; padding: 10px; height: 100px; overflow-y: auto; border: 1px solid #222; margin: 15px 0; text-align: left; }
-        .btn { border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; margin: 5px 0; text-transform: uppercase; color: #fff; }
-        .neo { background: #0052cc; } .strong { background: #cc0000; } .fix { background: #222; border: 1px solid var(--gold); color: var(--gold); }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; z-index: 100; }
-        .m-box { background: #111; border: 2px solid var(--gold); padding: 20px; border-radius: 20px; width: 90%; max-width: 350px; }
-        #qr { background: #fff; padding: 10px; display: inline-block; margin: 15px 0; border-radius: 10px; }
+        body { background: var(--dark); color: #fff; font-family: sans-serif; text-align: center; padding: 20px; margin: 0; }
+        .card { border: 2px solid var(--gold); border-radius: 25px; padding: 25px; max-width: 400px; margin: auto; background: #050505; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .console { background: #000; border: 1px solid #222; color: var(--green); font-family: monospace; font-size: 0.75rem; padding: 15px; text-align: left; border-radius: 12px; margin: 15px 0; height: 120px; overflow-y: auto; border-left: 3px solid var(--gold); white-space: pre-wrap; }
+        .btn-strong { background: linear-gradient(135deg, #cc0000, #ff4d4d); color: #fff; border: none; padding: 20px; border-radius: 15px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; font-size: 1rem; box-shadow: 0 5px 15px rgba(204,0,0,0.3); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(10px); }
+        .m-box { background: #111; border: 2px solid var(--gold); padding: 25px; border-radius: 25px; width: 85%; max-width: 350px; }
+        #qrcode { background: #fff; padding: 10px; display: inline-block; border-radius: 10px; margin: 15px 0; }
     </style>
 </head>
 <body>
 
-    <h2 style="color:var(--gold)">YOURTVSAT CHAMPION</h2>
+    <h1 style="color:var(--gold); margin-top: 30px;">STRONG 8K VIP</h1>
 
     <div class="card">
-        <button class="btn neo" onclick="run('NEO')">⚡ TEST NEO 4K</button>
-        <button class="btn strong" onclick="run('STRONG')">🔥 TEST STRONG 8K</button>
-        <button class="btn fix" onclick="repair()">🔧 RÉPARER URL CASSÉE</button>
-        <div class="console" id="log">> SYSTÈME PRÊT.</div>
+        <button class="btn-strong" onclick="generateStrong()">⚡ GÉNÉRER TEST STRONG 8K</button>
+        <div class="console" id="log">> SYSTÈME CHAMPION PRÊT.
+> Mode : SECURE (sub=99) actif.</div>
     </div>
 
     <div id="modal" class="modal"><div class="m-box">
-        <h3 id="m-title" style="color:var(--gold)">SUCCÈS</h3>
-        <div id="url" style="font-size:0.65rem; color:var(--green); word-break:break-all; background:#000; padding:10px; border:1px solid #333;"></div>
-        <div id="qr"></div>
-        <button class="btn" style="background:var(--gold); color:#000" onclick="copy()">COPIER LE LIEN</button>
-        <p style="color:#555; cursor:pointer" onclick="closeM()">[ FERMER ]</p>
+        <h2 style="color:var(--gold)">TEST PRÊT</h2>
+        <div id="url" style="background:#000; padding:12px; border-radius:10px; color:var(--green); font-size:0.7rem; word-break:break-all; border: 1px solid #333; margin-bottom:10px;"></div>
+        <div id="qrcode"></div>
+        <button onclick="copy()" style="background:var(--gold); border:none; padding:15px; width:100%; border-radius:12px; font-weight:bold; cursor:pointer; color:#000;">📋 COPIER LE LIEN</button>
+        <p onclick="closeM()" style="color:#666; cursor:pointer; margin-top:20px;">[ FERMER ]</p>
     </div></div>
 
     <script>
-        // ⚡ CONFIGURATION BRUTE - REMPLACEZ PAR VOS ACCÈS
-        const CONFIG = {
-            NEO: { api: "https://votre-panel-neo.com/api/api.php", key: "VOTRE_KEY_NEO", dns: "flux-neo.com:80" },
-            STRONG: { api: "https://votre-panel-strong.com/api/api.php", key: "VOTRE_KEY_STRONG", dns: "flux-strong.com:80" }
-        };
+        // --- CONFIGURATION STRONG 8K ---
+        const STRONG_API = "https://strong-panel-url.com/api/api.php"; // Remplace par l'URL de ton panel
+        const STRONG_KEY = "TA_CLE_API_STRONG"; // Remplace par ta clé API
+        const STRONG_DNS = "strong-dns-flux.com:80"; // Remplace par le DNS du flux
+        // -------------------------------
 
         const l = (m) => { const e = document.getElementById('log'); e.innerText += `\n> ${m}`; e.scrollTop = e.scrollHeight; };
 
-        async function run(type) {
-            const s = CONFIG[type];
-            if(s.key.includes("VOTRE")) { alert("Configure d'abord les API dans le code !"); return; }
-            if(!confirm(`Confirmer le test ${type} ? (Vérifiez vos tickets démo)`)) return;
+        async function generateStrong() {
+            if(STRONG_KEY.includes("TA_CLE")) {
+                alert("Erreur : Configure d'abord ta clé API dans le code !");
+                return;
+            }
 
-            l(`Connexion ${type}...`);
-            const target = `${s.api}?action=new&type=m3u&sub=99&pack=all&api_key=${s.key}`;
+            // Sécurité héritée de Dino
+            if(!confirm("⚠️ SÉCURITÉ : As-tu des 'Demo Tickets' sur ton panel Strong ?\n\nSi non, le panel pourrait consommer 1 CRÉDIT RÉEL.")) return;
+
+            l("Lancement du test Strong 8K...");
+            const target = `${STRONG_API}?action=new&type=m3u&sub=99&pack=all&api_key=${STRONG_KEY}`;
             
             try {
+                l("Connexion sécurisée via Proxy...");
                 const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}&t=${Date.now()}`);
                 const data = await response.json();
                 const res = JSON.parse(data.contents)[0] || JSON.parse(data.contents);
 
                 if (res.statut === "vrai" || res.status === "true") {
-                    let u = res.url.replace("http:///", `http://${s.dns}/`);
-                    document.getElementById('url').innerText = u;
-                    document.getElementById('qr').innerHTML = "";
-                    new QRCode(document.getElementById('qr'), {text: u, width: 140, height: 140});
-                    document.getElementById('modal').style.display = 'flex';
-                    l("✅ GÉNÉRÉ !");
-                } else { l(`❌ REFUS : ${res.message}`); }
-            } catch (e) { l("🚨 ERREUR PROXY"); }
-        }
+                    let finalUrl = res.url;
+                    
+                    // Correction automatique du bug DNS
+                    if(finalUrl.includes("http:///")) {
+                        finalUrl = finalUrl.replace("http:///", `http://${STRONG_DNS}/`);
+                        l("🔧 Correction DNS appliquée.");
+                    }
 
-        function repair() {
-            const old = prompt("URL à réparer :");
-            if(old) {
-                const dns = prompt("Nouveau DNS (ex: host:80) :", "line.dndnscloud.ru:80");
-                const fixed = old.replace(/http:\/\/.*?\//, `http://${dns}/`);
-                document.getElementById('url').innerText = fixed;
-                document.getElementById('modal').style.display = 'flex';
+                    document.getElementById('url').innerText = finalUrl;
+                    document.getElementById("qrcode").innerHTML = "";
+                    new QRCode(document.getElementById("qrcode"), { text: finalUrl, width: 150, height: 150 });
+                    document.getElementById('modal').style.display = 'flex';
+                    l("✅ SUCCÈS : Test généré !");
+                } else {
+                    l(`❌ REFUS : ${res.message || "Plus de tickets démo."}`);
+                }
+            } catch (e) {
+                l("🚨 ERREUR RÉSEAU : Le proxy est saturé.");
             }
         }
 
-        function copy() { navigator.clipboard.writeText(document.getElementById('url').innerText); alert("Copié !"); }
+        function copy() {
+            navigator.clipboard.writeText(document.getElementById('url').innerText);
+            alert("Lien copié !");
+        }
+
         function closeM() { document.getElementById('modal').style.display = 'none'; }
     </script>
 </body>
