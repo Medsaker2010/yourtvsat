@@ -2,39 +2,76 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>YourTvSat VIP Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YourTvSat - Elite VIP</title>
     <style>
-        :root { --gold: #d4af37; --dark: #000000; --card: #111111; }
-        body { background: var(--dark); color: #fff; font-family: 'Arial', sans-serif; margin: 0; padding: 0; text-align: center; }
+        /* --- STRUCTURE DE BASE (ANTI-BUG) --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
 
-        /* --- HEADER & ANIMATION --- */
-        .main-header { padding: 40px 20px; background: linear-gradient(to bottom, #111, #000); }
-        .sat-orbit { font-size: 45px; display: inline-block; animation: glide 6s infinite ease-in-out; }
-        @keyframes glide {
-            0% { transform: translateX(-100px) rotate(0deg); opacity: 1; }
-            50% { transform: translateX(100px) rotate(180deg); opacity: 0.5; }
-            100% { transform: translateX(-100px) rotate(360deg); opacity: 1; }
+        /* --- LOGO SATELLITE 3D --- */
+        .brand-container { height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; perspective: 1000px; }
+        .satellite { font-size: 40px; position: absolute; animation: orbit3D 5s infinite linear; z-index: 5; }
+        .brand-text { color: #d4af37; font-size: 2.2rem; font-weight: 900; text-align: center; text-transform: uppercase; z-index: 10; text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
+
+        @keyframes orbit3D {
+            0% { transform: rotateY(0deg) translateX(130px) rotateY(0deg) scale(1.2); z-index: 15; }
+            50% { transform: rotateY(180deg) translateX(130px) rotateY(-180deg) scale(0.7); opacity: 0.4; z-index: 1; }
+            100% { transform: rotateY(360deg) translateX(130px) rotateY(-360deg) scale(1.2); z-index: 15; }
         }
-        .gold-title { color: var(--gold); font-size: 2.2rem; margin: 10px 0; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* --- PAGES (Strictement cachées) --- */
-        .content-section { display: none; padding: 20px; animation: fadeIn 0.8s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* --- GESTION DES PAGES --- */
+        .view { display: none; padding: 20px; text-align: center; width: 100%; max-width: 500px; margin: 0 auto; }
+        .active-view { display: block !important; }
 
-        /* --- DESIGN DES BOUTONS --- */
-        .yts-btn { background: linear-gradient(135deg, #d4af37, #f9f295); color: #000; border: none; padding: 18px 40px; border-radius: 50px; font-weight: 900; font-size: 1.1rem; cursor: pointer; text-decoration: none; display: inline-block; margin: 20px 0; box-shadow: 0 8px 15px rgba(212, 175, 55, 0.3); }
-        .box-premium { background: var(--card); border: 1px solid #333; border-radius: 15px; padding: 20px; margin: 15px auto; max-width: 400px; border-left: 4px solid var(--gold); }
+        /* --- DESIGN LUXE --- */
+        .badge { background: #ff0000; color: white; padding: 5px 15px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; display: inline-block; }
+        .price { font-size: 5rem; font-weight: 900; color: #d4af37; margin: 10px 0; line-height: 1; }
         
-        .price-tag { font-size: 4rem; font-weight: bold; color: var(--gold); margin: 20px 0; }
+        .btn-gold { background: linear-gradient(135deg, #d4af37, #f9f295, #d4af37); color: #000; padding: 20px; width: 100%; border-radius: 50px; border: none; font-weight: 900; font-size: 1.2rem; cursor: pointer; text-decoration: none; display: block; margin-top: 20px; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); }
+
+        .vip-card { background: #111; border: 1px solid #222; border-left: 5px solid #d4af37; padding: 20px; border-radius: 12px; margin-bottom: 15px; text-align: left; }
+        .server-status { color: #00ff00; float: right; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="main-header">
-        <div class="sat-orbit">🛰️</div>
-        <h1 class="gold-title">YourTvSat VIP</h1>
+    <div class="brand-container">
+        <div class="satellite">🛰️</div>
+        <div class="brand-text">YOURTVSAT<br><span style="font-size: 1rem; letter-spacing: 5px;">VIP PANEL</span></div>
     </div>
+
+    <div id="landing" class="view active-view">
+        <div class="badge">PROMO LIMITÉE</div>
+        <div class="price">5.55€</div>
+        <p style="color:#888; letter-spacing: 2px;">ACCÈS ANNUEL ILLIMITÉ</p>
+        <a href="https://buy.stripe.com/6oU7sL9gXfgTeKuf7h" class="btn-gold">💎 DÉBLOQUER L'ACCÈS VIP</a>
+        <p style="margin-top: 20px; font-size: 0.7rem; color: #444;">Activations IBO, SMARTONE & BOB incluses.</p>
+    </div>
+
+    <div id="vip-panel" class="view">
+        <h2 class="gold" style="margin-bottom: 30px;">ESPACE MEMBRE ÉLITE</h2>
+        
+        <div class="vip-card">IBO PLAYER <span class="server-status">ACTIF</span></div>
+        <div class="vip-card">SMARTONE <span class="server-status">ACTIF</span></div>
+        
+        <h3 style="margin: 40px 0 20px;">GÉNÉRATEUR DE TESTS 24H</h3>
+        <button class="btn-gold" style="background: #008000; color: white;" onclick="alert('Génération STRONG 8K...')">OBTENIR TEST STRONG 8K</button>
+        <button class="btn-gold" style="background: #222; color: #d4af37; border: 1px solid #d4af37;" onclick="alert('Génération NEO 4K...')">OBTENIR TEST NEO 4K</button>
+    </div>
+
+    <script>
+        // LOGIQUE DE COMMUTATION SÉCURISÉE
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === 'true' || urlParams.get('success') === 'true') {
+                document.getElementById('landing').classList.remove('active-view');
+                document.getElementById('vip-panel').classList.add('active-view');
+            }
+        })();
+    </script>
+</body>
+</html>    </div>
 
     <div id="page-vente" class="content-section" style="display: block;">
         <p style="color: #ff4d4d; font-weight: bold;">🔥 OFFRE DE LANCEMENT EXCLUSIVE</p>
