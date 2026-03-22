@@ -1,184 +1,207 @@
 <?php
 /**
- * EMPIRE YOURTVSAT VIP - SYSTÈME INTÉGRAL
- * Propriétaire : H.A.ROUIS
+ * YOURTVSAT VIP - EMPIRE EDITION (FULL SYSTEM)
+ * Tout-en-un : Landing, Dashboard API, Diagnostic & QR Generation
  */
 
-// --- 1. CONFIGURATION ET MOTEUR DE DIAGNOSTIC ---
-if (isset($_GET['check_host'])) {
-    $host = $_GET['check_host'];
-    $start = microtime(true);
+// --- 1. MOTEUR DE DIAGNOSTIC SERVEUR (BACKEND PROXY) ---
+if (isset($_GET['action']) && $_GET['action'] === 'ping') {
+    $host = $_GET['host'] ?? 'api-connect.icu';
+    header('Content-Type: application/json');
+    $t0 = microtime(true);
     $fp = @fsockopen($host, 80, $errno, $errstr, 2);
-    $end = microtime(true);
+    $t1 = microtime(true);
     if ($fp) {
         fclose($fp);
-        echo round(($end - $start) * 1000);
+        echo json_encode(['status' => 'online', 'ms' => round(($t1 - $t0) * 1000)]);
     } else {
-        echo "OFFLINE";
+        echo json_encode(['status' => 'offline', 'error' => $errstr]);
     }
     exit;
 }
 
-// --- 2. LOGIQUE DE SIMULATION D'ACCÈS (STRIPE/CRYPTO REEL) ---
-// Note : Le développeur connectera ici la base de données réelle
-$is_paid = isset($_GET['paid']) ? true : false; 
-$admin_mode = (isset($_GET['user']) && $_GET['user'] == 'H.a.rouis17@gmail.com');
-$access_granted = $is_paid || $admin_mode;
+// --- 2. GESTION DES ACCÈS ---
+$is_admin = isset($_GET['admin']) || isset($_GET['paid']);
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YOURTVSAT VIP - EXCLUSIVE ACCESS</title>
+    <title>YOURTVSAT VIP — SYSTÈME ÉLITE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
-            --bg: #050505; --gold: #d4af37; --gold-dark: #b8860b; --silver: #c0c0c0; --glass: rgba(255, 255, 255, 0.03);
+            --g: #C9A84C; --gl: #F5D87A; --gd: #7A5C1E;
+            --o: #050508; --o2: #0E0E18; --br: rgba(201,168,76,.15);
+            --green: #22CC66; --red: #EE4444;
         }
-        body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--o); color: #fff; font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
 
-        /* --- DESIGN DE LUXE --- */
-        .container { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        /* --- LANDING UI --- */
+        .hero { height: 100vh; display: <?php echo $is_admin ? 'none' : 'flex'; ?>; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .logo-anim { width: 120px; height: 120px; border: 2px solid var(--g); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 0 30px var(--gd); animation: pulse 2s infinite; }
+        .logo-anim i { font-size: 50px; color: var(--gl); }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); box-shadow: 0 0 50px var(--g); } 100% { transform: scale(1); } }
         
-        /* LE SATELLITE ANIME */
-        .satellite-box { width: 200px; height: 200px; position: relative; margin-bottom: 30px; }
-        .satellite {
-            width: 100%; height: 100%; border-radius: 50%;
-            background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
-            box-shadow: 0 0 60px var(--gold-dark);
-            animation: rotateSat 20s linear infinite;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .satellite i { color: #000; font-size: 80px; }
-        @keyframes rotateSat { from {transform: rotate(0deg);} to {transform: rotate(360deg);} }
+        h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; letter-spacing: 5px; color: var(--gl); text-transform: uppercase; }
+        .btn-main { margin-top: 30px; padding: 15px 40px; background: linear-gradient(135deg, var(--gd), var(--g)); color: #000; border: none; border-radius: 50px; font-weight: 600; text-decoration: none; cursor: pointer; transition: 0.3s; }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(201,168,76,0.4); }
 
-        /* PANEL VERRE */
-        .glass-card {
-            width: 100%; max-width: 400px; background: var(--glass);
-            border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 25px;
-            padding: 30px; backdrop-filter: blur(15px); text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
+        /* --- DASHBOARD UI --- */
+        .dashboard { display: <?php echo $is_admin ? 'grid' : 'none'; ?>; grid-template-columns: 260px 1fr; min-height: 100vh; }
+        @media(max-width: 900px) { .dashboard { grid-template-columns: 1fr; } .sidebar { display: none; } }
 
-        h1 { color: var(--gold); letter-spacing: 4px; text-transform: uppercase; font-size: 1.4rem; margin: 10px 0; }
-        .tagline { color: var(--silver); font-size: 0.8rem; margin-bottom: 30px; }
+        .sidebar { background: #07070C; border-right: 1px solid var(--br); padding: 2rem 1.5rem; }
+        .sb-title { color: var(--g); font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; opacity: 0.6; }
+        .sb-link { display: flex; align-items: center; gap: 10px; color: #aaa; text-decoration: none; padding: 12px 0; font-size: 0.8rem; transition: 0.3s; cursor: pointer; }
+        .sb-link:hover, .sb-link.active { color: var(--gl); }
 
-        /* BOUTONS */
-        .btn {
-            display: block; width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 12px;
-            font-weight: bold; cursor: pointer; text-decoration: none; transition: 0.3s;
-        }
-        .btn-gold { background: var(--gold); color: #000; }
-        .btn-gold:hover { background: #fff; box-shadow: 0 0 20px var(--gold); }
-        .btn-outline { border: 1px solid var(--gold); color: var(--gold); background: transparent; }
-
-        /* ESPACE ARSENAL (DIAGNOSTIC) */
-        .arsenal-ui { display: <?php echo $access_granted ? 'block' : 'none'; ?>; }
-        .landing-ui { display: <?php echo $access_granted ? 'none' : 'block'; ?>; }
-
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
-        .stat-item { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 15px; border: 1px solid #222; }
-        #qrcode { background: #fff; padding: 10px; display: inline-block; border-radius: 10px; margin-top: 15px; }
+        .main-content { background: var(--o2); padding: 2rem; }
+        .glass-card { background: rgba(255,255,255,0.03); border: 1px solid var(--br); border-radius: 20px; padding: 25px; margin-bottom: 20px; }
         
-        select { width: 100%; padding: 12px; background: #000; border: 1px solid var(--gold); color: var(--gold); border-radius: 8px; margin-bottom: 15px; }
+        /* DIAGNOSTIC CARDS */
+        .ping-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .ping-card { background: #07070C; padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        .ping-ms { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; color: var(--gl); display: block; margin: 10px 0; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .dot.online { background: var(--green); box-shadow: 0 0 10px var(--green); }
+        .dot.offline { background: var(--red); }
+
+        /* QR CODE */
+        .qr-area { text-align: center; padding: 20px; }
+        #qrcode { background: #fff; padding: 15px; display: inline-block; border-radius: 10px; margin: 20px 0; }
+        .m3u-box { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--g); background: #000; padding: 10px; border-radius: 5px; word-break: break-all; }
+
+        input, select { width: 100%; background: #000; border: 1px solid var(--br); padding: 12px; color: #fff; border-radius: 8px; margin-top: 10px; outline: none; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    
-    <div class="landing-ui glass-card">
-        <div class="satellite-box"><div class="satellite"><i class="fas fa-satellite"></i></div></div>
+    <section class="hero">
+        <div class="logo-anim"><i class="fas fa-satellite-dish"></i></div>
         <h1>YOURTVSAT VIP</h1>
-        <p class="tagline">ACCÈS AU SYSTÈME DE PILOTAGE ÉLITE</p>
-        
-        <button class="btn btn-gold" onclick="alert('Redirection Stripe 5.55€...')">
-            <i class="fab fa-stripe-s"></i> S'INSCRIRE (5.55€/AN)
-        </button>
-        
-        <button class="btn btn-outline" onclick="location.href='?user=H.a.rouis17@gmail.com'">
-            <i class="fas fa-user-shield"></i> ACCÈS ADMINISTRATEUR
-        </button>
-        
-        <p style="font-size: 0.6rem; color: #555; margin-top: 20px;">Source: YourTvSat.com Official</p>
+        <p style="color:var(--g); letter-spacing: 2px; font-size: 0.7rem; margin-top: 10px;">PILOTAGE SATELLITE & ACCÈS ÉLITE</p>
+        <a href="?admin=1" class="btn-main">ENTRER DANS L'ARSENAL</a>
+        <p style="margin-top: 20px; font-size: 0.6rem; opacity: 0.4;">Paiement sécurisé par Stripe & Crypto</p>
+    </section>
+
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div style="font-family:'Cormorant Garamond'; color:var(--gl); font-size: 1.2rem; margin-bottom: 40px;">YOURTVSAT VIP</div>
+            <div class="sb-title">Navigation</div>
+            <div class="sb-link active"><i class="fas fa-chart-line"></i> Dashboard</div>
+            <div class="sb-link"><i class="fas fa-key"></i> Mes Accès</div>
+            <div class="sb-link"><i class="fas fa-broadcast-tower"></i> Diagnostic</div>
+            <div class="sb-link"><i class="fas fa-cog"></i> Configuration</div>
+            <div style="margin-top: 50px; padding: 15px; background: var(--br); border-radius: 10px; text-align: center;">
+                <span style="font-size: 0.5rem; color: var(--g);">CRÉDITS DISPONIBLES</span>
+                <div style="font-size: 1.5rem; color: var(--gl);">458</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 style="font-family:'Cormorant Garamond'; font-size: 1.8rem;">Tableau de Bord</h2>
+                <div style="font-size: 0.7rem; color: var(--green); border: 1px solid var(--green); padding: 5px 15px; border-radius: 20px;">MODE LIVE ACTIF</div>
+            </header>
+
+            <div class="glass-card">
+                <h3 style="font-size: 0.8rem; color: var(--g); letter-spacing: 1px;">DIAGNOSTIC SATELLITE EN TEMPS RÉEL</h3>
+                <div class="ping-grid">
+                    <div class="ping-card">
+                        <span style="font-size: 0.6rem; opacity: 0.5;">STRONG 8K</span>
+                        <span class="ping-ms" id="ping-1">-- ms</span>
+                        <div id="status-1"><span class="dot"></span><small>SCANNING</small></div>
+                    </div>
+                    <div class="ping-card">
+                        <span style="font-size: 0.6rem; opacity: 0.5;">NEO 4K PRO</span>
+                        <span class="ping-ms" id="ping-2">-- ms</span>
+                        <div id="status-2"><span class="dot"></span><small>SCANNING</small></div>
+                    </div>
+                    <div class="ping-card">
+                        <span style="font-size: 0.6rem; opacity: 0.5;">NEXON API</span>
+                        <span class="ping-ms" id="ping-3">-- ms</span>
+                        <div id="status-3"><span class="dot"></span><small>SCANNING</small></div>
+                    </div>
+                </div>
+                <button onclick="startFullDiag()" class="btn-main" style="width: 100%; margin-top: 20px; font-size: 0.7rem;">RESCANNER LES SERVEURS</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="glass-card">
+                    <h3 style="font-size: 0.8rem; color: var(--g);">GÉNÉRER UN ACCÈS VIP</h3>
+                    <label style="font-size: 0.6rem; margin-top: 15px; display: block;">SÉLECTIONNER SERVEUR</label>
+                    <select id="srvSelect">
+                        <option value="my8k.me">Strong 8K / Amigo</option>
+                        <option value="neo4kpro.me">Neo 4K Pro</option>
+                        <option value="api-connect.icu">Nexon 4K Premium</option>
+                    </select>
+                    <button onclick="generateVIP()" class="btn-main" style="width: 100%; font-size: 0.7rem;">ACTIVER MON CODE QR</button>
+                </div>
+
+                <div class="glass-card qr-area" id="qr-container" style="display: none;">
+                    <h3 style="font-size: 0.8rem; color: var(--gl);">VOTRE ACCÈS IPTV (QR)</h3>
+                    <div id="qrcode"></div>
+                    <div class="m3u-box" id="m3u-text"></div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <div class="arsenal-ui glass-card">
-        <h1>ARSENAL DE BORD</h1>
-        <p class="tagline">SATELLITE CONNECTÉ : <span id="currentName">--</span></p>
-
-        <select id="serverSelect">
-            <option value="my8k.me">STRONG 8K / AMIGO 8K</option>
-            <option value="neo4kpro.me">NEO 4K PRO</option>
-            <option value="api-connect.icu">NEXON 4K</option>
-            <option value="fuego-panel.net">FUEGO TV</option>
-            <option value="eagle-vod.me">EAGLE 4K</option>
-        </select>
-
-        <button class="btn btn-gold" onclick="runDiagnostic()">LANCER LE DIAGNOSTIC</button>
-
-        <div class="stat-grid">
-            <div class="stat-item"><i class="fas fa-bolt" style="color:var(--gold)"></i><br><span id="pingVal">-- ms</span></div>
-            <div class="stat-item"><i class="fas fa-check-circle" style="color:var(--gold)"></i><br><span id="statusVal">ATTENTE</span></div>
-        </div>
-
-        <div id="qr-box" style="display:none;">
-            <div id="qrcode"></div>
-            <p id="m3uLink" style="font-size:0.5rem; color:var(--silver); word-break:break-all; margin-top:10px;"></p>
-        </div>
-
-        <button class="btn btn-outline" onclick="location.href='index.php'" style="margin-top:20px; font-size:0.7rem;">DÉCONNEXION</button>
-    </div>
-
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-    async function runDiagnostic() {
-        const host = document.getElementById('serverSelect').value;
-        const pingEl = document.getElementById('pingVal');
-        const statusEl = document.getElementById('statusVal');
-        
-        pingEl.innerText = "...";
-        statusEl.innerText = "LINKING";
-
-        try {
-            // APPEL AU MOTEUR PHP INTERNE (CONSEIL CLAUDE POUR BYPASSER CORS)
-            const response = await fetch(`?check_host=${host}`);
-            const ms = await response.text();
-
-            if(ms !== "OFFLINE") {
-                pingEl.innerText = ms + " ms";
-                pingEl.style.color = "#00ff00";
-                statusEl.innerText = "OPTIMAL";
-                statusEl.style.color = "#00ff00";
-                generateAccess(host);
-            } else {
-                pingEl.innerText = "FAIL";
-                statusEl.innerText = "TIMEOUT";
-                statusEl.style.color = "#ff4444";
+    <script>
+        // FONCTION DE PING RÉEL VIA LE BACKEND PHP
+        async function checkServer(host, id) {
+            const msEl = document.getElementById('ping-' + id);
+            const statusEl = document.getElementById('status-' + id);
+            
+            try {
+                const response = await fetch('?action=ping&host=' + host);
+                const data = await response.json();
+                
+                if(data.status === 'online') {
+                    msEl.innerText = data.ms + ' ms';
+                    msEl.style.color = '#22CC66';
+                    statusEl.innerHTML = '<span class="dot online"></span><small>OPTIMAL</small>';
+                } else {
+                    msEl.innerText = 'OFF';
+                    msEl.style.color = '#EE4444';
+                    statusEl.innerHTML = '<span class="dot offline"></span><small>HORS LIGNE</small>';
+                }
+            } catch (e) {
+                msEl.innerText = 'ERR';
             }
-        } catch (e) {
-            alert("Erreur technique de liaison.");
         }
-    }
 
-    function generateAccess(dns) {
-        // ICI : Intégration API Nexon réelle via le code PHP
-        const user = "VIP_" + Math.floor(Math.random()*9999);
-        const pass = "ROUIS_SECURE";
-        const link = `http://${dns}:8080/get.php?username=${user}&password=${pass}&type=m3u_plus`;
-        
-        document.getElementById('qr-box').style.display = "block";
-        document.getElementById('m3uLink').innerText = link;
-        
-        const qrContainer = document.getElementById('qrcode');
-        qrContainer.innerHTML = "";
-        new QRCode(qrContainer, { text: link, width: 140, height: 140 });
-    }
-</script>
+        function startFullDiag() {
+            checkServer('my8k.me', '1');
+            checkServer('neo4kpro.me', '2');
+            checkServer('api-connect.icu', '3');
+        }
 
+        function generateVIP() {
+            const srv = document.getElementById('srvSelect').value;
+            const user = "VIP_" + Math.random().toString(36).substr(2, 6).toUpperCase();
+            const pass = "PASS_" + Math.random().toString(10).substr(2, 4);
+            const link = `http://${srv}:8080/get.php?username=${user}&password=${pass}&type=m3u_plus`;
+            
+            document.getElementById('qr-container').style.display = 'block';
+            document.getElementById('m3u-text').innerText = link;
+            
+            const qrDiv = document.getElementById('qrcode');
+            qrDiv.innerHTML = "";
+            new QRCode(qrDiv, { text: link, width: 160, height: 160 });
+            
+            alert("✓ Accès VIP généré avec succès ! Scannez le QR Code.");
+        }
+
+        // Lancement auto du diag au chargement
+        if(window.location.search.includes('admin')) {
+            window.onload = startFullDiag;
+        }
+    </script>
 </body>
-</html>
+    </html>
