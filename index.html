@@ -2,48 +2,236 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>YourTvSat VIP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARSENAL VIP - YourTvSat Control</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --gold: #d4af37; --black: #050505; --dark: #111; }
-        body { background: var(--black); color: #fff; font-family: sans-serif; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+        :root {
+            --bg-color: #050505;
+            --gold: #d4af37;
+            --gold-soft: rgba(212, 175, 55, 0.3);
+            --silver: #c0c0c0;
+            --success: #00ff00; /* Vert pour le statut Online */
+            --danger: #ff4444;
+        }
 
-        /* 🛰️ SATELLITE DORÉ DYNAMIQUE (Version Ultra-Stable) */
-        .sat-container { width: 120px; height: 120px; position: relative; animation: orbit 8s linear infinite; filter: drop-shadow(0 0 10px var(--gold)); margin-bottom: 20px; }
-        
-        .sat-body { width: 40px; height: 40px; background: linear-gradient(135deg, #f9f295, #d4af37); position: absolute; top: 40px; left: 40px; border-radius: 5px; border: 2px solid #000; }
-        .panel { width: 45px; height: 20px; background: #222; border: 1px solid var(--gold); position: absolute; top: 50px; }
-        .panel.left { left: -5px; }
-        .panel.right { right: -5px; }
-        .antenna { width: 2px; height: 30px; background: var(--gold); position: absolute; top: 10px; left: 59px; }
+        body {
+            background-color: var(--bg-color);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-        @keyframes orbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-        .content { text-align: center; width: 100%; max-width: 320px; z-index: 10; }
-        .logo { font-size: 2.2rem; font-weight: 900; color: var(--gold); letter-spacing: 5px; margin-top: 10px; text-shadow: 0 0 20px rgba(212,175,55,0.4); }
-        .btn-auth { background: #fff; color: #000; padding: 16px; border-radius: 50px; width: 100%; border: none; font-weight: bold; margin-top: 25px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .header h1 {
+            color: var(--gold);
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        /* --- L'ASCENSEUR LUXUEUX (SELECT) --- */
+        .control-panel {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--gold-soft);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        label {
+            display: block;
+            color: var(--silver);
+            margin-bottom: 10px;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+
+        select {
+            width: 100%;
+            padding: 15px;
+            background: #111;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            appearance: none; /* Look épuré */
+        }
+
+        /* --- AFFICHAGE DES RÉSULTATS (DIAGNOSTIC) --- */
+        .diagnostic-results {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .card {
+            background: #111;
+            border: 1px solid #222;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .card i {
+            color: var(--gold);
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .card .value {
+            font-weight: bold;
+            font-size: 1.2em;
+            display: block;
+        }
+
+        .status-online { color: var(--success); }
+        .status-offline { color: var(--danger); }
+
+        /* --- BOUTON D'ACTION --- */
+        .btn-action {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(45deg, var(--gold), #b8860b);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-action:hover {
+            box-shadow: 0 0 20px var(--gold);
+            transform: translateY(-2px);
+        }
+
+        /* --- QR CODE & INFOS --- */
+        .access-details {
+            margin-top: 30px;
+            text-align: center;
+            border-top: 1px solid #222;
+            padding-top: 20px;
+        }
+
+        #qrcode {
+            margin: 20px auto;
+            padding: 10px;
+            background: #fff;
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="content">
-        <div class="sat-container">
-            <div class="antenna"></div>
-            <div class="panel left"></div>
-            <div class="sat-body"></div>
-            <div class="panel right"></div>
-        </div>
-
-        <div class="logo">YOURTVSAT</div>
-        <p style="color:#666; font-size:0.7rem; letter-spacing:3px; margin-top:5px;">PREMIUM STREAMING</p>
-
-        <button class="btn-auth" onclick="alert('Accès Développeur : H.A.ROUIS')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" width="18"> Continuer avec Apple
-        </button>
-        <button class="btn-auth" style="margin-top:12px;" onclick="alert('Accès Développeur : H.A.ROUIS')">
-            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="18"> Continuer avec Google
-        </button>
+    <div class="header">
+        <h1>Arsenal VIP</h1>
+        <p style="color:var(--silver)">Diagnostic & Pilotage Satellite</p>
     </div>
 
+    <div class="control-panel">
+        <label>Sélectionnez votre Serveur</label>
+        <select id="serverSelect">
+            <option value="my8k.me" data-name="STRONG 8K / AMIGO 8K">STRONG 8K / AMIGO 8K</option>
+            <option value="neo4kpro.me" data-name="NEO 4K PRO">NEO 4K PRO</option>
+            <option value="api-connect.icu" data-name="NEXON 4K">NEXON 4K</option>
+            <option value="fuego-panel.net" data-name="FUEGO TV">FUEGO TV</option>
+            <option value="eagle-vod.me" data-name="EAGLE 4K">EAGLE 4K</option>
+        </select>
+
+        <button class="btn-action" onclick="runDiagnostic()">Lancer le Diagnostic</button>
+
+        <div class="diagnostic-results">
+            <div class="card">
+                <i class="fas fa-signal"></i>
+                <label>Ping (Latence)</label>
+                <span id="pingValue" class="value">-- ms</span>
+            </div>
+            <div class="card">
+                <i class="fas fa-server"></i>
+                <label>Statut Flux</label>
+                <span id="statusValue" class="value">--</span>
+            </div>
+        </div>
+
+        <div class="access-details">
+            <label>Votre Accès IPTV (QR Code)</label>
+            <div id="qrcode">
+                <i class="fas fa-qrcode" style="color:#000; font-size: 80px; margin-top:35px"></i>
+            </div>
+            <p id="m3uLink" style="font-size: 0.7em; color: var(--silver); word-break: break-all;">Lien M3U non généré</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        async function runDiagnostic() {
+            const server = document.getElementById('serverSelect').value;
+            const pingEl = document.getElementById('pingValue');
+            const statusEl = document.getElementById('statusValue');
+
+            pingEl.innerText = "Calcul...";
+            statusEl.innerText = "Vérification...";
+
+            // Simulation du Ping (Le ping réel en JS pur navigateur est limité par CORS)
+            // On utilise une requête HEAD pour mesurer le temps de réponse
+            const startTime = Date.now();
+            try {
+                // Note: En production, ceci passe par votre proxy backend pour éviter les erreurs CORS
+                await fetch(`https://cors-anywhere.herokuapp.com/http://${server}`, { method: 'HEAD', mode: 'no-cors' });
+                const duration = Date.now() - startTime;
+                
+                pingEl.innerText = duration + " ms";
+                pingEl.style.color = duration < 200 ? "#00ff00" : "#d4af37";
+                
+                statusEl.innerText = "ONLINE";
+                statusEl.className = "value status-online";
+                
+                generateAccess(server);
+            } catch (error) {
+                pingEl.innerText = "Erreur";
+                statusEl.innerText = "TIMEOUT";
+                statusEl.className = "value status-offline";
+            }
+        }
+
+        function generateAccess(dns) {
+            // Ces données viennent normalement de votre base de données via PHP
+            const user = "VIP_USER_TEST"; 
+            const pass = "PASS_TEMP_24H";
+            const port = "8080";
+            
+            const fullUrl = `http://${dns}:${port}/get.php?username=${user}&password=${pass}&type=m3u_plus&output=ts`;
+            
+            document.getElementById('m3uLink').innerText = fullUrl;
+            
+            // Génération du QR Code
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = ""; // Efface l'ancien
+            new QRCode(qrContainer, {
+                text: fullUrl,
+                width: 150,
+                height: 150,
+                colorDark : "#000000",
+                colorLight : "#ffffff"
+            });
+        }
+    </script>
 </body>
 </html>
