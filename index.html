@@ -3,149 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YOURTVSAT VIP — SYSTÈME ÉLITE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    
+    <title>YOURTVSAT - Dashboard VIP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --g: #C9A84C; --gl: #F5D87A; --gd: #7A5C1E;
-            --o: #050508; --o2: #0E0E18; --br: rgba(201,168,76,.15);
-            --green: #22CC66; --red: #EE4444;
+            --gold: #d4af37;
+            --dark-bg: #0a0a0a;
+            --card-bg: #151515;
+            --text-light: #ffffff;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--o); color: #fff; font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
 
-        /* --- LANDING PAGE --- */
-        #landing-page { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
-        .logo-anim { 
-            width: 120px; height: 120px; border: 2px solid var(--g); border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; margin-bottom: 20px; 
-            box-shadow: 0 0 30px var(--gd); animation: pulse 2s infinite; 
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .logo-anim i { font-size: 50px; color: var(--gl); }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); box-shadow: 0 0 50px var(--g); } 100% { transform: scale(1); } }
-        
-        h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; letter-spacing: 5px; color: var(--gl); text-transform: uppercase; }
-        .btn-main { margin-top: 30px; padding: 15px 40px; background: linear-gradient(135deg, var(--gd), var(--g)); color: #000; border: none; border-radius: 50px; font-weight: 600; text-decoration: none; cursor: pointer; transition: 0.3s; display: inline-block; }
-        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(201,168,76,0.4); }
 
-        /* --- DASHBOARD --- */
-        #dashboard-page { display: none; grid-template-columns: 260px 1fr; min-height: 100vh; }
-        @media(max-width: 900px) { #dashboard-page { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        .container {
+            width: 100%;
+            max-width: 450px;
+        }
 
-        .sidebar { background: #07070C; border-right: 1px solid var(--br); padding: 2rem 1.5rem; }
-        .sb-title { color: var(--g); font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; opacity: 0.6; }
-        .sb-link { display: flex; align-items: center; gap: 10px; color: #aaa; padding: 12px 0; font-size: 0.8rem; }
-        .active-link { color: var(--gl); font-weight: bold; }
+        /* --- DIAGNOSTIC CARD --- */
+        .diagnostic-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid #222;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 25px;
+        }
 
-        .main-content { background: var(--o2); padding: 2rem; }
-        .glass-card { background: rgba(255,255,255,0.03); border: 1px solid var(--br); border-radius: 20px; padding: 25px; margin-bottom: 20px; }
-        
-        .ping-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
-        .ping-card { background: #07070C; padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); text-align: center; }
-        .ping-ms { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; color: var(--gl); display: block; margin: 10px 0; }
-        
-        input, select { width: 100%; background: #000; border: 1px solid var(--br); padding: 12px; color: #fff; border-radius: 8px; margin-top: 10px; outline: none; }
-        
-        .qr-area { text-align: center; display: none; margin-top: 20px; }
-        #qrcode { background: #fff; padding: 15px; display: inline-block; border-radius: 10px; }
-        .m3u-box { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--g); background: #000; padding: 10px; border-radius: 5px; word-break: break-all; margin-top: 10px; }
+        .server-label {
+            color: #888;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ping-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--gold);
+            margin: 10px 0;
+        }
+
+        .status-optimal {
+            color: #00ff88;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* --- NOUVEL ASCENSEUR CLASSE --- */
+        .select-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .custom-select {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 100%;
+            background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+            color: var(--gold);
+            border: 1.5px solid var(--gold);
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .custom-select:hover {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold);
+            pointer-events: none;
+        }
+
+        /* --- BOUTONS --- */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .btn-rescan {
+            background-color: var(--gold);
+            color: #000;
+        }
+
+        .btn-qr {
+            background-color: transparent;
+            border: 1.5px solid var(--gold);
+            color: var(--gold);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
     </style>
 </head>
 <body>
 
-    <section id="landing-page">
-        <div class="logo-anim"><i class="fas fa-satellite-dish"></i></div>
-        <h1>YOURTVSAT VIP</h1>
-        <p style="color:var(--g); letter-spacing: 2px; font-size: 0.7rem; margin-top: 10px;">ACCÈS AU SYSTÈME DE PILOTAGE ÉLITE</p>
-        <button class="btn-main" onclick="openDashboard()">ENTRER DANS L'ARSENAL</button>
-    </section>
+<div class="container">
+    <h2 style="text-align: center; color: var(--gold);">VOTRE TV SAT PRO</h2>
 
-    <section id="dashboard-page">
-        <aside class="sidebar">
-            <div style="font-family:'Cormorant Garamond'; color:var(--gl); font-size: 1.2rem; margin-bottom: 40px;">YOURTVSAT VIP</div>
-            <div class="sb-title">Navigation</div>
-            <div class="sb-link active-link"><i class="fas fa-chart-line"></i> Dashboard</div>
-            <div class="sb-link"><i class="fas fa-key"></i> Mes Accès</div>
-            <div class="sb-link"><i class="fas fa-broadcast-tower"></i> Diagnostic</div>
-            <div class="sb-link" onclick="location.reload()" style="cursor:pointer; margin-top: 50px;"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
-        </aside>
+    <div class="diagnostic-card">
+        <span class="server-label" id="current-server-name">SÉLECTIONNEZ UN SERVEUR</span>
+        <div class="ping-value" id="ping-display">-- ms</div>
+        <div class="status-optimal" id="status-text">PRÊT AU SCAN</div>
+    </div>
 
-        <main class="main-content">
-            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <h2 style="font-family:'Cormorant Garamond'; font-size: 1.8rem;">Tableau de Bord</h2>
-                <div style="font-size: 0.7rem; color: var(--green); border: 1px solid var(--green); padding: 5px 15px; border-radius: 20px;">SATELLITE CONNECTÉ</div>
-            </header>
-
-            <div class="glass-card">
-                <h3 style="font-size: 0.8rem; color: var(--g);">DIAGNOSTIC TEMPS RÉEL</h3>
-                <div class="ping-grid">
-                    <div class="ping-card">
-                        <span style="font-size: 0.6rem; opacity: 0.5;">STRONG 8K</span>
-                        <span class="ping-ms" id="p1">-- ms</span>
-                        <small id="s1" style="color:var(--green)">OPTIMAL</small>
-                    </div>
-                    <div class="ping-card">
-                        <span style="font-size: 0.6rem; opacity: 0.5;">NEO 4K PRO</span>
-                        <span class="ping-ms" id="p2">-- ms</span>
-                        <small id="s2" style="color:var(--green)">OPTIMAL</small>
-                    </div>
-                </div>
-                <button class="btn-main" style="width:100%; font-size:0.7rem;" onclick="simulatePing()">RESCANNER LES FLUX</button>
-            </div>
-
-            <div class="glass-card">
-                <h3 style="font-size: 0.8rem; color: var(--g);">ACTIVER VOTRE ACCÈS VIP</h3>
-                <select id="srv">
-                    <option value="my8k.me">Strong 8K / Amigo</option>
-                    <option value="neo4kpro.me">Neo 4K Pro</option>
-                </select>
-                <button class="btn-main" style="width:100%;" onclick="generateVIP()">GÉNÉRER CODE QR</button>
-                
-                <div id="qr-container" class="qr-area">
-                    <div id="qrcode"></div>
-                    <div class="m3u-box" id="m3u-link"></div>
-                </div>
-            </div>
-        </main>
-    </section>
-
-    <script>
-        // NAVIGATION SANS RECHARGER (HYBRIDE)
-        function openDashboard() {
-            document.getElementById('landing-page').style.display = 'none';
-            document.getElementById('dashboard-page').style.display = 'grid';
-            simulatePing();
-        }
-
-        // SIMULATION DU PING EN JAVASCRIPT
-        function simulatePing() {
-            const pings = ['p1', 'p2'];
-            pings.forEach(id => {
-                document.getElementById(id).innerText = '...';
-                setTimeout(() => {
-                    const val = Math.floor(Math.random() * (120 - 40) + 40);
-                    document.getElementById(id).innerText = val + ' ms';
-                }, 800);
-            });
-        }
-
-        // GÉNÉRATEUR DE QR CODE 100% CLIENT
-        function generateVIP() {
-            const dns = document.getElementById('srv').value;
-            const user = "VIP_" + Math.random().toString(36).substr(2, 5).toUpperCase();
-            const pass = "SECURE_" + Math.random().toString(10).substr(2, 4);
-            const link = `http://${dns}:8080/get.php?username=${user}&password=${pass}&type=m3u_plus`;
-            
-            document.getElementById('qr-container').style.display = 'block';
-            document.getElementById('m3u-link').innerText = link;
-            
-            const qrDiv = document.getElementById('qrcode');
-            qrDiv.innerHTML = ""; // Clear
-            new QRCode(qrDiv, { text: link, width: 160, height: 160 });
-        }
-    </script>
-</body>
-    </html>
+    <div class="select-wrapper">
+        <select class="custom-select" id="server-select">
+            <option value="http://votre-dns-strong.com">STRONG 8
