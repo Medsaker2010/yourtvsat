@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  // Pas de paramètre 'output', Next.js choisira le bon mode seul
 };
 
 export default nextConfig;
