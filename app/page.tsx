@@ -2,105 +2,177 @@
 import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast, { Toaster } from 'react-hot-toast';
-interface Product { id: string; name: string; icon: string; server: string; description: string; prices: { '1m': number; '3m': number; '6m': number; '12m': number }; features: string[]; badge?: string; }
-interface TestResult { username: string; password: string; m3u: string; xtream: { url: string; username: string; password: string }; qrCode: string; expiresIn: string; }
+
+interface Product { 
+  id: string; 
+  name: string; 
+  icon: string; 
+  server: string; 
+  description: string; 
+  prices: { '1m': number; '3m': number; '6m': number; '12m': number }; 
+  features: string[]; 
+  badge?: string; 
+}
+
+interface TestResult { 
+  username: string; 
+  password: string; 
+  m3u: string; 
+  xtream: { url: string; username: string; password: string }; 
+  qrCode: string; 
+  expiresIn: string; 
+}
+
 const PRODUCTS: Product[] = [
-{ id: 'eagle4k', name: 'Eagle 4K', icon: '🦅', server: 'eagle4k', description: 'Serveur Ultra HD 4K Premium', prices: { '1m': 12, '3m': 30, '6m': 55, '12m': 95 }, features: ['4K Ultra HD', '10000+ Chaines', 'VOD 50K+', 'Anti-Freeze'], badge: 'POPULAIRE' },
-{ id: 'strong8k', name: 'Strong 8K', icon: '💪', server: 'strong8k', description: 'Qualite 8K Exceptionnelle', prices: { '1m': 15, '3m': 38, '6m': 68, '12m': 120 }, features: ['8K HDR', '12000+ Chaines', 'VOD 80K+', 'Multi-Screen'], badge: 'PREMIUM' },
-{ id: 'dinovip', name: 'Dino VIP', icon: '🦕', server: 'dinovip', description: 'Serveur VIP Stabilite Maximale', prices: { '1m': 10, '3m': 25, '6m': 45, '12m': 80 }, features: ['Full HD', '8000+ Chaines', 'VOD 40K+', 'Stable 99.9%'] },
-{ id: 'nexon4k', name: 'Nexon 4K', icon: '⚡', server: 'nexon4k', description: 'Vitesse et Performance 4K', prices: { '1m': 11, '3m': 28, '6m': 50, '12m': 90 }, features: ['4K HDR', '9000+ Chaines', 'VOD 45K+', 'Ultra-Fast'], badge: 'NOUVEAU' },
-{ id: 'fuego', name: 'Fuego', icon: '🔥', server: 'fuego', description: 'Serveur Brulant de Performance', prices: { '1m': 10, '3m': 25, '6m': 45, '12m': 80 }, features: ['4K', '7000+ Chaines', 'VOD 35K+', 'Rapide'] },
-{ id: 'cobra', name: 'Cobra', icon: '🐍', server: 'cobra', description: 'Precision et Fiabilite', prices: { '1m': 10, '3m': 25, '6m': 45, '12m': 80 }, features: ['Full HD', '7500+ Chaines', 'VOD 38K+', 'Stable'] },
-{ id: 'foxx', name: 'Foxx', icon: '🦊', server: 'foxx', description: 'Ruse et Performant', prices: { '1m': 9, '3m': 22, '6m': 40, '12m': 72 }, features: ['HD', '6000+ Chaines', 'VOD 30K+', 'Economique'] },
-{ id: 'pure', name: 'Pure', icon: '💎', server: 'pure', description: 'Purete du Signal', prices: { '1m': 12, '3m': 30, '6m': 55, '12m': 95 }, features: ['4K Pure', '8500+ Chaines', 'VOD 42K+', 'Crystal Clear'] },
-{ id: 'trex', name: 'T-Rex', icon: '🦖', server: 'trex', description: 'Puissance Dinosaure', prices: { '1m': 11, '3m': 28, '6m': 50, '12m': 88 }, features: ['4K', '9500+ Chaines', 'VOD 48K+', 'Puissant'] },
-{ id: 'infinity', name: 'Infinity', icon: '♾️', server: 'infinity', description: 'Contenu Illimite', prices: { '1m': 13, '3m': 33, '6m': 60, '12m': 105 }, features: ['4K+', '11000+ Chaines', 'VOD 60K+', 'Illimite'], badge: 'VIP' },
-{ id: 'atlas', name: 'Atlas Pro', icon: '🌍', server: 'atlas', description: 'Couverture Mondiale', prices: { '1m': 12, '3m': 30, '6m': 55, '12m': 95 }, features: ['4K', '10000+ Chaines', 'Monde Entier', 'Multi-Lang'] },
-{ id: 'eagle4k_ar', name: 'Eagle Arabic', icon: '🌙', server: 'eagle4k', description: 'Special Contenu Arabe', prices: { '1m': 10, '3m': 25, '6m': 45, '12m': 80 }, features: ['HD/4K', '5000+ AR', 'Bein Sports', 'OSN+'] },
-{ id: 'strong_fr', name: 'Strong FR', icon: '🇫🇷', server: 'strong8k', description: 'Special France Premium', prices: { '1m': 11, '3m': 28, '6m': 50, '12m': 88 }, features: ['4K', 'TF1/M6/Canal+', 'Foot FR', 'Series FR'] },
-{ id: 'nexon_sport', name: 'Nexon Sport', icon: '⚽', server: 'nexon4k', description: 'Sport 24/7 Ultra HD', prices: { '1m': 12, '3m': 30, '6m': 55, '12m': 95 }, features: ['4K Sport', 'beIN/Sky', 'F1/MotoGP', 'Live Events'], badge: 'SPORT' },
+  { id: 'eagle4k', name: 'Eagle 4K', icon: '🦅', server: 'eagle4k', description: 'Serveur Ultra HD 4K Premium', prices: { '1m': 12, '3m': 30, '6m': 55, '12m': 95 }, features: ['4K Ultra HD', '10000+ Chaines', 'VOD 50K+', 'Anti-Freeze'], badge: 'POPULAIRE' },
+  { id: 'strong8k', name: 'Strong 8K', icon: '💪', server: 'strong8k', description: 'Qualite 8K Exceptionnelle', prices: { '1m': 15, '3m': 38, '6m': 68, '12m': 120 }, features: ['8K HDR', '12000+ Chaines', 'VOD 80K+', 'Multi-Screen'], badge: 'PREMIUM' },
+  { id: 'dinovip', name: 'Dino VIP', icon: '🦕', server: 'dinovip', description: 'Serveur VIP Stabilite Maximale', prices: { '1m': 10, '3m': 25, '6m': 45, '12m': 80 }, features: ['Full HD', '8000+ Chaines', 'VOD 40K+', 'Stable 99.9%'] },
+  { id: 'nexon4k', name: 'Nexon 4K', icon: '⚡', server: 'nexon4k', description: 'Vitesse et Performance 4K', prices: { '1m': 11, '3m': 28, '6m': 50, '12m': 90 }, features: ['4K HDR', '9000+ Chaines', 'VOD 45K+', 'Ultra-Fast'], badge: 'NOUVEAU' },
+  { id: 'fuego', name: 'Fuego', icon: '🔥', server: 'fuego', description: 'Serveur Brulant de Performance', prices: { '1m': 10, '3m': 25, '6m': 45, '12m': 80 }, features: ['4K', '7000+ Chaines', 'VOD 35K+', 'Rapide'] },
+  { id: 'cobra', name: 'Cobra', icon: '🐍', server: 'cobra', description: 'Precision et Fiabilite', prices: { '1m': 10, '3m': 25, '6m': 45, '12m': 80 }, features: ['Full HD', '7500+ Chaines', 'VOD 38K+', 'Stable'] },
+  { id: 'foxx', name: 'Foxx', icon: '🦊', server: 'foxx', description: 'Ruse et Performant', prices: { '1m': 9, '3m': 22, '6m': 40, '12m': 72 }, features: ['HD', '6000+ Chaines', 'VOD 30K+', 'Economique'] },
+  { id: 'pure', name: 'Pure', icon: '💎', server: 'pure', description: 'Purete du Signal', prices: { '1m': 12, '3m': 30, '6m': 55, '12m': 95 }, features: ['4K Pure', '8500+ Chaines', 'VOD 42K+', 'Crystal Clear'] },
+  { id: 'trex', name: 'T-Rex', icon: '🦖', server: 'trex', description: 'Puissance Dinosaure', prices: { '1m': 11, '3m': 28, '6m': 50, '12m': 88 }, features: ['4K', '9500+ Chaines', 'VOD 48K+', 'Puissant'] },
+  { id: 'infinity', name: 'Infinity', icon: '♾️', server: 'infinity', description: 'Contenu Illimite', prices: { '1m': 13, '3m': 33, '6m': 60, '12m': 105 }, features: ['4K+', '11000+ Chaines', 'VOD 60K+', 'Illimite'], badge: 'VIP' },
+  { id: 'atlas', name: 'Atlas Pro', icon: '🌍', server: 'atlas', description: 'Couverture Mondiale', prices: { '1m': 12, '3m': 30, '6m': 55, '12m': 95 }, features: ['4K', '10000+ Chaines', 'Monde Entier', 'Multi-Lang'] },
+  { id: 'eagle4k_ar', name: 'Eagle Arabic', icon: '🌙', server: 'eagle4k', description: 'Special Contenu Arabe', prices: { '1m': 10, '3m': 25, '6m': 45, '12m': 80 }, features: ['HD/4K', '5000+ AR', 'Bein Sports', 'OSN+'] },
+  { id: 'strong_fr', name: 'Strong FR', icon: '🇫🇷', server: 'strong8k', description: 'Special France Premium', prices: { '1m': 11, '3m': 28, '6m': 50, '12m': 88 }, features: ['4K', 'TF1/M6/Canal+', 'Foot FR', 'Series FR'] },
+  { id: 'nexon_sport', name: 'Nexon Sport', icon: '⚽', server: 'nexon4k', description: 'Sport 24/7 Ultra HD', prices: { '1m': 12, '3m': 30, '6m': 55, '12m': 95 }, features: ['4K Sport', 'beIN/Sky', 'F1/MotoGP', 'Live Events'], badge: 'SPORT' },
 ];
+
 const glass: React.CSSProperties = { background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(20px)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '24px' };
 const GOLD = 'linear-gradient(135deg, #D4AF37, #FF8C00)';
+
 export default function YourTVSatVIP() {
-const [activeTab, setActiveTab] = useState<'subscriber' | 'new'>('subscriber');
-const [username, setUsername] = useState('');
-const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'found' | 'notfound'>('idle');
-const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-const [selectedDuration, setSelectedDuration] = useState<'1m' | '3m' | '6m' | '12m'>('12m');
-const [showTestModal, setShowTestModal] = useState(false);
-const [showSubscribeModal, setShowSubscribeModal] = useState(false);
-const [testResult, setTestResult] = useState<TestResult | null>(null);
-const [isLoading, setIsLoading] = useState(false);
-const [isRegistering, setIsRegistering] = useState(false);
-const [email, setEmail] = useState('');
-const [newEmail, setNewEmail] = useState('');
-const [newPassword, setNewPassword] = useState('');
-const [filterServer, setFilterServer] = useState('all');
-const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-const handleUsernameChange = useCallback((value: string) => {
-setUsername(value);
-setUsernameStatus('idle');
-if (debounceRef.current) clearTimeout(debounceRef.current);
-if (value.length < 3) return;
-setUsernameStatus('checking');
-debounceRef.current = setTimeout(async () => {
-try {
-const res = await fetch('/api/check-user?username=' + encodeURIComponent(value));
-const data = await res.json();
-setUsernameStatus(data.found ? 'found' : 'notfound');
-} catch { setUsernameStatus('notfound'); }
-}, 600);
-}, []);
-const handleRegister = async () => {
-if (!newEmail || !newPassword) { toast.error('Remplissez tous les champs'); return; }
-if (newEmail === 'support@yourtvsat.com') { toast.error('Email reserve'); return; }
-setIsRegistering(true);
-try {
-const res = await fetch('/api/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: newEmail, password: newPassword }) });
-const data = await res.json();
-if (data.success && data.checkoutUrl) { window.location.href = data.checkoutUrl; }
-else { toast.error(data.error || 'Erreur inscription'); }
-} catch { toast.error('Erreur de connexion'); }
-finally { setIsRegistering(false); }
-};
-const handleCreateTest = async () => {
-if (!email) { toast.error('Veuillez entrer votre email'); return; }
-if (!selectedProduct) { toast.error('Veuillez selectionner un serveur'); return; }
-setIsLoading(true);
-try {
-let ip = '0.0.0.0';
-try { const r = await fetch('https://api.ipify.org?format=json'); const d = await r.json(); ip = d.ip; } catch { /* fallback */ }
-const res = await fetch('/api/create-test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, server: selectedProduct.server, ip }) });
-const data = await res.json();
-if (data.success) { setTestResult(data); setShowTestModal(true); setShowSubscribeModal(false); toast.success('Test 24H active !'); }
-else { toast.error(data.error || 'Erreur API'); }
-} catch { toast.error('Erreur de connexion'); }
-finally { setIsLoading(false); }
-};
-const handleStripeCheckout = async () => {
-if (!email) { toast.error('Entrez votre email'); return; }
-if (!selectedProduct) { toast.error('Selectionnez un serveur'); return; }
-try {
+  const [activeTab, setActiveTab] = useState<'subscriber' | 'new'>('subscriber');
+  const [username, setUsername] = useState('');
+  const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'found' | 'notfound'>('idle');
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedDuration, setSelectedDuration] = useState<'1m' | '3m' | '6m' | '12m'>('12m');
+  const [showTestModal, setShowTestModal] = useState(false);
+  const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+  const [testResult, setTestResult] = useState<TestResult | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [email, setEmail] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [filterServer, setFilterServer] = useState('all');
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleUsernameChange = useCallback((value: string) => {
+    setUsername(value);
+    setUsernameStatus('idle');
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (value.length < 3) return;
+    
+    setUsernameStatus('checking');
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch('/api/check-user?username=' + encodeURIComponent(value));
+        const data = await res.json();
+        setUsernameStatus(data.found ? 'found' : 'notfound');
+      } catch { 
+        setUsernameStatus('notfound'); 
+      }
+    }, 600);
+  }, []);
+
+  const handleRegister = async () => {
+    if (!newEmail || !newPassword) { toast.error('Remplissez tous les champs'); return; }
+    if (newEmail === 'support@yourtvsat.com') { toast.error('Email reserve'); return; }
+    setIsRegistering(true);
+    try {
+      const res = await fetch('/api/register', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ email: newEmail, password: newPassword }) 
+      });
+      const data = await res.json();
+      if (data.success && data.checkoutUrl) { 
+        window.location.href = data.checkoutUrl; 
+      } else { 
+        toast.error(data.error || 'Erreur inscription'); 
+      }
+    } catch { 
+      toast.error('Erreur de connexion'); 
+    } finally { 
+      setIsRegistering(false); 
+    }
+  };
+
+  const handleCreateTest = async () => {
+    if (!email) { toast.error('Veuillez entrer votre email'); return; }
+    if (!selectedProduct) { toast.error('Veuillez selectionner un serveur'); return; }
+    setIsLoading(true);
+    try {
+      let ip = '0.0.0.0';
+      try { 
+        const r = await fetch('https://api.ipify.org?format=json'); 
+        const d = await r.json(); 
+        ip = d.ip; 
+      } catch { /* fallback */ }
+      
+      const res = await fetch('/api/create-test', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ email, server: selectedProduct.server, ip }) 
+      });
+      const data = await res.json();
+      if (data.success) { 
+        setTestResult(data); 
+        setShowTestModal(true); 
+        setShowSubscribeModal(false); 
+        toast.success('Test 24H active !'); 
+      } else { 
+        toast.error(data.error || 'Erreur API'); 
+      }
+    } catch { 
+      toast.error('Erreur de connexion'); 
+    } finally { 
+      setIsLoading(false); 
+    }
+  };
+
   const handleStripeCheckout = async () => {
     if (!email) { toast.error('Entrez votre email'); return; }
     if (!selectedProduct) { toast.error('Selectionnez un serveur'); return; }
     try {
-      const res = await fetch('/api/create-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, productId: selectedProduct.id, duration: selectedDuration }) });
+      const res = await fetch('/api/create-checkout', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ email, productId: selectedProduct.id, duration: selectedDuration }) 
+      });
       const data = await res.json();
-      if (data.url) { window.location.href = data.url; }
-      else { toast.error('Erreur paiement'); }
-    } catch { toast.error('Erreur de connexion'); }
+      if (data.url) { 
+        window.location.href = data.url; 
+      } else { 
+        toast.error('Erreur paiement'); 
+      }
+    } catch { 
+      toast.error('Erreur de connexion'); 
+    }
   };
+
   const filteredProducts = filterServer === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.server === filterServer);
+
   return (
     <div style={{ background: '#0B0C10', minHeight: '100vh', color: 'white', fontFamily: 'Montserrat, sans-serif', paddingBottom: '60px', overflowX: 'hidden' }}>
-      <Toaster position="top-right" toastOptions={{ style: { background: '#1a1a1a', color: 'white', border: '1px solid #D4AF37' } }} />
-      <style>{`@keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } } @keyframes glow { 0%,100% { box-shadow: 0 0 20px rgba(212,175,55,0.3); } 50% { box-shadow: 0 0 40px rgba(212,175,55,0.8); } } @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } } input::placeholder { color: rgba(255,255,255,0.3); } ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #0B0C10; } ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 3px; }`}</style>
-      <div style={{ position: 'fixed', top: '20%', right: '10%', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0, animation: 'float 6s ease-in-out infinite' }} />
-<style>{`@keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } } @keyframes glow { 0%,100% { box-shadow: 0 0 20px rgba(212,175,55,0.3); } 50% { box-shadow: 0 0 40px rgba(212,175,55,0.8); } } @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } } input::placeholder { color: rgba(255,255,255,0.3); } ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #0B0C10; } ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 3px; }`}</style>
-<div style={{ position: 'fixed', top: '20%', right: '10%', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0, animation: 'float 6s ease-in-out infinite' }} />
-<motion.header initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} style={{ padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(212,175,55,0.15)', position: 'sticky', top: 0, background: 'rgba(11,12,16,0.97)', backdropFilter: 'blur(20px)', zIndex: 1000 }}>
+      <Toaster position="top-right" toastOptions={{ style: { background: '#1F2833', color: '#fff' } }} />
+      
+      {/* 
+         AJOUTEZ LE CONTENU DE VOTRE INTERFACE (JSX) ICI 
+         (Bannières, Listes de produits, Modales, etc.)
+      */}
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <h1>Your TV Sat VIP</h1>
+        <p>Interface de gestion et d'abonnements</p>
+      </div>
+
+    </div>
+  );
+}
+1, y: 0 }} style={{ padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(212,175,55,0.15)', position: 'sticky', top: 0, background: 'rgba(11,12,16,0.97)', backdropFilter: 'blur(20px)', zIndex: 1000 }}>
 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
 <motion.div animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }} style={{ width: '48px', height: '48px', borderRadius: '50%', background: GOLD, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px' }}>📡</motion.div>
 <div>
