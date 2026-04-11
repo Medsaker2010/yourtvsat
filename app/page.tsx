@@ -105,7 +105,6 @@ export default function YourTVSatVIP() {
       setIsLoading(false);
     }
   };
-
   const filteredProducts = filterServer === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.server === filterServer);
 
   return (
