@@ -93,7 +93,7 @@ try {
     } catch { toast.error('Erreur de connexion'); }
   };
   const filteredProducts = filterServer === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.server === filterServer);
-    return (
+  return (
     <div style={{ background: '#0B0C10', minHeight: '100vh', color: 'white', fontFamily: 'Montserrat, sans-serif', paddingBottom: '60px', overflowX: 'hidden' }}>
       <Toaster position="top-right" toastOptions={{ style: { background: '#1a1a1a', color: 'white', border: '1px solid #D4AF37' } }} />
       <style>{`@keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } } @keyframes glow { 0%,100% { box-shadow: 0 0 20px rgba(212,175,55,0.3); } 50% { box-shadow: 0 0 40px rgba(212,175,55,0.8); } } @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } } input::placeholder { color: rgba(255,255,255,0.3); } ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #0B0C10; } ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 3px; }`}</style>
