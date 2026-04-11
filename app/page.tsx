@@ -1,4 +1,4 @@
-# ✅ **CODE CORRIGÉ COMPLET - app/page.tsx**
+# ✅ **CODE FINAL CORRIGÉ - app/page.tsx**
 
 ```tsx
 'use client';
@@ -177,7 +177,7 @@ const PRODUCTS: Product[] = [
 ];
 
 // ============================================
-// STYLES COMMUNS
+// STYLES - HORS COMPOSANT ✅
 // ============================================
 const S = {
   glass: {
@@ -199,7 +199,7 @@ const S = {
     fontSize: '1rem',
     fontFamily: "'Montserrat', sans-serif",
     outline: 'none',
-    boxSizing: 'border-box',
+    boxSizing: 'border-box' as const,
   } as React.CSSProperties,
 
   btnPrimary: {
@@ -218,18 +218,19 @@ const S = {
 };
 
 // ============================================
-// COMPOSANT PRINCIPAL
+// COMPOSANT PRINCIPAL ✅
 // ============================================
 export default function YourTVSatVIP() {
 
-  // ---- STATES ----
   const [activeTab, setActiveTab] = useState<'subscriber' | 'new'>('subscriber');
   const [username, setUsername] = useState('');
   const [usernameStatus, setUsernameStatus] = useState<
     'idle' | 'checking' | 'found' | 'notfound'
   >('idle');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedDuration, setSelectedDuration] = useState<'1m' | '3m' | '6m' | '12m'>('12m');
+  const [selectedDuration, setSelectedDuration] = useState<
+    '1m' | '3m' | '6m' | '12m'
+  >('12m');
   const [showTestModal, setShowTestModal] = useState(false);
   const [showSubscribeModal, setShowSubscribeModal] = useState(false);
   const [testResult, setTestResult] = useState<TestResult | null>(null);
@@ -247,7 +248,9 @@ export default function YourTVSatVIP() {
     setUsernameStatus('checking');
     debounceRef.current = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/check-user?username=${encodeURIComponent(value)}`);
+        const res = await fetch(
+          `/api/check-user?username=${encodeURIComponent(value)}`
+        );
         const data = await res.json();
         setUsernameStatus(data.found ? 'found' : 'notfound');
       } catch {
@@ -276,7 +279,6 @@ export default function YourTVSatVIP() {
       } catch {
         // IP fallback
       }
-
       const res = await fetch('/api/create-test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -286,9 +288,7 @@ export default function YourTVSatVIP() {
           ip,
         }),
       });
-
       const data = await res.json();
-
       if (data.success) {
         setTestResult(data);
         setShowTestModal(true);
@@ -324,16 +324,13 @@ export default function YourTVSatVIP() {
       overflowX: 'hidden',
     }}>
 
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            background: '#1a1a1a',
-            color: 'white',
-            border: '1px solid #D4AF37',
-          },
-        }}
-      />
+      <Toaster position="top-right" toastOptions={{
+        style: {
+          background: '#1a1a1a',
+          color: 'white',
+          border: '1px solid #D4AF37',
+        },
+      }} />
 
       {/* SATELLITE BG */}
       <div style={{
@@ -354,14 +351,12 @@ export default function YourTVSatVIP() {
           justifyContent: 'space-between',
           alignItems: 'center',
           borderBottom: '1px solid rgba(212,175,55,0.15)',
-          position: 'sticky',
-          top: 0,
+          position: 'sticky', top: 0,
           background: 'rgba(5,5,5,0.97)',
           backdropFilter: 'blur(20px)',
           zIndex: 1000,
         }}
       >
-        {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <motion.div
             animate={{ rotate: 360 }}
@@ -380,4 +375,4 @@ export default function YourTVSatVIP() {
           </motion.div>
           <span style={{
             fontFamily: "'Playfair Display', serif",
-            fontSize:
+            fontSize: '1.
