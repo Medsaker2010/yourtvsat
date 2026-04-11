@@ -82,16 +82,19 @@ const handleStripeCheckout = async () => {
 if (!email) { toast.error('Entrez votre email'); return; }
 if (!selectedProduct) { toast.error('Selectionnez un serveur'); return; }
 try {
-const res = await fetch('/api/create-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, productId: selectedProduct.id, duration: selectedDuration }) });
-const data = await res.json();
-if (data.url) { window.location.href = data.url; }
-else { toast.error('Erreur paiement'); }
-} catch { toast.error('Erreur de connexion'); }
-};
-const filteredProducts = filterServer === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.server === filterServer);
-return (
-<div style={{ background: '#0B0C10', minHeight: '100vh', color: 'white', fontFamily: 'Montserrat, sans-serif', paddingBottom: '60px', overflowX: 'hidden' }}>
-<Toaster position="top-right" toastOptions={{ style: { background: '#1a1a1a', color: 'white', border: '1px solid #D4AF37' } }} />
+  const handleStripeCheckout = async () => {
+    if (!email) { toast.error('Entrez votre email'); return; }
+    if (!selectedProduct) { toast.error('Selectionnez un serveur'); return; }
+    try {
+      const res = await fetch('/api/create-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, productId: selectedProduct.id, duration: selectedDuration }) });
+      const data = await res.json();
+      if (data.url) { window.location.href = data.url; }
+      else { toast.error('Erreur paiement'); }
+    } catch { toast.error('Erreur de connexion'); }
+  };
+  const filteredProducts = filterServer === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.server === filterServer);
+  return (
+    <div style={{ background: '#0B0C10',background: '#1a1a1a', color: 'white', border: '1px solid #D4AF37' } }} />
 <style>{`@keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } } @keyframes glow { 0%,100% { box-shadow: 0 0 20px rgba(212,175,55,0.3); } 50% { box-shadow: 0 0 40px rgba(212,175,55,0.8); } } @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } } input::placeholder { color: rgba(255,255,255,0.3); } ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #0B0C10; } ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 3px; }`}</style>
 <div style={{ position: 'fixed', top: '20%', right: '10%', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0, animation: 'float 6s ease-in-out infinite' }} />
 <motion.header initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} style={{ padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(212,175,55,0.15)', position: 'sticky', top: 0, background: 'rgba(11,12,16,0.97)', backdropFilter: 'blur(20px)', zIndex: 1000 }}>
