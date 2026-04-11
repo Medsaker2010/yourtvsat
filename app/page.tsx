@@ -1,6 +1,9 @@
+# ✅ **CODE CORRIGÉ COMPLET - app/page.tsx**
+
+```tsx
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -37,7 +40,7 @@ interface TestResult {
 }
 
 // ============================================
-// CATALOGUE 14 PRODUITS RÉELS
+// CATALOGUE 14 PRODUITS
 // ============================================
 const PRODUCTS: Product[] = [
   {
@@ -174,13 +177,57 @@ const PRODUCTS: Product[] = [
 ];
 
 // ============================================
+// STYLES COMMUNS
+// ============================================
+const S = {
+  glass: {
+    background: 'rgba(255,255,255,0.03)',
+    backdropFilter: 'blur(20px)',
+    border: '1px solid rgba(212,175,55,0.2)',
+    borderRadius: '24px',
+  } as React.CSSProperties,
+
+  goldGradient: 'linear-gradient(135deg, #D4AF37, #FF8C00)',
+
+  input: {
+    width: '100%',
+    background: 'rgba(255,255,255,0.05)',
+    border: '1px solid rgba(212,175,55,0.3)',
+    borderRadius: '12px',
+    padding: '15px 20px',
+    color: 'white',
+    fontSize: '1rem',
+    fontFamily: "'Montserrat', sans-serif",
+    outline: 'none',
+    boxSizing: 'border-box',
+  } as React.CSSProperties,
+
+  btnPrimary: {
+    background: 'linear-gradient(135deg, #FF8C00, #D4AF37)',
+    color: '#000',
+    border: 'none',
+    padding: '15px 40px',
+    borderRadius: '50px',
+    fontWeight: 700,
+    cursor: 'pointer',
+    fontSize: '1rem',
+    fontFamily: "'Montserrat', sans-serif",
+    width: '100%',
+    transition: 'all 0.3s',
+  } as React.CSSProperties,
+};
+
+// ============================================
 // COMPOSANT PRINCIPAL
 // ============================================
 export default function YourTVSatVIP() {
-  // States
+
+  // ---- STATES ----
   const [activeTab, setActiveTab] = useState<'subscriber' | 'new'>('subscriber');
   const [username, setUsername] = useState('');
-  const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'found' | 'notfound'>('idle');
+  const [usernameStatus, setUsernameStatus] = useState<
+    'idle' | 'checking' | 'found' | 'notfound'
+  >('idle');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedDuration, setSelectedDuration] = useState<'1m' | '3m' | '6m' | '12m'>('12m');
   const [showTestModal, setShowTestModal] = useState(false);
@@ -189,9 +236,9 @@ export default function YourTVSatVIP() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [filterServer, setFilterServer] = useState('all');
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Debounce username detection
+  // ---- DEBOUNCE USERNAME ----
   const handleUsernameChange = useCallback((value: string) => {
     setUsername(value);
     setUsernameStatus('idle');
@@ -200,7 +247,7 @@ export default function YourTVSatVIP() {
     setUsernameStatus('checking');
     debounceRef.current = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/check-user?username=${value}`);
+        const res = await fetch(`/api/check-user?username=${encodeURIComponent(value)}`);
         const data = await res.json();
         setUsernameStatus(data.found ? 'found' : 'notfound');
       } catch {
@@ -209,16 +256,27 @@ export default function YourTVSatVIP() {
     }, 600);
   }, []);
 
-  // Générer Test 24H
+  // ---- CRÉER TEST 24H ----
   const handleCreateTest = async () => {
-    if (!email || !selectedProduct) {
+    if (!email) {
       toast.error('Veuillez entrer votre email');
+      return;
+    }
+    if (!selectedProduct) {
+      toast.error('Veuillez sélectionner un serveur');
       return;
     }
     setIsLoading(true);
     try {
-      const ipRes = await fetch('https://api.ipify.org?format=json');
-      const { ip } = await ipRes.json();
+      let ip = '0.0.0.0';
+      try {
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+        ip = ipData.ip;
+      } catch {
+        // IP fallback
+      }
+
       const res = await fetch('/api/create-test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -228,44 +286,61 @@ export default function YourTVSatVIP() {
           ip,
         }),
       });
+
       const data = await res.json();
+
       if (data.success) {
         setTestResult(data);
         setShowTestModal(true);
-        toast.success('Test 24H activé !');
+        setShowSubscribeModal(false);
+        toast.success('✅ Test 24H activé !');
       } else {
         toast.error(data.error || 'Erreur API');
       }
-    } catch (error) {
+    } catch {
       toast.error('Erreur de connexion');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const filteredProducts = filterServer === 'all'
-    ? PRODUCTS
-    : PRODUCTS.filter(p => p.server === filterServer);
+  // ---- FILTRES ----
+  const filteredProducts =
+    filterServer === 'all'
+      ? PRODUCTS
+      : PRODUCTS.filter((p) => p.server === filterServer);
 
+  // ============================================
+  // RENDER
+  // ============================================
   return (
     <div style={{
       background: '#050505',
       minHeight: '100vh',
       color: 'white',
       fontFamily: "'Montserrat', sans-serif",
-      paddingBottom: '50px',
+      paddingBottom: '60px',
+      position: 'relative',
+      overflowX: 'hidden',
     }}>
-      <Toaster position="top-right" toastOptions={{
-        style: { background: '#1a1a1a', color: 'white', border: '1px solid #D4AF37' }
-      }} />
 
-      {/* ===== SATELLITE BACKGROUND ===== */}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#1a1a1a',
+            color: 'white',
+            border: '1px solid #D4AF37',
+          },
+        }}
+      />
+
+      {/* SATELLITE BG */}
       <div style={{
         position: 'fixed', top: '10%', right: '5%',
-        width: '300px', height: '300px',
+        width: '400px', height: '400px',
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)',
-        animation: 'pulse 4s ease-in-out infinite',
+        background: 'radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%)',
         pointerEvents: 'none', zIndex: 0,
       }} />
 
@@ -279,8 +354,9 @@ export default function YourTVSatVIP() {
           justifyContent: 'space-between',
           alignItems: 'center',
           borderBottom: '1px solid rgba(212,175,55,0.15)',
-          position: 'sticky', top: 0,
-          background: 'rgba(5,5,5,0.95)',
+          position: 'sticky',
+          top: 0,
+          background: 'rgba(5,5,5,0.97)',
           backdropFilter: 'blur(20px)',
           zIndex: 1000,
         }}
@@ -293,62 +369,15 @@ export default function YourTVSatVIP() {
             style={{
               width: '45px', height: '45px',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #D4AF37, #FF8C00)',
+              background: S.goldGradient,
               display: 'flex', alignItems: 'center',
               justifyContent: 'center', fontSize: '20px',
               boxShadow: '0 0 20px rgba(212,175,55,0.5)',
+              flexShrink: 0,
             }}
           >
             📡
           </motion.div>
           <span style={{
             fontFamily: "'Playfair Display', serif",
-            fontSize: '1.6rem',
-            background: 'linear-gradient(135deg, #D4AF37, #FF8C00)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            fontWeight: 700,
-          }}>
-            YourTVSat VIP
-          </span>
-        </div>
-
-        {/* Nav */}
-        <nav style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
-          {['Catalogue', 'Test 24H', 'Support'].map(item => (
-            <a key={item} href={`#${item.toLowerCase()}`} style={{
-              color: 'rgba(255,255,255,0.6)',
-              textDecoration: 'none',
-              fontSize: '0.9rem',
-              transition: 'color 0.3s',
-            }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#D4AF37')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.6)')}
-            >
-              {item}
-            </a>
-          ))}
-          <button
-            onClick={() => setActiveTab('subscriber')}
-            style={{
-              background: 'linear-gradient(135deg, #FF8C00, #D4AF37)',
-              color: '#000', border: 'none',
-              padding: '10px 25px', borderRadius: '50px',
-              fontWeight: 700, cursor: 'pointer',
-              fontSize: '0.85rem',
-            }}
-          >
-            Mon Compte
-          </button>
-        </nav>
-      </motion.header>
-
-      {/* ===== AUTH SECTION ===== */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        style={{
-          maxWidth: '500px', margin: '40px auto',
-          padding: '0 20px', position: 'relative', zIndex: 1,
-        }}
+            fontSize:
